@@ -21,6 +21,11 @@ import { formatRelative } from "date-fns";
 import "@reach/combobox/styles.css";
 import mapStyles from "./mapStyles";
 
+import Markers from './components/Markers'
+import db from './components/firebase.js';
+import {useState,useEffect} from 'react';
+
+
 const libraries = ["places"];
 const mapContainerStyle = {
   height: "100vh",
@@ -30,6 +35,15 @@ const options = {
   styles: mapStyles,
   disableDefaultUI: true,
   zoomControl: true,
+  restriction: {
+    latLngBounds: {
+      east: -77.299341,
+      north: 38.838761,
+      south: 38.823618,
+      west: -77.318182
+    },
+    strictBounds: true
+  }
 };
 
 //GMU
@@ -47,14 +61,14 @@ export default function App() {
   const [selected, setSelected] = React.useState(null);
 
   const onMapClick = React.useCallback((e) => {
-    setMarkers((current) => [
-      ...current,
-      {
-        lat: e.latLng.lat(),
-        lng: e.latLng.lng(),
-        time: new Date(),
-      },
-    ]);
+    // setMarkers((current) => [
+    //   ...current,
+    //   {
+    //     lat: e.latLng.lat(),
+    //     lng: e.latLng.lng(),
+    //     time: new Date(),
+    //   },
+    // ]);
   }, []);
 
   const mapRef = React.useRef();
@@ -67,8 +81,73 @@ export default function App() {
     mapRef.current.setZoom(14);
   }, []);
 
+  const [events,setEvents] = useState([])
+
+  const fetchEvents=async()=>{
+    const response=db.collection('Events');
+    const data = await response.get();
+
+    const fetchedData = [];
+
+    //console.log(data.docs)
+    data.docs.forEach(item=>{
+      //setEvents([...events, item.data()])
+      fetchedData.push(item.data())
+     //setEvents([...events, 'test 1'])
+    //  console.log(JSON.stringify(events))
+    //  console.log("event added next item")
+    //  console.log(item.data())
+
+      // setMarkers((current) => [
+      //   ...current,
+      //   {
+      //     lat: e.latLng.lat(),
+      //     lng: e.latLng.lng(),
+      //     time: new Date(),
+      //   },
+      // ]);
+      console.log(item.data().context)
+
+      setMarkers((current) => [
+        ...current,
+        {
+          lat: item.data().latitude,
+          lng: item.data().longitude,
+          date: item.data().date.toDate().toDateString(),
+          author: item.data().author,
+          title: item.data().title,
+          context: item.data().context,
+          type: item.data().type
+        },
+      ]);
+    })
+
+    setEvents(fetchedData);
+    console.log(fetchedData)
+    
+  }
+
+  useEffect(() => {
+    fetchEvents();
+    console.log(events);
+
+  }, [])
+
   if (loadError) return "Error";
   if (!isLoaded) return "Loading...";
+
+  
+  function getLogoType(type){
+    if(type == 1){
+      return `/patriotlogo.png`
+    }
+    else if(type == 2){
+      return `/gmustar.png`
+    }
+    else
+    return `/wearemason.png`
+    
+  }
 
   return (
     <div>
@@ -98,8 +177,9 @@ export default function App() {
             onClick={() => {
               setSelected(marker);
             }}
+            
             icon={{
-              url: `/patriotlogo.png`,
+              url: getLogoType(marker.type),
               origin: new window.google.maps.Point(0, 0),
               anchor: new window.google.maps.Point(15, 15),
               scaledSize: new window.google.maps.Size(70, 70),
@@ -117,12 +197,15 @@ export default function App() {
             <div>
               <h2>
                 <span role="img" aria-label="event">
-                  🎉Event🎉
+                  🎉Event🎉 - {selected.title}
                 </span>{" "}
               </h2>
-              <p>Posted: {formatRelative(selected.time, new Date())}</p>
-              <p>Description: This is a fantastic event!!</p>
+              <p><h3>Posted:</h3> {selected.author} - {selected.date}</p>
+              <p><h3>Description:</h3> {selected.context}</p>
+              <p>{selected.lat} / {selected.lng}</p>
+              {/*<Markers events = {events}/>*/}
             </div>
+            
           </InfoWindow>
         ) : null}
       </GoogleMap>
