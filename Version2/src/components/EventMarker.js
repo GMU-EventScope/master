@@ -14,10 +14,17 @@ const Marker = (props) => {
             <h3>{props.date}</h3>
             {props.context}
           </Card.Text>
-          <Button variant="primary mr-2">Reserve</Button>
-          <Button variant="info mr-2">RemindMe</Button>
+          <Button variant="primary mr-2" onClick={()=> {
+            alert('Reserve')
+          }}>Reserve</Button>
 
-          <Button variant="danger mr-2">Report</Button>
+          <Button variant="info mr-2" onClick={()=> {
+            alert('Remind')
+          }}>RemindMe</Button>
+
+          <Button variant="danger mr-2" onClick={()=> {
+            alert('Report')
+          }}>Report</Button>
         </Card.Body>
       </Card>
       </div>
