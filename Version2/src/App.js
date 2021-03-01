@@ -1,3 +1,4 @@
+
 import React from "react";
 import {
   GoogleMap,
@@ -22,9 +23,8 @@ import "@reach/combobox/styles.css";
 import mapStyles from "./mapStyles";
 
 import Markers from './components/Markers'
-import db from './components/firebase.js';
-import {useState,useEffect} from 'react';
-
+import db from './apis/firebase.js';
+import {useState,useEffect, useCallback, useRef} from 'react';
 
 const libraries = ["places"];
 const mapContainerStyle = {
@@ -46,68 +46,53 @@ const options = {
   }
 };
 
-//GMU
+//GMU Location
 const center = {
   lat: 38.82982569870483,
   lng: -77.30736763569308,
 };
 
 export default function App() {
+
+  // Load the google map api key from .env file by useLoadScript function
   const { isLoaded, loadError } = useLoadScript({
-    googleMapsApiKey: 'AIzaSyDkjlyNY1-N3yB70i_dH4qecMy8HaPreg8',
+    googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAP_API_KEY,
     libraries,
   });
-  const [markers, setMarkers] = React.useState([]);
-  const [selected, setSelected] = React.useState(null);
 
-  const onMapClick = React.useCallback((e) => {
-    // setMarkers((current) => [
-    //   ...current,
-    //   {
-    //     lat: e.latLng.lat(),
-    //     lng: e.latLng.lng(),
-    //     time: new Date(),
-    //   },
-    // ]);
-  }, []);
 
-  const mapRef = React.useRef();
-  const onMapLoad = React.useCallback((map) => {
+  const [markers, setMarkers] = useState([]);
+  const [selected, setSelected] = useState(null);
+
+  const mapRef = useRef();
+
+  // Use Callbacks to make sure not rendering map everytime
+  const onMapLoad = useCallback((map) => {
     mapRef.current = map;
   }, []);
 
-  const panTo = React.useCallback(({ lat, lng }) => {
+  // Use Callback to save a function that moves lat and lng and set Zoom to 14
+  const panTo = useCallback(({ lat, lng }) => {
     mapRef.current.panTo({ lat, lng });
     mapRef.current.setZoom(14);
   }, []);
 
+  // List of events as a useState
   const [events,setEvents] = useState([])
 
+  // Try to get events from 'Events' collection from the Firebase
   const fetchEvents=async()=>{
     const response=db.collection('Events');
     const data = await response.get();
 
     const fetchedData = [];
 
-    //console.log(data.docs)
+    // Iterate throw the collections
     data.docs.forEach(item=>{
-      //setEvents([...events, item.data()])
+      // Push the fetched object to fetchedData array 
       fetchedData.push(item.data())
-     //setEvents([...events, 'test 1'])
-    //  console.log(JSON.stringify(events))
-    //  console.log("event added next item")
-    //  console.log(item.data())
 
-      // setMarkers((current) => [
-      //   ...current,
-      //   {
-      //     lat: e.latLng.lat(),
-      //     lng: e.latLng.lng(),
-      //     time: new Date(),
-      //   },
-      // ]);
-      console.log(item.data().context)
-
+      // set a new Marker based on the iterating item
       setMarkers((current) => [
         ...current,
         {
@@ -121,22 +106,20 @@ export default function App() {
         },
       ]);
     })
-
+    // set Events with fetchedDate array
     setEvents(fetchedData);
-    console.log(fetchedData)
-    
   }
 
+
+  // useEffect fetch events when the page renders
   useEffect(() => {
     fetchEvents();
-    console.log(events);
-
   }, [])
 
   if (loadError) return "Error";
   if (!isLoaded) return "Loading...";
 
-  
+  // simple function to differentiate types
   function getLogoType(type){
     if(type == 1){
       return `/patriotlogo.png`
@@ -149,6 +132,7 @@ export default function App() {
     
   }
 
+  // the actual jsx part
   return (
     <div>
       <h1>
@@ -167,9 +151,10 @@ export default function App() {
         center={center}
 
         options={options}
-        onClick={onMapClick}
+        //onClick={onMapClick}
         onLoad={onMapLoad}
       >
+        
         {markers.map((marker) => (
           <Marker
             key={`${marker.lat}-${marker.lng}`}
@@ -213,6 +198,8 @@ export default function App() {
   );
 }
 
+
+// Locate function
 function Locate({ panTo }) {
   return (
     <button
@@ -234,6 +221,7 @@ function Locate({ panTo }) {
   );
 }
 
+// Search function
 function Search({ panTo }) {
   const {
     ready,
