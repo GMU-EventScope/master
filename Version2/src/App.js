@@ -22,7 +22,7 @@ import { formatRelative } from "date-fns";
 import "@reach/combobox/styles.css";
 import mapStyles from "./mapStyles";
 
-import Markers from './components/Markers'
+import EventMarker from './components/EventMarker'
 import db from './apis/firebase.js';
 import {useState,useEffect, useCallback, useRef} from 'react';
 
@@ -179,17 +179,7 @@ export default function App() {
               setSelected(null);
             }}
           >
-            <div>
-              <h2>
-                <span role="img" aria-label="event">
-                  🎉Event🎉 - {selected.title}
-                </span>{" "}
-              </h2>
-              <p><h3>Posted:</h3> {selected.author} - {selected.date}</p>
-              <p><h3>Description:</h3> {selected.context}</p>
-              <p>{selected.lat} / {selected.lng}</p>
-              {/*<Markers events = {events}/>*/}
-            </div>
+            <EventMarker title={selected.title} author={selected.author} context ={selected.context} lat={selected.lat} lng={selected.lng} />
             
           </InfoWindow>
         ) : null}
