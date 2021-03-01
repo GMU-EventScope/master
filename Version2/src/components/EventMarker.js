@@ -1,17 +1,25 @@
 import React from 'react'
 
+import {Button, Card} from 'react-bootstrap'
+import 'bootstrap/dist/css/bootstrap.min.css';
+
 const Marker = (props) => {
     return (
-        <div>
-        <h2>
-          <span role="img" aria-label="event">
-            🎉Event🎉 - {props.title}
-          </span>{" "}
-        </h2>
-        <p><h3>Posted:</h3> {props.author} - {props.date}</p>
-        <p><h3>Description:</h3> {props.context}</p>
-        <p>{props.lat} / {props.lng}</p>
-        {/*<Markers events = {events}/>*/}
+      <div>
+        <Card style={{ width: '25rem' }}>
+        <Card.Img variant="top" src="/gmulogo.png" />
+        <Card.Body>
+          <Card.Title>{props.title} - {props.author}</Card.Title>
+          <Card.Text>
+            <h3>{props.date}</h3>
+            {props.context}
+          </Card.Text>
+          <Button variant="primary mr-2">Reserve</Button>
+          <Button variant="info mr-2">RemindMe</Button>
+
+          <Button variant="danger mr-2">Report</Button>
+        </Card.Body>
+      </Card>
       </div>
     )
 }
