@@ -46,7 +46,7 @@ export default [
               "visibility": "on"
           },
           {
-              "color": "#000000"
+              "color": "#ffffff"
           },
           {
               "lightness": 16
