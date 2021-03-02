@@ -1,14 +1,10 @@
-import React,{ useEffect, useState } from 'react'
+import React from 'react'
 import {Button, Card} from 'react-bootstrap'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './EventMarker.css';
 import useButtonLoader from './Buttons';
 
-
-//eventually we want to send/retrieve from db here i think
-function talkToFirebase(){
-  //alert('test')
-}
+//TODOs: connect to firebase (card image,and just in general for buttons)
 
 //adds artificial delay for loading (cuz too fast)
 function loadingDelay() {
@@ -18,12 +14,14 @@ function loadingDelay() {
 //buttons help: https://react-bootstrap.github.io/components/buttons/
 //Followed this for loading buttons: https://www.youtube.com/watch?v=nCEnqQABC5A via hooks
 const Marker = (props) => {
-  //Here is the code for switching a button to loading and normal state
+  //button hook thing, name the buttons here
   const [Button1Load,setButton1] = useButtonLoader("I'm here","Updating..");
-  const [Button2Load,setButton2] = useButtonLoader("Set Reminder","Updating..");
+  const [Button2Load,setButton2] = useButtonLoader("Save Event","Saving..");
   const [Button3Load,setButton3] = useButtonLoader("Report","Getting Report Ready..");
 
-  //eventually change this to connect to firebase
+  //eventually change placeholder stuff to connect to firebase
+  
+  //I'm here
   const Button1 = () => {
     setButton1(true);
     fetch("https://jsonplaceholder.typicode.com/todos/1")
@@ -35,6 +33,7 @@ const Marker = (props) => {
         setButton1(false);
       });
   };
+  //Set Reminder
   const Button2 = () => {
     setButton2(true);
     fetch("https://jsonplaceholder.typicode.com/todos/1")
@@ -44,6 +43,7 @@ const Marker = (props) => {
         setButton2(false);
       });
   };
+  //Report
   const Button3 = () => {
     setButton3(true);
     fetch("https://jsonplaceholder.typicode.com/todos/1")
