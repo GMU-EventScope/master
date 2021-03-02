@@ -14,13 +14,14 @@ function loadingDelay() {
 //buttons help: https://react-bootstrap.github.io/components/buttons/
 //Followed this for loading buttons: https://www.youtube.com/watch?v=nCEnqQABC5A via hooks
 const Marker = (props) => {
-  //button hook thing, name the buttons here
+  //button hook thing, name the buttons here (static text, loading text)
+  //need to create a new set of consts for each button
   const [Button1Load,setButton1] = useButtonLoader("I'm here","Updating..");
   const [Button2Load,setButton2] = useButtonLoader("Save Event","Saving..");
   const [Button3Load,setButton3] = useButtonLoader("Report","Getting Report Ready..");
 
   //eventually change placeholder stuff to connect to firebase
-  
+
   //I'm here
   const Button1 = () => {
     setButton1(true);
@@ -33,7 +34,7 @@ const Marker = (props) => {
         setButton1(false);
       });
   };
-  //Set Reminder
+  //Save Event
   const Button2 = () => {
     setButton2(true);
     fetch("https://jsonplaceholder.typicode.com/todos/1")
@@ -54,8 +55,10 @@ const Marker = (props) => {
       });
   };
 
-  // eventually want to make the Card.Img the user submitted one from db
+  // eventually want to make the Card.Img the user uploaded one from db
   // Maybe for the "I'm here" button, disable the button and turn red after clicked (and loading)?
+  
+  //Below is actual card
   return (
       <div>
         <Card style={{ width: '22rem'}} bg={"success"} border={"warning"}>    
@@ -68,7 +71,7 @@ const Marker = (props) => {
           </Card.Text>
           <Button variant="primary mr-2" size='lg' block onClick={Button1} ref={Button1Load}>
            </Button>
-          <Button variant="info mr-2" block onClick={Button2} ref={Button2Load}>
+          <Button variant="info mr-2" size='lg' block onClick={Button2} ref={Button2Load}>
            </Button>
           <Button variant="danger mr-2" block onClick={Button3} ref={Button3Load}>
            </Button>
