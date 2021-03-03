@@ -22,7 +22,7 @@ const Marker = (props) => {
 
   //eventually change placeholder stuff to connect to firebase
 
-  // might be a bad way of adding 0.5s delay (below in button consts)...
+  // might be a bad way of adding 0.420s delay (below in button consts)...
   // could fetch then do loadingDelay()?
 
   //I'm here
@@ -75,8 +75,12 @@ const Marker = (props) => {
 
   // eventually want to make the Card.Img the user uploaded one from db
   // Maybe for the "I'm here" button, disable the button and turn red after clicked (and loading)?
+  // not sure how we are going to do it per user
   
   //Below is actual card
+  //Title is like "Godzilla", author is "eminem"
+  //Props.date not used yet?
+  //props.context is description
   return (
       <div>
         <Card style={{ width: '22rem'}} bg={"success"} border={"warning"}>    

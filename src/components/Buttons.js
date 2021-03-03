@@ -1,6 +1,5 @@
 import {useRef,useState,useEffect} from "react";
 
-
 //reuseable button loader
 const useButtonLoader = (defaultText = "Load",loadingText = "Loading...") => {
     const[isLoading,setLoading] = useState(false);
