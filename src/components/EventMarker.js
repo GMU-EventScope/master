@@ -8,7 +8,7 @@ import useButtonLoader from './Buttons.js';
 
 //adds artificial delay for loading (cuz too fast, user can't see loading msg)
 function loadingDelay() {
-  return new Promise((resolve) => setTimeout(resolve, 500));
+  return new Promise((resolve) => setTimeout(resolve, 420));
 }
 
 //buttons help: https://react-bootstrap.github.io/components/buttons/
