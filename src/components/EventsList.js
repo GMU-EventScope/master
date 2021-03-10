@@ -17,6 +17,8 @@ import SentimentSatisfiedAltIcon from "@material-ui/icons/SentimentSatisfiedAlt"
 
 import { useState, useEffect, useCallback, useRef } from "react";
 
+import Popup from "./Popup";
+
 const useStyles = makeStyles((theme) => ({
   root: {
     width: "100%",
@@ -25,11 +27,17 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const EventsList = () => {
+const EventsList = ({ mapRef }) => {
   // List of events as a useState
   const [events, setEvents] = useState([]);
 
   const [markers, setMarkers] = useState([]);
+
+  // Use Callback to save a function that moves lat and lng and set Zoom to 14
+  const panTo = useCallback(({ lat, lng }) => {
+    mapRef.current.panTo({ lat, lng });
+    mapRef.current.setZoom(14);
+  }, []);
 
   // Try to get events from 'Events' collection from the Firebase
   const fetchEvents = async () => {
@@ -83,31 +91,59 @@ const EventsList = () => {
     } else return `/wearemason.png`;
   }
 
+  const [modalopen, setModalOpen] = useState(false);
+
+  const handleOpen = () => {
+    setModalOpen(true);
+  };
+
+  const handleClose = () => {
+    setModalOpen(false);
+  };
+
+  const [info, setInfo] = useState([]);
+
   const classes = useStyles();
   return (
     <List className={classes.root}>
+      {modalopen ? (
+        <Popup
+          modalopen={modalopen}
+          handleClose={handleClose}
+          info={info}
+          mapRef={mapRef}
+        />
+      ) : null}
       {markers.map((marker) => (
-        <ListItem alignItems="flex-start">
-          <ListItemAvatar>
-            <Avatar alt={marker.author} src={getLogoType(marker.type)} />
-          </ListItemAvatar>
-          <ListItemText
-            primary={marker.title}
-            secondary={
-              <React.Fragment>
-                <Typography
-                  component="span"
-                  variant="body2"
-                  className={classes.inline}
-                  color="textPrimary"
-                >
-                  {marker.author} - 
-                </Typography>
-                {marker.context}
-              </React.Fragment>
-            }
-          />
-        </ListItem>
+        <>
+          <ListItem
+            alignItems="flex-start"
+            onClick={() => {
+              handleOpen();
+              setInfo(marker);
+            }}
+          >
+            <ListItemAvatar>
+              <Avatar alt={marker.author} src={getLogoType(marker.type)} />
+            </ListItemAvatar>
+            <ListItemText
+              primary={marker.title}
+              secondary={
+                <React.Fragment>
+                  <Typography
+                    component="span"
+                    variant="body2"
+                    className={classes.inline}
+                    color="textPrimary"
+                  >
+                    {marker.author} -
+                  </Typography>
+                  {marker.context}
+                </React.Fragment>
+              }
+            />
+          </ListItem>
+        </>
       ))}
 
       {/* <ListItem>

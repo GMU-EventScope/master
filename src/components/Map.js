@@ -52,7 +52,7 @@ const center = {
   lng: -77.30736763569308,
 };
 
-const Map = () => {
+const Map = ( {mapRef} ) => {
   // Load the google map api key from .env file by useLoadScript function
   const { isLoaded, loadError } = useLoadScript({
     googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAP_API_KEY,
@@ -62,7 +62,7 @@ const Map = () => {
   const [markers, setMarkers] = useState([]);
   const [selected, setSelected] = useState(null);
 
-  const mapRef = useRef();
+ // const mapRef = useRef();
 
   // Use Callbacks to make sure not rendering map everytime
   const onMapLoad = useCallback((map) => {
