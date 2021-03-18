@@ -130,8 +130,8 @@ export default function NavBar() {
   function signinButton() {
     console.log("Sign-in Button was clicked!");
     console.log("Enter user email and then password")
-    const email = prompt();
-    const password = prompt();
+    const email = prompt("Enter email");
+    const password = prompt("Enter password (no peeking)");
 
     auth.signInWithEmailAndPassword(email, password).then(cred => {
       console.log(cred.user.email);
@@ -184,6 +184,22 @@ export default function NavBar() {
     }
   }
 
+  function signupButton () {
+    console.log("Sign Up Button was clicked!");
+    console.log("Enter user email and then password")
+    const email = prompt("Enter your email");
+    const password = prompt("Enter password, don't forget it!");
+    const bio = prompt("Enter a bio (say account name in the bio pls)");
+
+    auth.createUserWithEmailAndPassword(email, password).then(cred => {
+      // add a document to the users collection
+      // uid of the user document will be the same uid as in the auth database 
+      return db.collection("users").doc(cred.user.uid).set({
+          bio: bio // add the biography to the user
+      });
+    });
+  }
+
 
   return (
     <div className={classes.root}>
@@ -211,6 +227,7 @@ export default function NavBar() {
             <button type="button" className="btn btn-signIn" onClick={signinButton}> Sign-In</button>
             <button type="button" className="btn btn-logout" onClick={logoutButton}> Log Out</button>
             <button type="button" className="btn btn-viewSavedEvents" onClick={viewSavedEventsButton}> View Saved Events</button>
+            <button type="button" className="btn btn-signUp" onClick={signupButton}> Create Account</button>
           </section>
         </Toolbar>
       </AppBar>

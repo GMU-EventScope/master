@@ -67,6 +67,10 @@
             else {
               // get current list of events
               var myEvents = doc.data().savedevents;
+
+              if (myEvents === undefined) {
+                myEvents = [];
+              }
               
               // add to list
               myEvents.push(curEvent);
