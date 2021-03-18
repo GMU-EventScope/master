@@ -22,8 +22,11 @@ import "@reach/combobox/styles.css";
 import mapStyles from "./mapStyles";
 
 import EventMarker from "./EventMarker";
-import db from "../apis/firebase.js";
+import fbArray from "../apis/firebase.js";
 import { useState, useEffect, useCallback, useRef } from "react";
+
+// get firebase stuff
+const db = fbArray.db;
 
 const libraries = ["places"];
 const mapContainerStyle = {
@@ -101,6 +104,7 @@ const Map = ( {mapRef} ) => {
           title: item.data().title,
           context: item.data().context,
           type: item.data().type,
+          key: item.id
         },
       ]);
     });
@@ -160,7 +164,7 @@ const Map = ( {mapRef} ) => {
               setSelected(null);
             }}
           >
-            <EventMarker title={selected.title} author={selected.author} context ={selected.context} lat={selected.lat} lng={selected.lng} />
+            <EventMarker title={selected.title} author={selected.author} context ={selected.context} lat={selected.lat} lng={selected.lng} docID={selected.key} />
             
           </InfoWindow>
         ) : null}

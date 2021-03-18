@@ -1,4 +1,4 @@
-import db from "../apis/firebase.js";
+import fbArray from '../apis/firebase.js';
 
 import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
@@ -18,6 +18,8 @@ import SentimentSatisfiedAltIcon from "@material-ui/icons/SentimentSatisfiedAlt"
 import { useState, useEffect, useCallback, useRef } from "react";
 
 import Popup from "./Popup";
+
+const db = fbArray.db;
 
 const useStyles = makeStyles((theme) => ({
   root: {

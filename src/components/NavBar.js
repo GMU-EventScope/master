@@ -34,6 +34,11 @@ import Popup from "./Popup";
 
 import { useState, useEffect, useCallback, useRef } from "react";
 
+import fbArray from '../apis/firebase.js';
+// get firebase stuff
+const db = fbArray.db;
+const auth = fbArray.auth;
+
 const drawerWidth = 400;
 
 const useStyles = makeStyles((theme) => ({
@@ -121,6 +126,65 @@ export default function NavBar() {
 
   const mapRef = useRef();
 
+  // functions for account-related features
+  function signinButton() {
+    console.log("Sign-in Button was clicked!");
+    console.log("Enter user email and then password")
+    const email = prompt();
+    const password = prompt();
+
+    auth.signInWithEmailAndPassword(email, password).then(cred => {
+      console.log(cred.user.email);
+      console.log("Signed in!");
+    })
+
+  }
+
+  function logoutButton() {
+    console.log("Logout Button was clicked!")
+    auth.signOut().then(() => {
+      // function that runs when the user is signed out
+      console.log("user signed out");
+  })
+  }
+
+  function viewSavedEventsButton() {
+    console.log("Here are your saved events:");
+    // get current user
+    var user = auth.currentUser;
+    // if user exists (you are signed in)
+    if (user) {
+      // access the correct document in "users"
+      db.collection("users").doc(user.uid).get().then(doc => {
+        var myEvents = doc.data().savedevents;
+        //console.log(myEvents);
+        // loop through event uids saved in the savedevents array
+        if (!(myEvents === undefined)) {
+          console.log("Your saved event titles: ");
+          myEvents.forEach(id => {
+            db.collection("Events").doc(id).get().then(doc2 => {
+              // doc2 is the event document from Events
+              //console.log(doc2);
+              if (doc2.exists) {
+                console.log(doc2.data().title);
+              }
+              else {
+                console.log(`Doc with id ${id} not found`);
+              }
+            });
+          });
+        }
+        else {
+          console.log("No events found");
+        }
+      });
+    }
+    else {
+      console.log("You are not signed in. Sign in to view saved events");
+    }
+  }
+
+
   return (
     <div className={classes.root}>
       <CssBaseline />
@@ -144,8 +208,9 @@ export default function NavBar() {
             GMU EventScope📢
           </Typography>
           <section className={classes.rightToolbar}>
-            <Button color="inherit">Login</Button>
-            <Button color="inherit">Register</Button>
+            <button type="button" className="btn btn-signIn" onClick={signinButton}> Sign-In</button>
+            <button type="button" className="btn btn-logout" onClick={logoutButton}> Log Out</button>
+            <button type="button" className="btn btn-viewSavedEvents" onClick={viewSavedEventsButton}> View Saved Events</button>
           </section>
         </Toolbar>
       </AppBar>

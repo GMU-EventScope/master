@@ -18,6 +18,9 @@ const firebaseApp=firebase.initializeApp(firebaseConfig);
 
 // Get the Firestore database.
 // If you want to use the realtime database, this has to be changed
-const db=firebase.firestore();
+const db = firebase.firestore();
+const auth = firebase.auth();
 
-export default db;
+const fbArray = {db, auth};
+
+export default fbArray;
