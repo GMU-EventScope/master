@@ -51,9 +51,9 @@ export default function EventCard({ info, mapRef, handleClose }) {
   // simple function to differentiate types
   // TODO: This function is meant to be deleted
   function getLogoType(type) {
-    if (type == 1) {
+    if (type === 1) {
       return `/patriotlogo.png`;
-    } else if (type == 2) {
+    } else if (type === 2) {
       return `/gmustar.png`;
     } else return `/wearemason.png`;
   }
