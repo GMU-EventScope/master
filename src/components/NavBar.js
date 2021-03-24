@@ -32,7 +32,11 @@ import ProfileCard from "./ProfileCard";
 import EventsList from "./EventsList";
 import Popup from "./Popup";
 
+import Filter from "./Filter"
+
 import { useState, useEffect, useCallback, useRef } from "react";
+
+
 
 import fbArray from '../apis/firebase.js';
 // get firebase stuff
@@ -263,11 +267,11 @@ export default function NavBar() {
           <ListItemIcon>
             <InboxIcon />
           </ListItemIcon>
-          <ListItemText primary="List of Boxes" />
+          <ListItemText primary="Options" />
           {openFolder ? <ExpandLess /> : <ExpandMore />}
         </ListItem>
         <Collapse in={openFolder} timeout="auto" unmountOnExit>
-          <List component="div" disablePadding>
+          {/* <List component="div" disablePadding>
             <ListItem button className={classes.nested}>
               <ListItemIcon>
                 <StarBorder />
@@ -286,7 +290,8 @@ export default function NavBar() {
               </ListItemIcon>
               <ListItemText primary="And Another one" />
             </ListItem>
-          </List>
+          </List> */}
+          <Filter />
         </Collapse>
         {/* 
           <List>
