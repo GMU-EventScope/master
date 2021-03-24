@@ -27,6 +27,13 @@ import Checkbox from "@material-ui/core/Checkbox";
 import CheckBoxOutlineBlankIcon from "@material-ui/icons/CheckBoxOutlineBlank";
 import CheckBoxIcon from "@material-ui/icons/CheckBox";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
+import TextField from "@material-ui/core/TextField";
+import Grid from "@material-ui/core/Grid";
+import {
+  MuiPickersUtilsProvider,
+  KeyboardTimePicker,
+  KeyboardDatePicker,
+} from "@material-ui/pickers";
 
 import { useState, useEffect, useCallback, useRef } from "react";
 const useStyles = makeStyles((theme) => ({
@@ -56,10 +63,19 @@ const Filter = () => {
     setState({ ...state, [event.target.name]: event.target.checked });
   };
 
+  const [selectedDate, setSelectedDate] = useState({
+    startDate: new Date("2014-08-18T21:11:54"),
+    endDate: new Date("2014-08-18T21:11:54"),
+  });
+
+  const handleDateChange = (date) => {
+    setSelectedDate(date);
+  };
+
   return (
     <div>
       <List component="div" disablePadding>
-        <ListItem button className={classes.nested}>
+        {/* <ListItem button className={classes.nested}>
           <ListItemIcon>
             <StarBorder />
           </ListItemIcon>
@@ -76,7 +92,7 @@ const Filter = () => {
             <InboxIcon />
           </ListItemIcon>
           <ListItemText primary="And Another one" />
-        </ListItem>
+        </ListItem> */}
         {/* <FormControlLabel className={classes.nested}
             control={
               <Checkbox
@@ -89,7 +105,7 @@ const Filter = () => {
             label="primary"
           /> */}
         <ListItem button className={classes.nested}>
-          <FormControl component="fieldset" className={classes.formControl}>
+          <FormControl component="fieldset">
             <FormLabel component="legend">Fliter By Posters</FormLabel>
             <FormGroup>
               <FormControlLabel
@@ -123,9 +139,59 @@ const Filter = () => {
                 label="By Students"
               />
             </FormGroup>
-            <FormHelperText>Be careful</FormHelperText>
+            {/* <FormHelperText>Be careful</FormHelperText> */}
           </FormControl>
         </ListItem>
+        <ListItem button className={classes.nested}>
+          <FormControl component="fieldset">
+            <FormLabel component="legend">Within</FormLabel>
+            <FormGroup>
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={state.bySchool}
+                    onChange={handleChange}
+                    name="bySchool"
+                  />
+                }
+                label="Within 7 Days"
+              />
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={state.byOrganizer}
+                    onChange={handleChange}
+                    name="byOrganizer"
+                  />
+                }
+                label="Within 30 Days"
+              />
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={state.byStudent}
+                    onChange={handleChange}
+                    name="byStudent"
+                  />
+                }
+                label="Within 90 Days"
+              />
+            </FormGroup>
+            {/* <FormHelperText>Be careful</FormHelperText> */}
+          </FormControl>
+        </ListItem>
+        <ListItem button className={classes.nested}>       
+          <TextField
+            id="datetime-local"
+            label="Start Date"
+            type="datetime-local"
+            defaultValue="2017-05-24T10:30"
+            className={classes.textField}
+            InputLabelProps={{
+              shrink: true,
+            }}
+          />
+        </ListItem> 
       </List>
     </div>
   );
