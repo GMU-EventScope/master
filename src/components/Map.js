@@ -174,8 +174,8 @@ const theme = useTheme();
         //onClick={onMapClick}
         onLoad={onMapLoad}
       >
-        {testVisible
-          ? markers.map((marker) => (
+        {markers.filter(marker => (marker.type !== 1 && testVisible) || !testVisible).map((marker) => (
+
               <Marker
                 key={`${marker.lat}-${marker.lng}`}
                 position={{ lat: marker.lat, lng: marker.lng }}
@@ -189,8 +189,9 @@ const theme = useTheme();
                   scaledSize: new window.google.maps.Size(70, 70),
                 }}
               />
+              
             ))
-          : null}
+}
 
         {selected ? (
           <InfoWindow

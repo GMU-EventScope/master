@@ -67,7 +67,7 @@ const Filter = ({filter, setFilter, toggleDrawer}) => {
     today.getMinutes();
 
   const [state, setState] = useState({
-    bySchool: true,
+    bySchool: false,
     byOrganizer: true,
     byStudent: true,
     from7d: true,

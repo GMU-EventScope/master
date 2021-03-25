@@ -1,4 +1,4 @@
-import fbArray from '../apis/firebase.js';
+import fbArray from "../apis/firebase.js";
 
 import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
@@ -48,7 +48,7 @@ const EventsList = ({ mapRef }) => {
     const data = await response.get();
 
     const fetchedData = [];
-    
+
     // Iterate throw the collections
     data.docs.forEach((item) => {
       // Push the fetched object to fetchedData array
@@ -73,25 +73,27 @@ const EventsList = ({ mapRef }) => {
   };
 
   // set up real-time listener
-  db.collection("users").orderBy("bio").onSnapshot(snapshot => {
-    // console.log("real-time listener fired");
-    
-    let changes = snapshot.docChanges();
-    // loop through each change
-    changes.forEach(change => {
-      if (change.type == "modified") {
-        //console.log("modified detected");
-        console.log(change.doc.id);
-        // check if current user was modified
-        if (change.doc.id == auth.currentUser.uid) {
-          console.log("you changed something for this account");
-          //setEvents(change.doc.data().savedevents);
-          // TODO do something here that changes the left side bar
-          // this whole listener might need to be in another file
+  db.collection("users")
+    .orderBy("bio")
+    .onSnapshot((snapshot) => {
+      // console.log("real-time listener fired");
+
+      let changes = snapshot.docChanges();
+      // loop through each change
+      changes.forEach((change) => {
+        if (change.type == "modified") {
+          //console.log("modified detected");
+          console.log(change.doc.id);
+          // check if current user was modified
+          if (change.doc.id == auth.currentUser.uid) {
+            console.log("you changed something for this account");
+            //setEvents(change.doc.data().savedevents);
+            // TODO do something here that changes the left side bar
+            // this whole listener might need to be in another file
+          }
         }
-      }
+      });
     });
-  });
 
   // useEffect fetch events when the page renders
   useEffect(() => {
@@ -139,7 +141,7 @@ const EventsList = ({ mapRef }) => {
         />
       ) : null}
       {markers.map((marker) => (
-        <>
+        <React.Fragment key={marker.key}>
           <ListItem
             alignItems="flex-start"
             onClick={() => {
@@ -167,7 +169,7 @@ const EventsList = ({ mapRef }) => {
               }
             />
           </ListItem>
-        </>
+        </React.Fragment>
       ))}
 
       {/* <ListItem>
