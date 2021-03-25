@@ -128,7 +128,17 @@ export default function NavBar() {
     setOpenFolder(!openFolder);
   };
 
+  
+  const [filter, setFilter] = useState({
+    type1: true,
+    type2: true,
+    type3: true,
+  });
+
   const mapRef = useRef();
+
+  const [, updateState] = React.useState();
+  const forceUpdate = React.useCallback(() => updateState({}), []);
 
   // functions for account-related features
   function signinButton() {
@@ -233,6 +243,12 @@ export default function NavBar() {
             <button type="button" className="btn btn-logout" onClick={logoutButton}> Log Out</button>
             <button type="button" className="btn btn-viewSavedEvents" onClick={viewSavedEventsButton}> View Saved Events</button>
             <button type="button" className="btn btn-signUp" onClick={signupButton}> Create Account</button>
+
+            <button type="button" onClick={()=> {
+              console.log('bbb')
+              setFilter({ ...filter, type1: !filter.type1 })
+              window.location.reload(false);
+            }}>{filter.type1.toString()}</button>
           </section>
         </Toolbar>
       </AppBar>
@@ -291,7 +307,7 @@ export default function NavBar() {
               <ListItemText primary="And Another one" />
             </ListItem>
           </List> */}
-          <Filter />
+          <Filter filter={filter} setFilter={setFilter} />
         </Collapse>
         {/* 
           <List>
@@ -318,7 +334,7 @@ export default function NavBar() {
         })}
       >
         <div className={classes.drawerHeader} />
-        <Map mapRef={mapRef} />
+        <Map mapRef={mapRef} filter={filter} setFilter={setFilter} />
       </main>
     </div>
   );

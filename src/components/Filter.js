@@ -34,7 +34,7 @@ import {
   KeyboardTimePicker,
   KeyboardDatePicker,
 } from "@material-ui/pickers";
-
+import Button from "@material-ui/core/Button";
 import { useState, useEffect, useCallback, useRef } from "react";
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -43,24 +43,46 @@ const useStyles = makeStyles((theme) => ({
   nested: {
     paddingLeft: theme.spacing(4),
   },
+  button: {
+    paddingLeft: theme.spacing(8),
+  },
   formControl: {
     margin: theme.spacing(3),
   },
 }));
 
-const Filter = () => {
+const Filter = ({filter, setFilter, toggleDrawer}) => {
   const classes = useStyles();
   const theme = useTheme();
+
+  const today = new Date();
+
+  const todaytime =
+    today.getFullYear() +
+    "-" +
+    today.getMonth() +
+    "-" +
+    today.getDay() +
+    "T" +
+    today.getHours() +
+    ":" +
+    today.getMinutes();
 
   const [state, setState] = useState({
     bySchool: true,
     byOrganizer: true,
     byStudent: true,
-    checkedG: true,
+    from7d: true,
+    from30d: true,
+    from90d: true,
   });
 
   const handleChange = (event) => {
     setState({ ...state, [event.target.name]: event.target.checked });
+  };
+
+  const handleFilterChange = (name, checked) => {
+    setFilter({ ...filter, [name]: checked });
   };
 
   const [selectedDate, setSelectedDate] = useState({
@@ -72,8 +94,13 @@ const Filter = () => {
     setSelectedDate(date);
   };
 
+  const onSaveClick = (name, checked) => {
+    console.log(`${name} and ${checked}`)
+    handleFilterChange(name, checked)
+  }
+
   return (
-    <div>
+    <div className={classes.root}>
       <List component="div" disablePadding>
         {/* <ListItem button className={classes.nested}>
           <ListItemIcon>
@@ -104,6 +131,7 @@ const Filter = () => {
             }
             label="primary"
           /> */}
+
         <ListItem button className={classes.nested}>
           <FormControl component="fieldset">
             <FormLabel component="legend">Fliter By Posters</FormLabel>
@@ -116,7 +144,7 @@ const Filter = () => {
                     name="bySchool"
                   />
                 }
-                label="By School Faculties"
+                label="By School Faculties (Type 1)"
               />
               <FormControlLabel
                 control={
@@ -126,7 +154,7 @@ const Filter = () => {
                     name="byOrganizer"
                   />
                 }
-                label="By Outside Organizers"
+                label="By Outside Organizers (Type 2)"
               />
               <FormControlLabel
                 control={
@@ -136,12 +164,13 @@ const Filter = () => {
                     name="byStudent"
                   />
                 }
-                label="By Students"
+                label="By Students (Type 3)"
               />
             </FormGroup>
             {/* <FormHelperText>Be careful</FormHelperText> */}
           </FormControl>
         </ListItem>
+
         <ListItem button className={classes.nested}>
           <FormControl component="fieldset">
             <FormLabel component="legend">Within</FormLabel>
@@ -149,9 +178,9 @@ const Filter = () => {
               <FormControlLabel
                 control={
                   <Checkbox
-                    checked={state.bySchool}
+                    checked={state.from7d}
                     onChange={handleChange}
-                    name="bySchool"
+                    name="from7d"
                   />
                 }
                 label="Within 7 Days"
@@ -159,9 +188,9 @@ const Filter = () => {
               <FormControlLabel
                 control={
                   <Checkbox
-                    checked={state.byOrganizer}
+                    checked={state.from30d}
                     onChange={handleChange}
-                    name="byOrganizer"
+                    name="from30d"
                   />
                 }
                 label="Within 30 Days"
@@ -169,9 +198,9 @@ const Filter = () => {
               <FormControlLabel
                 control={
                   <Checkbox
-                    checked={state.byStudent}
+                    checked={state.from90d}
                     onChange={handleChange}
-                    name="byStudent"
+                    name="from90d"
                   />
                 }
                 label="Within 90 Days"
@@ -180,18 +209,27 @@ const Filter = () => {
             {/* <FormHelperText>Be careful</FormHelperText> */}
           </FormControl>
         </ListItem>
-        <ListItem button className={classes.nested}>       
+        <ListItem button className={classes.nested}>
           <TextField
             id="datetime-local"
             label="Start Date"
             type="datetime-local"
-            defaultValue="2017-05-24T10:30"
+            // defaultValue={today}
             className={classes.textField}
             InputLabelProps={{
               shrink: true,
             }}
           />
-        </ListItem> 
+        </ListItem>
+
+        <ListItem button className={classes.nested}>
+        {/* onClick={onSaveClick("bySchool", state.from7d) */}
+          <Button variant="contained" color="primary" onClick={()=> {setFilter(!filter) ;
+            toggleDrawer(false)}}>
+            Save
+          </Button>
+        </ListItem>
+        
       </List>
     </div>
   );

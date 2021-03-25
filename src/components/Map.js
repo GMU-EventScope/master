@@ -23,7 +23,11 @@ import mapStyles from "./mapStyles";
 import EventMarker from "./EventMarker";
 import fbArray from "../apis/firebase.js";
 import { useState, useEffect, useCallback, useRef } from "react";
+import Button from "@material-ui/core/Button";
+import Drawer from "@material-ui/core/Drawer";
 
+
+import Filter from './Filter'
 // get firebase stuff
 const db = fbArray.db;
 
@@ -54,7 +58,7 @@ const center = {
   lng: -77.30736763569308,
 };
 
-const Map = ( {mapRef} ) => {
+const Map = ({ mapRef, filter, setFilter }) => {
   // Load the google map api key from .env file by useLoadScript function
   const { isLoaded, loadError } = useLoadScript({
     googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAP_API_KEY,
@@ -64,7 +68,9 @@ const Map = ( {mapRef} ) => {
   const [markers, setMarkers] = useState([]);
   const [selected, setSelected] = useState(null);
 
- // const mapRef = useRef();
+  const [bottomOption, setBottomOption] = useState(false);
+
+  // const mapRef = useRef();
 
   // Use Callbacks to make sure not rendering map everytime
   const onMapLoad = useCallback((map) => {
@@ -79,6 +85,16 @@ const Map = ( {mapRef} ) => {
 
   // List of events as a useState
   const [events, setEvents] = useState([]);
+  const [testVisible, settestVisible] = useState(true);
+
+
+  const toggleDrawer = (open) => (event) => {
+    if (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
+      return;
+    }
+
+    setBottomOption(open);
+  };
 
   // Try to get events from 'Events' collection from the Firebase
   const fetchEvents = async () => {
@@ -90,25 +106,29 @@ const Map = ( {mapRef} ) => {
     // Iterate throw the collections
     data.docs.forEach((item) => {
       // Push the fetched object to fetchedData array
-      fetchedData.push(item.data());
 
-      // set a new Marker based on the iterating item
-      setMarkers((current) => [
-        ...current,
-        {
-          lat: item.data().latitude,
-          lng: item.data().longitude,
-          date: item.data().date.toDate().toDateString(),
-          author: item.data().author,
-          title: item.data().title,
-          context: item.data().context,
-          type: item.data().type,
-          key: item.id
-        },
-      ]);
+      if (item.type === 1 && !filter.type1) {
+      } else {
+        fetchedData.push(item.data());
+        // set a new Marker based on the iterating item
+        setMarkers((current) => [
+          ...current,
+          {
+            lat: item.data().latitude,
+            lng: item.data().longitude,
+            date: item.data().date.toDate().toDateString(),
+            author: item.data().author,
+            title: item.data().title,
+            context: item.data().context,
+            type: item.data().type,
+            key: item.id,
+          },
+        ]);
+      }
     });
     // set Events with fetchedDate array
     setEvents(fetchedData);
+    console.log(`map rendered again !`);
   };
 
   // useEffect fetch events when the page renders
@@ -127,34 +147,35 @@ const Map = ( {mapRef} ) => {
       return `/gmustar.png`;
     } else return `/wearemason.png`;
   }
-  return <>
-            <GoogleMap
+
+  return (
+    <>
+      <GoogleMap
         id="map"
         mapContainerStyle={mapContainerStyle}
         zoom={16}
         center={center}
-
         options={options}
         //onClick={onMapClick}
         onLoad={onMapLoad}
       >
-        
-        {markers.map((marker) => (
-          <Marker
-            key={`${marker.lat}-${marker.lng}`}
-            position={{ lat: marker.lat, lng: marker.lng }}
-            onClick={() => {
-              setSelected(marker);
-            }}
-            
-            icon={{
-              url: getLogoType(marker.type),
-              origin: new window.google.maps.Point(0, 0),
-              anchor: new window.google.maps.Point(15, 15),
-              scaledSize: new window.google.maps.Size(70, 70),
-            }}
-          />
-        ))}
+        {testVisible
+          ? markers.map((marker) => (
+              <Marker
+                key={`${marker.lat}-${marker.lng}`}
+                position={{ lat: marker.lat, lng: marker.lng }}
+                onClick={() => {
+                  setSelected(marker);
+                }}
+                icon={{
+                  url: getLogoType(marker.type),
+                  origin: new window.google.maps.Point(0, 0),
+                  anchor: new window.google.maps.Point(15, 15),
+                  scaledSize: new window.google.maps.Size(70, 70),
+                }}
+              />
+            ))
+          : null}
 
         {selected ? (
           <InfoWindow
@@ -163,12 +184,49 @@ const Map = ( {mapRef} ) => {
               setSelected(null);
             }}
           >
-            <EventMarker title={selected.title} author={selected.author} context ={selected.context} lat={selected.lat} lng={selected.lng} docID={selected.key} />
-            
+            <EventMarker
+              title={selected.title}
+              author={selected.author}
+              context={selected.context}
+              lat={selected.lat}
+              lng={selected.lng}
+              docID={selected.key}
+            />
           </InfoWindow>
         ) : null}
       </GoogleMap>
-  </>;
+
+      <>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={() => {
+            settestVisible(!testVisible);
+          }}
+        >
+          Primary
+        </Button>
+        {testVisible.toString()}
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={toggleDrawer(true)}
+          >
+            Primary
+          </Button>
+
+          <Drawer
+            anchor="bottom"
+            open={bottomOption}
+             onClose={toggleDrawer(false)}
+               
+          >
+            <Filter filter={testVisible} setFilter={settestVisible} toggleDrawer={toggleDrawer}/>
+          </Drawer>
+          {bottomOption.toString()}
+      </>
+    </>
+  );
 };
 
 export default Map;
