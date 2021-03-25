@@ -25,12 +25,25 @@ import fbArray from "../apis/firebase.js";
 import { useState, useEffect, useCallback, useRef } from "react";
 import Button from "@material-ui/core/Button";
 import Drawer from "@material-ui/core/Drawer";
-
-
+import SettingsIcon from '@material-ui/icons/Settings';
+import { makeStyles, useTheme } from "@material-ui/core/styles";
 import Filter from './Filter'
+
+
+const useStyles = makeStyles((theme) => ({
+  root: {
+    display: "flex",
+  },
+  button: {
+    display: "flex",
+    alignContent: "center",
+    justifyContent: "center"
+    
+  },
+}));
+
 // get firebase stuff
 const db = fbArray.db;
-
 const libraries = ["places"];
 const mapContainerStyle = {
   height: "85vh",
@@ -59,6 +72,8 @@ const center = {
 };
 
 const Map = ({ mapRef, filter, setFilter }) => {
+  const classes = useStyles();
+const theme = useTheme();
   // Load the google map api key from .env file by useLoadScript function
   const { isLoaded, loadError } = useLoadScript({
     googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAP_API_KEY,
@@ -197,7 +212,7 @@ const Map = ({ mapRef, filter, setFilter }) => {
       </GoogleMap>
 
       <>
-        <Button
+        {/* <Button
           variant="contained"
           color="primary"
           onClick={() => {
@@ -206,13 +221,16 @@ const Map = ({ mapRef, filter, setFilter }) => {
         >
           Primary
         </Button>
-        {testVisible.toString()}
+        {testVisible.toString()} */}
+        <div class={classes.button}>
           <Button
             variant="contained"
             color="primary"
+            size="large"
+            startIcon={<SettingsIcon />}
             onClick={toggleDrawer(true)}
           >
-            Primary
+            Filter
           </Button>
 
           <Drawer
@@ -224,6 +242,7 @@ const Map = ({ mapRef, filter, setFilter }) => {
             <Filter filter={testVisible} setFilter={settestVisible} toggleDrawer={toggleDrawer}/>
           </Drawer>
           {bottomOption.toString()}
+          </div>
       </>
     </>
   );

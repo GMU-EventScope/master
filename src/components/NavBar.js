@@ -243,12 +243,6 @@ export default function NavBar() {
             <button type="button" className="btn btn-logout" onClick={logoutButton}> Log Out</button>
             <button type="button" className="btn btn-viewSavedEvents" onClick={viewSavedEventsButton}> View Saved Events</button>
             <button type="button" className="btn btn-signUp" onClick={signupButton}> Create Account</button>
-
-            <button type="button" onClick={()=> {
-              console.log('bbb')
-              setFilter({ ...filter, type1: !filter.type1 })
-              window.location.reload(false);
-            }}>{filter.type1.toString()}</button>
           </section>
         </Toolbar>
       </AppBar>

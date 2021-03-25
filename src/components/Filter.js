@@ -28,12 +28,8 @@ import CheckBoxOutlineBlankIcon from "@material-ui/icons/CheckBoxOutlineBlank";
 import CheckBoxIcon from "@material-ui/icons/CheckBox";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import TextField from "@material-ui/core/TextField";
-import Grid from "@material-ui/core/Grid";
-import {
-  MuiPickersUtilsProvider,
-  KeyboardTimePicker,
-  KeyboardDatePicker,
-} from "@material-ui/pickers";
+import Icon from '@material-ui/core/Icon';
+import SaveIcon from '@material-ui/icons/Save';
 import Button from "@material-ui/core/Button";
 import { useState, useEffect, useCallback, useRef } from "react";
 const useStyles = makeStyles((theme) => ({
@@ -42,6 +38,8 @@ const useStyles = makeStyles((theme) => ({
   },
   nested: {
     paddingLeft: theme.spacing(4),
+    paddingTop: theme.spacing(4),
+    paddingBottom: theme.spacing(4),
   },
   button: {
     paddingLeft: theme.spacing(8),
@@ -101,7 +99,7 @@ const Filter = ({filter, setFilter, toggleDrawer}) => {
 
   return (
     <div className={classes.root}>
-      <List component="div" disablePadding>
+
         {/* <ListItem button className={classes.nested}>
           <ListItemIcon>
             <StarBorder />
@@ -132,8 +130,8 @@ const Filter = ({filter, setFilter, toggleDrawer}) => {
             label="primary"
           /> */}
 
-        <ListItem button className={classes.nested}>
-          <FormControl component="fieldset">
+          <div className={classes.nested}>
+          <FormControl component="fieldset" >
             <FormLabel component="legend">Fliter By Posters</FormLabel>
             <FormGroup>
               <FormControlLabel
@@ -169,9 +167,7 @@ const Filter = ({filter, setFilter, toggleDrawer}) => {
             </FormGroup>
             {/* <FormHelperText>Be careful</FormHelperText> */}
           </FormControl>
-        </ListItem>
 
-        <ListItem button className={classes.nested}>
           <FormControl component="fieldset">
             <FormLabel component="legend">Within</FormLabel>
             <FormGroup>
@@ -208,8 +204,7 @@ const Filter = ({filter, setFilter, toggleDrawer}) => {
             </FormGroup>
             {/* <FormHelperText>Be careful</FormHelperText> */}
           </FormControl>
-        </ListItem>
-        <ListItem button className={classes.nested}>
+
           <TextField
             id="datetime-local"
             label="Start Date"
@@ -220,17 +215,12 @@ const Filter = ({filter, setFilter, toggleDrawer}) => {
               shrink: true,
             }}
           />
-        </ListItem>
 
-        <ListItem button className={classes.nested}>
-        {/* onClick={onSaveClick("bySchool", state.from7d) */}
-          <Button variant="contained" color="primary" onClick={()=> {setFilter(!filter) ;
+          <Button variant="contained" color="primary" size="large" startIcon={<SaveIcon />} onClick={()=> {setFilter(!filter) ;
             toggleDrawer(false)}}>
             Save
           </Button>
-        </ListItem>
-        
-      </List>
+          </div>
     </div>
   );
 };
