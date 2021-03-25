@@ -101,7 +101,14 @@ const theme = useTheme();
   // List of events as a useState
   const [events, setEvents] = useState([]);
   const [testVisible, settestVisible] = useState(true);
-
+  const [filterOptions, setFilterOptions] = useState({
+    bySchool: true,
+    byOrganizer: true,
+    byStudent: true,
+    from7d: true,
+    from30d: true,
+    from90d: true,
+  });
 
   const toggleDrawer = (open) => (event) => {
     if (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
@@ -174,7 +181,7 @@ const theme = useTheme();
         //onClick={onMapClick}
         onLoad={onMapLoad}
       >
-        {markers.filter(marker => (marker.type !== 1 && testVisible) || !testVisible).map((marker) => (
+        {markers.filter(marker => (marker.type === 0 && filterOptions.bySchool) || (marker.type === 1 && filterOptions.byOrganizer) || (marker.type === 2 && filterOptions.byStudent) ).map((marker) => (
 
               <Marker
                 key={`${marker.lat}-${marker.lng}`}
@@ -240,7 +247,7 @@ const theme = useTheme();
              onClose={toggleDrawer(false)}
                
           >
-            <Filter filter={testVisible} setFilter={settestVisible} toggleDrawer={toggleDrawer}/>
+            <Filter filter={testVisible} setFilter={settestVisible} toggleDrawer={toggleDrawer} filterOptions={filterOptions} setFilterOptions={setFilterOptions}/>
           </Drawer>
           {bottomOption.toString()}
           </div>

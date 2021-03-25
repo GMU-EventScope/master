@@ -28,8 +28,8 @@ import CheckBoxOutlineBlankIcon from "@material-ui/icons/CheckBoxOutlineBlank";
 import CheckBoxIcon from "@material-ui/icons/CheckBox";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import TextField from "@material-ui/core/TextField";
-import Icon from '@material-ui/core/Icon';
-import SaveIcon from '@material-ui/icons/Save';
+import Icon from "@material-ui/core/Icon";
+import SaveIcon from "@material-ui/icons/Save";
 import Button from "@material-ui/core/Button";
 import { useState, useEffect, useCallback, useRef } from "react";
 const useStyles = makeStyles((theme) => ({
@@ -49,7 +49,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Filter = ({filter, setFilter, toggleDrawer}) => {
+const Filter = ({ filter, setFilter, toggleDrawer, filterOptions, setFilterOptions}) => {
   const classes = useStyles();
   const theme = useTheme();
 
@@ -66,17 +66,9 @@ const Filter = ({filter, setFilter, toggleDrawer}) => {
     ":" +
     today.getMinutes();
 
-  const [state, setState] = useState({
-    bySchool: false,
-    byOrganizer: true,
-    byStudent: true,
-    from7d: true,
-    from30d: true,
-    from90d: true,
-  });
 
   const handleChange = (event) => {
-    setState({ ...state, [event.target.name]: event.target.checked });
+    setFilterOptions({ ...filterOptions, [event.target.name]: event.target.checked });
   };
 
   const handleFilterChange = (name, checked) => {
@@ -93,14 +85,13 @@ const Filter = ({filter, setFilter, toggleDrawer}) => {
   };
 
   const onSaveClick = (name, checked) => {
-    console.log(`${name} and ${checked}`)
-    handleFilterChange(name, checked)
-  }
+    console.log(`${name} and ${checked}`);
+    handleFilterChange(name, checked);
+  };
 
   return (
     <div className={classes.root}>
-
-        {/* <ListItem button className={classes.nested}>
+      {/* <ListItem button className={classes.nested}>
           <ListItemIcon>
             <StarBorder />
           </ListItemIcon>
@@ -118,7 +109,7 @@ const Filter = ({filter, setFilter, toggleDrawer}) => {
           </ListItemIcon>
           <ListItemText primary="And Another one" />
         </ListItem> */}
-        {/* <FormControlLabel className={classes.nested}
+      {/* <FormControlLabel className={classes.nested}
             control={
               <Checkbox
                 checked={state.checkedA}
@@ -130,97 +121,105 @@ const Filter = ({filter, setFilter, toggleDrawer}) => {
             label="primary"
           /> */}
 
-          <div className={classes.nested}>
-          <FormControl component="fieldset" >
-            <FormLabel component="legend">Fliter By Posters</FormLabel>
-            <FormGroup>
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={state.bySchool}
-                    onChange={handleChange}
-                    name="bySchool"
-                  />
-                }
-                label="By School Faculties (Type 1)"
-              />
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={state.byOrganizer}
-                    onChange={handleChange}
-                    name="byOrganizer"
-                  />
-                }
-                label="By Outside Organizers (Type 2)"
-              />
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={state.byStudent}
-                    onChange={handleChange}
-                    name="byStudent"
-                  />
-                }
-                label="By Students (Type 3)"
-              />
-            </FormGroup>
-            {/* <FormHelperText>Be careful</FormHelperText> */}
-          </FormControl>
+      <div className={classes.nested}>
+        <FormControl component="fieldset">
+          <FormLabel component="legend">Fliter By Posters</FormLabel>
+          <FormGroup>
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={filterOptions.bySchool}
+                  onChange={handleChange}
+                  name="bySchool"
+                />
+              }
+              label="By School Faculties (Type 0)"
+            />
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={filterOptions.byOrganizer}
+                  onChange={handleChange}
+                  name="byOrganizer"
+                />
+              }
+              label="By Outside Organizers (Type 1)"
+            />
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={filterOptions.byStudent}
+                  onChange={handleChange}
+                  name="byStudent"
+                />
+              }
+              label="By Students (Type 2)"
+            />
+          </FormGroup>
+          {/* <FormHelperText>Be careful</FormHelperText> */}
+        </FormControl>
 
-          <FormControl component="fieldset">
-            <FormLabel component="legend">Within</FormLabel>
-            <FormGroup>
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={state.from7d}
-                    onChange={handleChange}
-                    name="from7d"
-                  />
-                }
-                label="Within 7 Days"
-              />
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={state.from30d}
-                    onChange={handleChange}
-                    name="from30d"
-                  />
-                }
-                label="Within 30 Days"
-              />
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={state.from90d}
-                    onChange={handleChange}
-                    name="from90d"
-                  />
-                }
-                label="Within 90 Days"
-              />
-            </FormGroup>
-            {/* <FormHelperText>Be careful</FormHelperText> */}
-          </FormControl>
+        <FormControl component="fieldset">
+          <FormLabel component="legend">Within</FormLabel>
+          <FormGroup>
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={filterOptions.from7d}
+                  onChange={handleChange}
+                  name="from7d"
+                />
+              }
+              label="Within 7 Days"
+            />
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={filterOptions.from30d}
+                  onChange={handleChange}
+                  name="from30d"
+                />
+              }
+              label="Within 30 Days"
+            />
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={filterOptions.from90d}
+                  onChange={handleChange}
+                  name="from90d"
+                />
+              }
+              label="Within 90 Days"
+            />
+          </FormGroup>
+          {/* <FormHelperText>Be careful</FormHelperText> */}
+        </FormControl>
 
-          <TextField
-            id="datetime-local"
-            label="Start Date"
-            type="datetime-local"
-            // defaultValue={today}
-            className={classes.textField}
-            InputLabelProps={{
-              shrink: true,
-            }}
-          />
+        <TextField
+          id="datetime-local"
+          label="Start Date"
+          type="datetime-local"
+          // defaultValue={today}
+          className={classes.textField}
+          InputLabelProps={{
+            shrink: true,
+          }}
+        />
 
-          <Button variant="contained" color="primary" size="large" startIcon={<SaveIcon />} onClick={()=> {setFilter(!filter) ;
-            toggleDrawer(false)}}>
-            Save
-          </Button>
-          </div>
+        <Button
+          variant="contained"
+          color="primary"
+          size="large"
+          startIcon={<SaveIcon />}
+          onClick={() => {
+            setFilter(!filter);
+            toggleDrawer(filterOptions);
+          }}
+        >
+          Save
+        </Button>
+      </div>
     </div>
   );
 };
