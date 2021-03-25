@@ -141,7 +141,7 @@ const EventsList = ({ mapRef }) => {
         />
       ) : null}
       {markers.map((marker) => (
-        <React.Fragment key={marker.key}>
+        <React.Fragment key={`${marker.lat}-${marker.lng}`}>
           <ListItem
             alignItems="flex-start"
             onClick={() => {
