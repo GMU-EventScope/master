@@ -230,7 +230,7 @@ const theme = useTheme();
           Primary
         </Button>
         {testVisible.toString()} */}
-        <div class={classes.button}>
+        <div className={classes.button}>
           <Button
             variant="contained"
             color="primary"
