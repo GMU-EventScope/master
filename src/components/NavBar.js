@@ -18,7 +18,7 @@ import ListItemText from "@material-ui/core/ListItemText";
 import InboxIcon from "@material-ui/icons/MoveToInbox";
 import MailIcon from "@material-ui/icons/Mail";
 
-import Button from "@material-ui/core/Button";
+//Button from "@material-ui/core/Button";
 
 import Collapse from "@material-ui/core/Collapse";
 import DraftsIcon from "@material-ui/icons/Drafts";
@@ -35,6 +35,13 @@ import Popup from "./Popup";
 import { useState, useEffect, useCallback, useRef } from "react";
 
 import fbArray from '../apis/firebase.js';
+
+//auth (login/signup) stuff//
+import Modal from "react-bootstrap/Modal";
+import { useAuth } from "../contexts/AuthContext";
+import { useHistory } from "react-router-dom";
+import { Form, Button, Alert } from "react-bootstrap";
+
 // get firebase stuff
 const db = fbArray.db;
 const auth = fbArray.auth;
@@ -126,20 +133,68 @@ export default function NavBar() {
 
   const mapRef = useRef();
 
-  // functions for account-related features
-  function signinButton() {
-    console.log("Sign-in Button was clicked!");
-    console.log("Enter user email and then password")
-    const email = prompt("Enter email");
-    const password = prompt("Enter password (no peeking)");
+  //////USER AUTHENTICATION//////
+  const [signupShow, signupSetShow] = useState(false);
+  const [loginShow, loginSetShow] = useState(false);
 
-    auth.signInWithEmailAndPassword(email, password).then(cred => {
-      console.log(cred.user.email);
-      console.log("Signed in!");
-    })
+  //handle visibility of the login or signup modals
+  const handleSignupClose = () => signupSetShow(false);
+  const handleSignupShow = () => signupSetShow(true);
+  const handleLoginClose = () => loginSetShow(false);
+  const handleLoginShow = () => loginSetShow(true);
 
+  //stored variables for authentication
+  const loginEmailRef = useRef();
+  const loginPasswordRef = useRef();
+  const signupEmailRef = useRef();
+  const signupPasswordRef = useRef();
+  const signupConfPasswordRef = useRef();
+  const {signup, login} = useAuth();
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+  const history = useHistory();
+
+  //this signs people up with the stuff from the signup form
+  async function handleSignup(event) {
+    console.log("Sign Up Button was clicked!");
+    event.preventDefault();
+
+    //this just makes sure the passwords match
+    if (signupPasswordRef.current.value !== signupConfPasswordRef.current.value) {
+      return setError("Passwords do not match");
+    }
+
+    //this will attempt to signup user based on input and catch an error that occurs
+    //this blocks further input after the submit button is first clicked, so you can't spam create 
+    //the same account
+    try {
+      setError("");
+      setLoading(true);
+      await signup(signupEmailRef.current.value, signupPasswordRef.current.value);
+      //history.push("/profile"); may need this in the future
+    } catch {
+      setError("Failed to create an account");
+    }
+
+    setLoading(false);
   }
 
+  //this logs people in with the stuff from the login form
+  async function handleLogin(event) {
+    console.log(loginEmailRef.current.value);
+    event.preventDefault();
+
+    try {
+      setError("");
+      setLoading(true);
+      await login(loginEmailRef.current.value, loginPasswordRef.current.value);
+      //history.push("/profile"); may need this in the future
+    } catch {
+      setError("Failed to log in");
+    }
+
+    setLoading(false);
+  }
   function logoutButton() {
     console.log("Logout Button was clicked!")
     auth.signOut().then(() => {
@@ -147,6 +202,7 @@ export default function NavBar() {
       console.log("user signed out");
   })
   }
+  /////////////////////////////////////////////////////////////////////////////
 
   function viewSavedEventsButton() {
     console.log("Here are your saved events:");
@@ -184,136 +240,180 @@ export default function NavBar() {
     }
   }
 
-  function signupButton () {
-    console.log("Sign Up Button was clicked!");
-    console.log("Enter user email and then password")
-    const email = prompt("Enter your email");
-    const password = prompt("Enter password, don't forget it!");
-    const bio = prompt("Enter a bio (say account name in the bio pls)");
-
-    auth.createUserWithEmailAndPassword(email, password).then(cred => {
-      // add a document to the users collection
-      // uid of the user document will be the same uid as in the auth database 
-      return db.collection("users").doc(cred.user.uid).set({
-          bio: bio // add the biography to the user
-      });
-    });
-  }
-
-
   return (
-    <div className={classes.root}>
-      <CssBaseline />
-      <AppBar
-        position="fixed"
-        className={clsx(classes.appBar, {
-          [classes.appBarShift]: open,
-        })}
-      >
-        <Toolbar style={{ backgroundColor: "#0fba06" }}>
-          <IconButton
-            color="inherit"
-            aria-label="open drawer"
-            onClick={handleDrawerOpen}
-            edge="start"
-            className={clsx(classes.menuButton, open && classes.hide)}
-          >
-            <MenuIcon />
-          </IconButton>
-          <Typography variant="h6" noWrap>
-            GMU EventScope📢
-          </Typography>
-          <section className={classes.rightToolbar}>
-            <button type="button" className="btn btn-signIn" onClick={signinButton}> Sign-In</button>
-            <button type="button" className="btn btn-logout" onClick={logoutButton}> Log Out</button>
-            <button type="button" className="btn btn-viewSavedEvents" onClick={viewSavedEventsButton}> View Saved Events</button>
-            <button type="button" className="btn btn-signUp" onClick={signupButton}> Create Account</button>
-          </section>
-        </Toolbar>
-      </AppBar>
-      <Drawer
-        className={classes.drawer}
-        variant="persistent"
-        anchor="left"
-        open={open}
-        classes={{
-          paper: classes.drawerPaper,
-        }}
-      >
-        <div className={classes.drawerHeader}>
-          <IconButton onClick={handleDrawerClose}>
-            {theme.direction === "ltr" ? (
-              <ChevronLeftIcon />
-            ) : (
-              <ChevronRightIcon />
-            )}
-          </IconButton>
-        </div>
+    <>
+      <div className={classes.root}>
+        <CssBaseline />
+        <AppBar
+          position="fixed"
+          className={clsx(classes.appBar, {
+            [classes.appBarShift]: open,
+          })}
+        >
+          <Toolbar style={{ backgroundColor: "#0fba06" }}>
+            <IconButton
+              color="inherit"
+              aria-label="open drawer"
+              onClick={handleDrawerOpen}
+              edge="start"
+              className={clsx(classes.menuButton, open && classes.hide)}
+            >
+              <MenuIcon />
+            </IconButton>
+            <Typography variant="h6" noWrap>
+              GMU EventScope📢
+            </Typography>
+            <section className={classes.rightToolbar}>
+              <button type="button" className="btn btn-signIn" onClick={handleLoginShow}> Login/SignUp </button>
+              <button type="button" className="btn btn-logout" onClick={logoutButton}> Log Out</button>
+              <button type="button" className="btn btn-viewSavedEvents" onClick={viewSavedEventsButton}> View Saved Events</button>
+            </section>
+          </Toolbar>
+        </AppBar>
+        <Drawer
+          className={classes.drawer}
+          variant="persistent"
+          anchor="left"
+          open={open}
+          classes={{
+            paper: classes.drawerPaper,
+          }}
+        >
+          <div className={classes.drawerHeader}>
+            <IconButton onClick={handleDrawerClose}>
+              {theme.direction === "ltr" ? (
+                <ChevronLeftIcon />
+              ) : (
+                <ChevronRightIcon />
+              )}
+            </IconButton>
+          </div>
 
-        <Divider />
-
-        <ProfileCard />
-
-        <Divider />
-        <EventsList mapRef={mapRef} />
-
-        <Divider />
-        <ListItem button onClick={handleClick}>
-          <ListItemIcon>
-            <InboxIcon />
-          </ListItemIcon>
-          <ListItemText primary="List of Boxes" />
-          {openFolder ? <ExpandLess /> : <ExpandMore />}
-        </ListItem>
-        <Collapse in={openFolder} timeout="auto" unmountOnExit>
-          <List component="div" disablePadding>
-            <ListItem button className={classes.nested}>
-              <ListItemIcon>
-                <StarBorder />
-              </ListItemIcon>
-              <ListItemText primary="Inside of Nest !" />
-            </ListItem>
-            <ListItem button className={classes.nested}>
-              <ListItemIcon>
-                <MailIcon />
-              </ListItemIcon>
-              <ListItemText primary="Another one" />
-            </ListItem>
-            <ListItem button className={classes.nested}>
-              <ListItemIcon>
-                <InboxIcon />
-              </ListItemIcon>
-              <ListItemText primary="And Another one" />
-            </ListItem>
-          </List>
-        </Collapse>
-        {/* 
-          <List>
-            {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
-              <ListItem button key={text}>
-                <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
-                <ListItemText primary={text} />
-              </ListItem>
-            ))}
-          </List>
           <Divider />
-          <List>
-            {['All mail', 'Trash', 'Spam'].map((text, index) => (
-              <ListItem button key={text}>
-                <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
-                <ListItemText primary={text} />
+
+          <ProfileCard />
+
+          <Divider />
+          <EventsList mapRef={mapRef} />
+
+          <Divider />
+          <ListItem button onClick={handleClick}>
+            <ListItemIcon>
+              <InboxIcon />
+            </ListItemIcon>
+            <ListItemText primary="List of Boxes" />
+            {openFolder ? <ExpandLess /> : <ExpandMore />}
+          </ListItem>
+          <Collapse in={openFolder} timeout="auto" unmountOnExit>
+            <List component="div" disablePadding>
+              <ListItem button className={classes.nested}>
+                <ListItemIcon>
+                  <StarBorder />
+                </ListItemIcon>
+                <ListItemText primary="Inside of Nest !" />
               </ListItem>
-            ))}
-          </List> */}
-      </Drawer>
-      <main
-        className={clsx(classes.content, {
-          [classes.contentShift]: open,
-        })}
-      >
-        <div className={classes.drawerHeader} />
-        <Map mapRef={mapRef} />
-      </main>
-    </div>
+              <ListItem button className={classes.nested}>
+                <ListItemIcon>
+                  <MailIcon />
+                </ListItemIcon>
+                <ListItemText primary="Another one" />
+              </ListItem>
+              <ListItem button className={classes.nested}>
+                <ListItemIcon>
+                  <InboxIcon />
+                </ListItemIcon>
+                <ListItemText primary="And Another one" />
+              </ListItem>
+            </List>
+          </Collapse>
+          {/* 
+            <List>
+              {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
+                <ListItem button key={text}>
+                  <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
+                  <ListItemText primary={text} />
+                </ListItem>
+              ))}
+            </List>
+            <Divider />
+            <List>
+              {['All mail', 'Trash', 'Spam'].map((text, index) => (
+                <ListItem button key={text}>
+                  <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
+                  <ListItemText primary={text} />
+                </ListItem>
+              ))}
+            </List> */}
+        </Drawer>
+        <main
+          className={clsx(classes.content, {
+            [classes.contentShift]: open,
+          })}
+        >
+          <div className={classes.drawerHeader} />
+          <Map mapRef={mapRef} />
+        </main>
+      
+      <Modal show={signupShow} onHide={handleSignupClose} centered>
+        <Modal.Header closeButton>
+          <Modal.Title>Sign Up</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          {error && <Alert variant="danger">{error}</Alert>}
+          <Form onSubmit={handleSignup}>
+            <Form.Group id="email">
+              <Form.Label>Email</Form.Label>
+              <Form.Control type="email" ref={signupEmailRef} required />
+            </Form.Group>
+            <Form.Group id="password">
+              <Form.Label>Password</Form.Label>
+              <Form.Control type="password" ref={signupPasswordRef} required />
+            </Form.Group>
+            <Form.Group id="password-confirm">
+              <Form.Label>Password Confirmation</Form.Label>
+              <Form.Control type="password" ref={signupConfPasswordRef} required />
+            </Form.Group>
+            <Button disabled={loading} className="w-100" style={{backgroundColor: "#006633"}} type="submit">
+              Sign Up
+            </Button>
+          </Form>
+        </Modal.Body>
+        <Modal.Footer>
+          <div className="w-100 text-center">
+            Already have an Account?
+            <Button style={{margin: "4px"}} onClick={() => {handleSignupClose(); handleLoginShow();}}>Log In</Button>
+          </div>
+        </Modal.Footer>
+      </Modal>
+
+      <Modal show={loginShow} onHide={handleLoginClose} centered>
+        <Modal.Header closeButton>
+          <Modal.Title>Log In</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          {error && <Alert variant="danger">{error}</Alert>}
+          <Form onSubmit={handleLogin}>
+            <Form.Group id="email">
+              <Form.Label>Email</Form.Label>
+              <Form.Control type="email" ref={loginEmailRef} required />
+            </Form.Group>
+            <Form.Group id="password">
+              <Form.Label>Password</Form.Label>
+              <Form.Control type="password" ref={loginPasswordRef} required />
+            </Form.Group>
+            <Button disabled={loading} className="w-100" style={{backgroundColor: "#006633"}} type="submit">
+              Log In
+            </Button>
+          </Form>
+        </Modal.Body>
+        <Modal.Footer>
+          <div className="w-100 text-center">
+            Need an Account?
+            <Button style={{margin: "4px"}} onClick={() => {handleLoginClose(); handleSignupShow();}}>Sign Up</Button>
+          </div>
+        </Modal.Footer>
+      </Modal>
+      </div>
+    </>
   );
 }
