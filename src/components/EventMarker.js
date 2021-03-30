@@ -21,7 +21,7 @@
   const Marker = (props) => {
     //button hook thing, name the buttons here (static text, loading text)
     //useButtonLoader is in Button.js (for loading buttons)
-    const [Button1Load,setLoadingButton1] = useButtonLoader("I'm here","Updating..");
+    const [Button1Load,setLoadingButton1] = useButtonLoader("Attend","Updating..");
     const [Button2Load,setLoadingButton2] = useButtonLoader("Save Event","Saving..");
     const [Button3Load,setLoadingButton3] = useButtonLoader("Report","Getting Report Ready..");
 
@@ -36,14 +36,10 @@
       //essential
       setLoadingButton1(true);
       loadingDelay(220).then(() => {
-        //fetch stuff is placeholder
-        fetch("https://jsonplaceholder.typicode.com/todos/1")
-        .then((response) => response.json())
-        .then((json) => {
-          console.log(json);
-          //esential
-          setLoadingButton1(false);
-        });
+        console.log("This does nothing right now, need to figure out the best way to store this data.")
+
+        //esential
+        setLoadingButton1(false);
       }); 
     };
 
@@ -71,15 +67,26 @@
               if (myEvents === undefined) {
                 myEvents = [];
               }
-              
-              // add to list
-              myEvents.push(curEvent);
-              // replace old list on db with new list
-              db.collection("users").doc(user.uid).update({
-                savedevents: myEvents
+              // check if the event is already saved
+              // TODO move this to a server-side function
+              var found = false;
+              myEvents.forEach(eventID => {
+                if (eventID === curEvent) {
+                  console.log("Event is already saved")
+                  found = true;
+                }
               });
+              if (!found) {
+                // add to list
+                myEvents.push(curEvent);
+                // replace old list on db with new list
+                db.collection("users").doc(user.uid).update({
+                  savedevents: myEvents
+                });
+              
               console.log("done saving event");
-          }
+              }
+            }
         });
         
         //esential

@@ -205,7 +205,7 @@ export default function NavBar() {
   /////////////////////////////////////////////////////////////////////////////
 
   function viewSavedEventsButton() {
-    console.log("Here are your saved events:");
+
     // get current user
     var user = auth.currentUser;
     // if user exists (you are signed in)
@@ -216,6 +216,7 @@ export default function NavBar() {
         //console.log(myEvents);
         // loop through event uids saved in the savedevents array
         if (!(myEvents === undefined)) {
+          console.log(user.email);
           console.log("Your saved event titles: ");
           myEvents.forEach(id => {
             db.collection("Events").doc(id).get().then(doc2 => {
