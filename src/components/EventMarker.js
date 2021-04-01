@@ -86,6 +86,14 @@
               
               console.log("done saving event");
               }
+              else {
+                // TEMPORARY code to unsave an event
+                myEvents.splice(myEvents.indexOf(curEvent), 1);
+                // replace old list on db with new list
+                db.collection("users").doc(user.uid).update({
+                  savedevents: myEvents
+                });
+              }
             }
         });
         
