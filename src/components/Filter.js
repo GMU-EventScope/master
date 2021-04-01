@@ -31,6 +31,9 @@ import TextField from "@material-ui/core/TextField";
 import Icon from "@material-ui/core/Icon";
 import SaveIcon from "@material-ui/icons/Save";
 import Button from "@material-ui/core/Button";
+
+import { DataGrid } from '@material-ui/data-grid';
+
 import { useState, useEffect, useCallback, useRef } from "react";
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -49,11 +52,13 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Filter = ({ filter, setFilter, toggleDrawer, filterOptions, setFilterOptions}) => {
+const Filter = ({ filter, setFilter, toggleDrawer, filterOptions, setFilterOptions, markers}) => {
   const classes = useStyles();
   const theme = useTheme();
 
   const today = new Date();
+
+  const [filteredMarkers, setFilteredMarkers] = useState(markers);
 
   const todaytime =
     today.getFullYear() +
@@ -69,10 +74,12 @@ const Filter = ({ filter, setFilter, toggleDrawer, filterOptions, setFilterOptio
 
   const handleChange = (event) => {
     setFilterOptions({ ...filterOptions, [event.target.name]: event.target.checked });
+    // setFilteredMarkers( markers.filter(marker => (marker.type === 0 && filterOptions.bySchool) || (marker.type === 1 && filterOptions.byOrganizer) || (marker.type === 2 && filterOptions.byStudent) ) )
   };
 
   const handleFilterChange = (name, checked) => {
     setFilter({ ...filter, [name]: checked });
+    
   };
 
   const [selectedDate, setSelectedDate] = useState({
@@ -88,6 +95,28 @@ const Filter = ({ filter, setFilter, toggleDrawer, filterOptions, setFilterOptio
     console.log(`${name} and ${checked}`);
     handleFilterChange(name, checked);
   };
+
+
+  const columns = [
+    { field: 'key', headerName: 'key', width: 130 },
+    { field: 'author', headerName: 'author', width: 130 },
+    { field: 'title', headerName: 'Title', width: 130 },
+    { field: 'date', headerName: 'date', width: 230 },
+    { field: 'type', headerName: 'Type', width: 130 },
+  ];
+  
+  const rows = [
+    { id: 1, lastName: 'Snow', firstName: 'Jon', age: 35 },
+    { id: 2, lastName: 'Lannister', firstName: 'Cersei', age: 42 },
+    { id: 3, lastName: 'Lannister', firstName: 'Jaime', age: 45 },
+    { id: 4, lastName: 'Stark', firstName: 'Arya', age: 16 },
+    { id: 5, lastName: 'Targaryen', firstName: 'Daenerys', age: null },
+    { id: 6, lastName: 'Melisandre', firstName: null, age: 150 },
+    { id: 7, lastName: 'Clifford', firstName: 'Ferrara', age: 44 },
+    { id: 8, lastName: 'Frances', firstName: 'Rossini', age: 36 },
+    { id: 9, lastName: 'Roxie', firstName: 'Harvey', age: 65 },
+  ];
+  
 
   return (
     <div className={classes.root}>
@@ -120,7 +149,11 @@ const Filter = ({ filter, setFilter, toggleDrawer, filterOptions, setFilterOptio
             }
             label="primary"
           /> */}
+      <div style={{ height: 400, width: '70%' }}>
 
+        <DataGrid rows={markers.filter(marker => (marker.type === 0 && filterOptions.bySchool) || (marker.type === 1 && filterOptions.byOrganizer) || (marker.type === 2 && filterOptions.byStudent) ) } columns={ columns } pageSize={5} checkboxSelection />
+          
+      </div>
       <div className={classes.nested}>
         <FormControl component="fieldset">
           <FormLabel component="legend">Fliter By Posters</FormLabel>

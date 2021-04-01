@@ -144,6 +144,7 @@ const theme = useTheme();
             context: item.data().context,
             type: item.data().type,
             key: item.id,
+            id: item.id,
           },
         ]);
       }
@@ -247,7 +248,7 @@ const theme = useTheme();
              onClose={toggleDrawer(false)}
                
           >
-            <Filter filter={testVisible} setFilter={settestVisible} toggleDrawer={toggleDrawer} filterOptions={filterOptions} setFilterOptions={setFilterOptions}/>
+            <Filter filter={testVisible} setFilter={settestVisible} toggleDrawer={toggleDrawer} filterOptions={filterOptions} setFilterOptions={setFilterOptions} markers={markers}/>
           </Drawer>
           {bottomOption.toString()}
           </div>

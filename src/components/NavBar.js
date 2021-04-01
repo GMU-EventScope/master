@@ -301,7 +301,7 @@ export default function NavBar() {
               <ListItemText primary="And Another one" />
             </ListItem>
           </List> */}
-          <Filter filter={filter} setFilter={setFilter} />
+          {/* <Filter filter={filter} setFilter={setFilter} /> */}
         </Collapse>
         {/* 
           <List>
