@@ -9,8 +9,6 @@
   const db = fbArray.db;
   const auth = fbArray.auth;
 
-  //TODOs: connect to firebase (card image,and just in general for buttons)
-
   //adds artificial delay for loading (cuz too fast, user can't see loading msg)
   function loadingDelay(delay) {
     return new Promise((resolve) => setTimeout(resolve, delay));
@@ -50,6 +48,12 @@
       loadingDelay(420).then(() => {
         // find current user doc in firestore
         const user = auth.currentUser;
+        if (!user) {
+          // user is not signed in
+          // TODO this should show the log-in menu
+          setLoadingButton2(false);
+          return;
+        }
         // get current event reference
         const curEvent = props.docID;
         db.collection("users").doc(user.uid).get().then(doc => {

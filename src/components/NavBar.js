@@ -146,6 +146,7 @@ export default function NavBar() {
   //stored variables for authentication
   const loginEmailRef = useRef();
   const loginPasswordRef = useRef();
+  const usernameRef = useRef();
   const signupEmailRef = useRef();
   const signupPasswordRef = useRef();
   const signupConfPasswordRef = useRef();
@@ -170,8 +171,16 @@ export default function NavBar() {
     try {
       setError("");
       setLoading(true);
-      await signup(signupEmailRef.current.value, signupPasswordRef.current.value);
+      //await signup(signupEmailRef.current.value, signupPasswordRef.current.value);
       //history.push("/profile"); may need this in the future
+      auth.createUserWithEmailAndPassword(signupEmailRef.current.value, signupPasswordRef.current.value).then(cred => {
+        // add a document to the users collection
+        // uid of the user document will be the same uid as in the auth database 
+        return db.collection("users").doc(cred.user.uid).set({
+            username: usernameRef.current.value,
+            savedevents: [] // add the biography to the user
+        });
+      });
     } catch {
       setError("Failed to create an account");
     }
@@ -362,6 +371,10 @@ export default function NavBar() {
         <Modal.Body>
           {error && <Alert variant="danger">{error}</Alert>}
           <Form onSubmit={handleSignup}>
+          <Form.Group id="username">
+              <Form.Label>User Name (Seen by other users)</Form.Label>
+              <Form.Control type="username" ref={usernameRef} required />
+            </Form.Group>
             <Form.Group id="email">
               <Form.Label>Email</Form.Label>
               <Form.Control type="email" ref={signupEmailRef} required />

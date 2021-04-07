@@ -55,6 +55,9 @@ const EventsList = ({ mapRef }) => {
       }
       else {
         db.collection("users").doc(currUser.uid).get().then((userDoc) => {
+          if (userDoc.data() === undefined) {
+            
+          }
           var myEvents = userDoc.data().savedevents;
           const fetchedData = [];
           myEvents.forEach((eventID) => {
@@ -73,6 +76,7 @@ const EventsList = ({ mapRef }) => {
                   title: eventDoc.data().title,
                   context: eventDoc.data().context,
                   type: eventDoc.data().type,
+                  id: eventDoc.id
                 },
               ]);
             })
@@ -129,7 +133,7 @@ const EventsList = ({ mapRef }) => {
         />
       ) : null}
       {markers.map((marker) => (
-        <>
+        <div className="savedEventItem" key={marker.id}>
           <ListItem
             alignItems="flex-start"
             onClick={() => {
@@ -157,7 +161,7 @@ const EventsList = ({ mapRef }) => {
               }
             />
           </ListItem>
-        </>
+        </div>
       ))}
 
       {/* <ListItem>
