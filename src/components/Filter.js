@@ -74,6 +74,7 @@ const Filter = ({ filter, setFilter, toggleDrawer, filterOptions, setFilterOptio
 
 
   const handleChange = (event) => {
+    console.log(`${event.target.name} ${event.target.checked}`)
     setFilterOptions({ ...filterOptions, [event.target.name]: event.target.checked });
     // setFilteredMarkers( markers.filter(marker => (marker.type === 0 && filterOptions.bySchool) || (marker.type === 1 && filterOptions.byOrganizer) || (marker.type === 2 && filterOptions.byStudent) ) )
   };
@@ -97,25 +98,13 @@ const Filter = ({ filter, setFilter, toggleDrawer, filterOptions, setFilterOptio
     handleFilterChange(name, checked);
   };
 
-
+  //    { field: 'key', headerName: 'key', width: 130 },
   const columns = [
-    { field: 'key', headerName: 'key', width: 130 },
-    { field: 'author', headerName: 'author', width: 130 },
+    { field: 'author', headerName: 'Author', width: 130 },
     { field: 'title', headerName: 'Title', width: 130 },
-    { field: 'date', headerName: 'date', width: 230 },
+    { field: 'date', headerName: 'Date', width: 230 },
     { field: 'type', headerName: 'Type', width: 130 },
-  ];
-  
-  const rows = [
-    { id: 1, lastName: 'Snow', firstName: 'Jon', age: 35 },
-    { id: 2, lastName: 'Lannister', firstName: 'Cersei', age: 42 },
-    { id: 3, lastName: 'Lannister', firstName: 'Jaime', age: 45 },
-    { id: 4, lastName: 'Stark', firstName: 'Arya', age: 16 },
-    { id: 5, lastName: 'Targaryen', firstName: 'Daenerys', age: null },
-    { id: 6, lastName: 'Melisandre', firstName: null, age: 150 },
-    { id: 7, lastName: 'Clifford', firstName: 'Ferrara', age: 44 },
-    { id: 8, lastName: 'Frances', firstName: 'Rossini', age: 36 },
-    { id: 9, lastName: 'Roxie', firstName: 'Harvey', age: 65 },
+    { field: 'tags', headerName: 'Tags', width: 230 },
   ];
   
 
@@ -152,7 +141,15 @@ const Filter = ({ filter, setFilter, toggleDrawer, filterOptions, setFilterOptio
           /> */}
       <div style={{ height: 400, width: '70%' }}>
 
-        <DataGrid rows={markers.filter(marker => (marker.type === 0 && filterOptions.bySchool) || (marker.type === 1 && filterOptions.byOrganizer) || (marker.type === 2 && filterOptions.byStudent) ) } columns={ columns } pageSize={5} checkboxSelection />
+        <DataGrid rows={markers.filter(marker => ((marker.type === 0 && filterOptions.bySchool) || (marker.type === 1 && filterOptions.byOrganizer) || (marker.type === 2 && filterOptions.byStudent))
+                  && ( (marker.tags.includes('Free') && filterOptions.tagFree) || (marker.tags.includes('Sports') && filterOptions.tagSports) || (marker.tags.includes('Arts') && filterOptions.tagArts)
+                  || (marker.tags.includes('Club') && filterOptions.tagClub) || (marker.tags.includes('Fundraiser') && filterOptions.tagFundraiser) || (marker.tags.includes('NeedTicket') && filterOptions.tagNeedTicket) )
+          /*
+           || (marker.tags.includes('Free') && filterOptions.tagFree) || (marker.tags.includes('Sports') && filterOptions.tagSports) || (marker.tags.includes('Arts') && filterOptions.tagArts)
+                  || (marker.tags.includes('Club') && filterOptions.tagClub) || (marker.tags.includes('Fundraiser') && filterOptions.tagFundraiser) || (marker.tags.includes('NeedTicket') && filterOptions.tagNeedTicket)
+                  
+          */
+          ) } columns={ columns } pageSize={5} checkboxSelection />
           
       </div>
       <div className={classes.nested}>
@@ -267,7 +264,7 @@ const Filter = ({ filter, setFilter, toggleDrawer, filterOptions, setFilterOptio
           label="Need Ticket"
         />
       </FormGroup>
-      <FormHelperText>Be careful</FormHelperText>
+      <FormHelperText>Tags</FormHelperText>
     </FormControl>
         <TextField
           id="datetime-local"

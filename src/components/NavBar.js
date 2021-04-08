@@ -140,6 +140,12 @@ export default function NavBar() {
     type1: true,
     type2: true,
     type3: true,
+    filterTagFree: true,
+    filterTagSports: true,
+    filterTagArts: true,
+    filterTagClub: true,
+    filterTagFundraiser: true,
+    filterTagNeedTicket: true,
   });
 
   const mapRef = useRef();

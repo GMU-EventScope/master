@@ -155,6 +155,7 @@ const theme = useTheme();
             type: item.data().type,
             key: item.id,
             id: item.id,
+            tags: item.data().tags,
           },
         ]);
       }
@@ -192,7 +193,11 @@ const theme = useTheme();
         //onClick={onMapClick}
         onLoad={onMapLoad}
       >
-        {markers.filter(marker => (marker.type === 0 && filterOptions.bySchool) || (marker.type === 1 && filterOptions.byOrganizer) || (marker.type === 2 && filterOptions.byStudent) ).map((marker) => (
+        {markers.filter(marker => 
+        (marker.type === 0 && filterOptions.bySchool) || (marker.type === 1 && filterOptions.byOrganizer) || (marker.type === 2 && filterOptions.byStudent) 
+        && ( (marker.tags.includes('Free') && filterOptions.tagFree) || (marker.tags.includes('Sports') && filterOptions.tagSports) || (marker.tags.includes('Arts') && filterOptions.tagArts)
+                  || (marker.tags.includes('Club') && filterOptions.tagClub) || (marker.tags.includes('Fundraiser') && filterOptions.tagFundraiser) || (marker.tags.includes('NeedTicket') && filterOptions.tagNeedTicket) )
+        ).map((marker) => (
 
               <Marker
                 key={`${marker.lat}-${marker.lng}`}
