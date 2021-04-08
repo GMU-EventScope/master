@@ -32,7 +32,11 @@ import ProfileCard from "./ProfileCard";
 import EventsList from "./EventsList";
 import Popup from "./Popup";
 
+import Filter from "./Filter"
+
 import { useState, useEffect, useCallback, useRef } from "react";
+
+
 
 import fbArray from '../apis/firebase.js';
 
@@ -131,6 +135,13 @@ export default function NavBar() {
     setOpenFolder(!openFolder);
   };
 
+  
+  const [filter, setFilter] = useState({
+    type1: true,
+    type2: true,
+    type3: true,
+  });
+
   const mapRef = useRef();
 
   //////USER AUTHENTICATION//////
@@ -164,6 +175,7 @@ export default function NavBar() {
     if (signupPasswordRef.current.value !== signupConfPasswordRef.current.value) {
       return setError("Passwords do not match");
     }
+
 
     //this will attempt to signup user based on input and catch an error that occurs
     //this blocks further input after the submit button is first clicked, so you can't spam create 
@@ -306,6 +318,102 @@ export default function NavBar() {
           <Divider />
           <EventsList mapRef={mapRef} />
 
+  return (
+    <div className={classes.root}>
+      <CssBaseline />
+      <AppBar
+        position="fixed"
+        className={clsx(classes.appBar, {
+          [classes.appBarShift]: open,
+        })}
+      >
+        <Toolbar style={{ backgroundColor: "#0fba06" }}>
+          <IconButton
+            color="inherit"
+            aria-label="open drawer"
+            onClick={handleDrawerOpen}
+            edge="start"
+            className={clsx(classes.menuButton, open && classes.hide)}
+          >
+            <MenuIcon />
+          </IconButton>
+          <Typography variant="h6" noWrap>
+            GMU EventScope📢
+          </Typography>
+          <section className={classes.rightToolbar}>
+            <button type="button" className="btn btn-signIn" onClick={signinButton}> Sign-In</button>
+            <button type="button" className="btn btn-logout" onClick={logoutButton}> Log Out</button>
+            <button type="button" className="btn btn-viewSavedEvents" onClick={viewSavedEventsButton}> View Saved Events</button>
+            <button type="button" className="btn btn-signUp" onClick={signupButton}> Create Account</button>
+          </section>
+        </Toolbar>
+      </AppBar>
+      <Drawer
+        className={classes.drawer}
+        variant="persistent"
+        anchor="left"
+        open={open}
+        classes={{
+          paper: classes.drawerPaper,
+        }}
+      >
+        <div className={classes.drawerHeader}>
+          <IconButton onClick={handleDrawerClose}>
+            {theme.direction === "ltr" ? (
+              <ChevronLeftIcon />
+            ) : (
+              <ChevronRightIcon />
+            )}
+          </IconButton>
+        </div>
+
+        <Divider />
+
+        <ProfileCard />
+
+        <Divider />
+        <EventsList mapRef={mapRef} />
+
+        <Divider />
+        <ListItem button onClick={handleClick}>
+          <ListItemIcon>
+            <InboxIcon />
+          </ListItemIcon>
+          <ListItemText primary="Options" />
+          {openFolder ? <ExpandLess /> : <ExpandMore />}
+        </ListItem>
+        <Collapse in={openFolder} timeout="auto" unmountOnExit>
+          {/* <List component="div" disablePadding>
+            <ListItem button className={classes.nested}>
+              <ListItemIcon>
+                <StarBorder />
+              </ListItemIcon>
+              <ListItemText primary="Inside of Nest !" />
+            </ListItem>
+            <ListItem button className={classes.nested}>
+              <ListItemIcon>
+                <MailIcon />
+              </ListItemIcon>
+              <ListItemText primary="Another one" />
+            </ListItem>
+            <ListItem button className={classes.nested}>
+              <ListItemIcon>
+                <InboxIcon />
+              </ListItemIcon>
+              <ListItemText primary="And Another one" />
+            </ListItem>
+          </List> */}
+          {/* <Filter filter={filter} setFilter={setFilter} /> */}
+        </Collapse>
+        {/* 
+          <List>
+            {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
+              <ListItem button key={text}>
+                <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
+                <ListItemText primary={text} />
+              </ListItem>
+            ))}
+          </List>
           <Divider />
           <ListItem button onClick={handleClick}>
             <ListItemIcon>
@@ -322,6 +430,7 @@ export default function NavBar() {
                 </ListItemIcon>
                 <ListItemText primary="Inside of Nest !" />
               </ListItem>
+
               <ListItem button className={classes.nested}>
                 <ListItemIcon>
                   <MailIcon />
@@ -361,7 +470,7 @@ export default function NavBar() {
           })}
         >
           <div className={classes.drawerHeader} />
-          <Map mapRef={mapRef} />
+          <Map mapRef={mapRef} filter={filter} setFilter={setFilter} />
         </main>
       
       <Modal show={signupShow} onHide={handleSignupClose} centered>

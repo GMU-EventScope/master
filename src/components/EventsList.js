@@ -1,4 +1,4 @@
-import fbArray from '../apis/firebase.js';
+import fbArray from "../apis/firebase.js";
 
 import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
@@ -43,6 +43,7 @@ const EventsList = ({ mapRef }) => {
   }, []);
   
   // Try to get events from 'Events' collection from the Firebase
+
   const fetchEvents =  () => {
 
     // this first "get" does nothing but delay so that auth.currentUser does not always return null
