@@ -250,7 +250,6 @@ const theme = useTheme();
           >
             <Filter filter={testVisible} setFilter={settestVisible} toggleDrawer={toggleDrawer} filterOptions={filterOptions} setFilterOptions={setFilterOptions} markers={markers}/>
           </Drawer>
-          {bottomOption.toString()}
           </div>
       </>
     </>
