@@ -31,6 +31,7 @@ import TextField from "@material-ui/core/TextField";
 import Icon from "@material-ui/core/Icon";
 import SaveIcon from "@material-ui/icons/Save";
 import Button from "@material-ui/core/Button";
+import Switch from '@material-ui/core/Switch'
 
 import { DataGrid } from '@material-ui/data-grid';
 
@@ -225,10 +226,49 @@ const Filter = ({ filter, setFilter, toggleDrawer, filterOptions, setFilterOptio
               }
               label="Within 90 Days"
             />
+                        <FormControlLabel
+              control={
+                <Checkbox
+                  checked={filterOptions.from90d}
+                  onChange={handleChange}
+                  name="viewPast"
+                />
+              }
+              label="View Past Events"
+            />
           </FormGroup>
           {/* <FormHelperText>Be careful</FormHelperText> */}
         </FormControl>
-
+        <FormControl component="fieldset">
+      <FormLabel component="legend">Tags</FormLabel>
+      <FormGroup>
+        <FormControlLabel
+          control={<Switch checked={filterOptions.tagFree} onChange={handleChange} name="tagFree" color="primary"/>}
+          label="Free"
+        />
+        <FormControlLabel
+          control={<Switch checked={filterOptions.tagSports} onChange={handleChange} name="tagSports" color="primary"/>}
+          label="Sports"
+        />
+        <FormControlLabel
+          control={<Switch checked={filterOptions.tagArts} onChange={handleChange} name="tagArts" color="primary"/>}
+          label="Arts"
+        />
+                <FormControlLabel
+          control={<Switch checked={filterOptions.tagClub} onChange={handleChange} name="tagClub" color="primary"/>}
+          label="Club"
+        />
+                <FormControlLabel
+          control={<Switch checked={filterOptions.tagFundraiser} onChange={handleChange} name="tagFundraiser" color="primary"/>}
+          label="Fundraiser"
+        />
+                <FormControlLabel
+          control={<Switch checked={filterOptions.tagNeedTicket} onChange={handleChange} name="tagNeedTicket" color="primary"/>}
+          label="Need Ticket"
+        />
+      </FormGroup>
+      <FormHelperText>Be careful</FormHelperText>
+    </FormControl>
         <TextField
           id="datetime-local"
           label="Start Date"

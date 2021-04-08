@@ -111,6 +111,13 @@ const theme = useTheme();
     from7d: true,
     from30d: true,
     from90d: true,
+    viewPast: false,
+    tagFree: true,
+    tagSports: true,
+    tagArts: true,
+    tagClub: true,
+    tagFundraiser: true,
+    tagNeedTicket: true,
   });
 
   const toggleDrawer = (open) => (event) => {
