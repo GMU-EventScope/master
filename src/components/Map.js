@@ -156,6 +156,7 @@ const theme = useTheme();
             key: item.id,
             id: item.id,
             tags: item.data().tags,
+            rating: item.data().rating,
           },
         ]);
       }

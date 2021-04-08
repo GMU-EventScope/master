@@ -34,7 +34,8 @@ import Button from "@material-ui/core/Button";
 import Switch from '@material-ui/core/Switch'
 
 import { DataGrid } from '@material-ui/data-grid';
-
+import { Rating } from '@material-ui/lab';
+import PropTypes from 'prop-types';
 import { useState, useEffect, useCallback, useRef } from "react";
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -52,6 +53,64 @@ const useStyles = makeStyles((theme) => ({
     margin: theme.spacing(3),
   },
 }));
+
+
+function RatingInputValue(props) {
+  const classes = useStyles();
+  const { item, applyValue } = props;
+
+  const handleFilterChange = (event) => {
+    applyValue({ ...item, value: event.target.value });
+  };
+
+  return (
+    <div className={classes.root}>
+      <Rating
+        name="custom-rating-filter-operator"
+        placeholder="Filter value"
+        value={Number(item.value)}
+        onChange={handleFilterChange}
+        precision={0.5}
+      />
+    </div>
+  );
+}
+
+RatingInputValue.propTypes = {
+  applyValue: PropTypes.func.isRequired,
+  item: PropTypes.shape({
+    columnField: PropTypes.string,
+    id: PropTypes.number,
+    operatorValue: PropTypes.string,
+    value: PropTypes.string,
+  }).isRequired,
+};
+
+const ratingOnlyOperators = [
+  {
+    label: 'From',
+    value: 'from',
+    getApplyFilterFn: (filterItem, column) => {
+      if (
+        !filterItem.columnField ||
+        !filterItem.value ||
+        !filterItem.operatorValue
+      ) {
+        return null;
+      }
+
+      return (params) => {
+        const rowValue = column.valueGetter
+          ? column.valueGetter(params)
+          : params.value;
+        return Number(rowValue) >= Number(filterItem.value);
+      };
+    },
+    InputComponent: RatingInputValue,
+    InputComponentProps: { type: 'number' },
+  },
+];
+
 
 const Filter = ({ filter, setFilter, toggleDrawer, filterOptions, setFilterOptions, markers}) => {
   const classes = useStyles();
@@ -72,13 +131,14 @@ const Filter = ({ filter, setFilter, toggleDrawer, filterOptions, setFilterOptio
     ":" +
     today.getMinutes();
 
-
+  // [1, 2, 3 , 4, 5 ]
   const handleChange = (event) => {
     console.log(`${event.target.name} ${event.target.checked}`)
     setFilterOptions({ ...filterOptions, [event.target.name]: event.target.checked });
     // setFilteredMarkers( markers.filter(marker => (marker.type === 0 && filterOptions.bySchool) || (marker.type === 1 && filterOptions.byOrganizer) || (marker.type === 2 && filterOptions.byStudent) ) )
   };
 
+  // TODO REMOVE THIS SHIT
   const handleFilterChange = (name, checked) => {
     setFilter({ ...filter, [name]: checked });
     
@@ -105,8 +165,20 @@ const Filter = ({ filter, setFilter, toggleDrawer, filterOptions, setFilterOptio
     { field: 'date', headerName: 'Date', width: 230 },
     { field: 'type', headerName: 'Type', width: 130 },
     { field: 'tags', headerName: 'Tags', width: 230 },
+    { field: 'rating', headerName: 'rating', width: 230, filterOperators: ratingOnlyOperators },
   ];
   
+
+  // if (columns.length > 0) {
+  //   const ratingColumn = columns.find((col) => col.field === 'rating');
+  //   const newRatingColumn = {
+  //     ...ratingColumn,
+  //     filterOperators: ratingOnlyOperators,
+  //   };
+
+  //   const ratingColIndex = columns.findIndex((col) => col.field === 'rating');
+  //   columns[ratingColIndex] = newRatingColumn;
+  // }
 
   return (
     <div className={classes.root}>
@@ -144,12 +216,10 @@ const Filter = ({ filter, setFilter, toggleDrawer, filterOptions, setFilterOptio
         <DataGrid rows={markers.filter(marker => ((marker.type === 0 && filterOptions.bySchool) || (marker.type === 1 && filterOptions.byOrganizer) || (marker.type === 2 && filterOptions.byStudent))
                   && ( (marker.tags.includes('Free') && filterOptions.tagFree) || (marker.tags.includes('Sports') && filterOptions.tagSports) || (marker.tags.includes('Arts') && filterOptions.tagArts)
                   || (marker.tags.includes('Club') && filterOptions.tagClub) || (marker.tags.includes('Fundraiser') && filterOptions.tagFundraiser) || (marker.tags.includes('NeedTicket') && filterOptions.tagNeedTicket) )
-          /*
-           || (marker.tags.includes('Free') && filterOptions.tagFree) || (marker.tags.includes('Sports') && filterOptions.tagSports) || (marker.tags.includes('Arts') && filterOptions.tagArts)
-                  || (marker.tags.includes('Club') && filterOptions.tagClub) || (marker.tags.includes('Fundraiser') && filterOptions.tagFundraiser) || (marker.tags.includes('NeedTicket') && filterOptions.tagNeedTicket)
-                  
-          */
-          ) } columns={ columns } pageSize={5} checkboxSelection />
+          ) } columns={ columns } pageSize={10}
+
+          columnTypes={{ rating: ratingOnlyOperators }}
+        />
           
       </div>
       <div className={classes.nested}>
