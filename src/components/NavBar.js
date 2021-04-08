@@ -264,61 +264,6 @@ export default function NavBar() {
 
   return (
     <>
-      <div className={classes.root}>
-        <CssBaseline />
-        <AppBar
-          position="fixed"
-          className={clsx(classes.appBar, {
-            [classes.appBarShift]: open,
-          })}
-        >
-          <Toolbar style={{ backgroundColor: "#0fba06" }}>
-            <IconButton
-              color="inherit"
-              aria-label="open drawer"
-              onClick={handleDrawerOpen}
-              edge="start"
-              className={clsx(classes.menuButton, open && classes.hide)}
-            >
-              <MenuIcon />
-            </IconButton>
-            <Typography variant="h6" noWrap>
-              GMU EventScope📢
-            </Typography>
-            <section className={classes.rightToolbar}>
-              <button type="button" className="btn btn-signIn" onClick={handleLoginShow}> Login/SignUp </button>
-              <button type="button" className="btn btn-logout" onClick={logoutButton}> Log Out</button>
-              <button type="button" className="btn btn-viewSavedEvents" onClick={viewSavedEventsButton}> View Saved Events</button>
-            </section>
-          </Toolbar>
-        </AppBar>
-        <Drawer
-          className={classes.drawer}
-          variant="persistent"
-          anchor="left"
-          open={open}
-          classes={{
-            paper: classes.drawerPaper,
-          }}
-        >
-          <div className={classes.drawerHeader}>
-            <IconButton onClick={handleDrawerClose}>
-              {theme.direction === "ltr" ? (
-                <ChevronLeftIcon />
-              ) : (
-                <ChevronRightIcon />
-              )}
-            </IconButton>
-          </div>
-
-          <Divider />
-
-          <ProfileCard />
-
-          <Divider />
-          <EventsList mapRef={mapRef} />
-
-  return (
     <div className={classes.root}>
       <CssBaseline />
       <AppBar
@@ -341,10 +286,9 @@ export default function NavBar() {
             GMU EventScope📢
           </Typography>
           <section className={classes.rightToolbar}>
-            <button type="button" className="btn btn-signIn" onClick={signinButton}> Sign-In</button>
+            <button type="button" className="btn btn-signIn" onClick={handleLoginShow}> Login/SignUp </button>
             <button type="button" className="btn btn-logout" onClick={logoutButton}> Log Out</button>
             <button type="button" className="btn btn-viewSavedEvents" onClick={viewSavedEventsButton}> View Saved Events</button>
-            <button type="button" className="btn btn-signUp" onClick={signupButton}> Create Account</button>
           </section>
         </Toolbar>
       </AppBar>
@@ -379,11 +323,11 @@ export default function NavBar() {
           <ListItemIcon>
             <InboxIcon />
           </ListItemIcon>
-          <ListItemText primary="Options" />
+          <ListItemText primary="List of Boxes" />
           {openFolder ? <ExpandLess /> : <ExpandMore />}
         </ListItem>
         <Collapse in={openFolder} timeout="auto" unmountOnExit>
-          {/* <List component="div" disablePadding>
+          <List component="div" disablePadding>
             <ListItem button className={classes.nested}>
               <ListItemIcon>
                 <StarBorder />
@@ -402,8 +346,7 @@ export default function NavBar() {
               </ListItemIcon>
               <ListItemText primary="And Another one" />
             </ListItem>
-          </List> */}
-          {/* <Filter filter={filter} setFilter={setFilter} /> */}
+          </List>
         </Collapse>
         {/* 
           <List>
@@ -415,128 +358,88 @@ export default function NavBar() {
             ))}
           </List>
           <Divider />
-          <ListItem button onClick={handleClick}>
-            <ListItemIcon>
-              <InboxIcon />
-            </ListItemIcon>
-            <ListItemText primary="List of Boxes" />
-            {openFolder ? <ExpandLess /> : <ExpandMore />}
-          </ListItem>
-          <Collapse in={openFolder} timeout="auto" unmountOnExit>
-            <List component="div" disablePadding>
-              <ListItem button className={classes.nested}>
-                <ListItemIcon>
-                  <StarBorder />
-                </ListItemIcon>
-                <ListItemText primary="Inside of Nest !" />
+          <List>
+            {['All mail', 'Trash', 'Spam'].map((text, index) => (
+              <ListItem button key={text}>
+                <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
+                <ListItemText primary={text} />
               </ListItem>
+            ))}
+          </List> */}
+      </Drawer>
+      <main
+        className={clsx(classes.content, {
+          [classes.contentShift]: open,
+        })}
+      >
+        <div className={classes.drawerHeader} />
+        <Map mapRef={mapRef} filter={filter} setFilter={setFilter} />
+      </main>
+    
+    <Modal show={signupShow} onHide={handleSignupClose} centered>
+      <Modal.Header closeButton>
+        <Modal.Title>Sign Up</Modal.Title>
+      </Modal.Header>
+      <Modal.Body>
+        {error && <Alert variant="danger">{error}</Alert>}
+        <Form onSubmit={handleSignup}>
+        <Form.Group id="username">
+            <Form.Label>User Name (Seen by other users)</Form.Label>
+            <Form.Control type="username" ref={usernameRef} required />
+          </Form.Group>
+          <Form.Group id="email">
+            <Form.Label>Email</Form.Label>
+            <Form.Control type="email" ref={signupEmailRef} required />
+          </Form.Group>
+          <Form.Group id="password">
+            <Form.Label>Password</Form.Label>
+            <Form.Control type="password" ref={signupPasswordRef} required />
+          </Form.Group>
+          <Form.Group id="password-confirm">
+            <Form.Label>Password Confirmation</Form.Label>
+            <Form.Control type="password" ref={signupConfPasswordRef} required />
+          </Form.Group>
+          <Button disabled={loading} className="w-100" style={{backgroundColor: "#006633"}} type="submit">
+            Sign Up
+          </Button>
+        </Form>
+      </Modal.Body>
+      <Modal.Footer>
+        <div className="w-100 text-center">
+          Already have an Account?
+          <Button style={{margin: "4px"}} onClick={() => {handleSignupClose(); handleLoginShow();}}>Log In</Button>
+        </div>
+      </Modal.Footer>
+    </Modal>
 
-              <ListItem button className={classes.nested}>
-                <ListItemIcon>
-                  <MailIcon />
-                </ListItemIcon>
-                <ListItemText primary="Another one" />
-              </ListItem>
-              <ListItem button className={classes.nested}>
-                <ListItemIcon>
-                  <InboxIcon />
-                </ListItemIcon>
-                <ListItemText primary="And Another one" />
-              </ListItem>
-            </List>
-          </Collapse>
-          {/* 
-            <List>
-              {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
-                <ListItem button key={text}>
-                  <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
-                  <ListItemText primary={text} />
-                </ListItem>
-              ))}
-            </List>
-            <Divider />
-            <List>
-              {['All mail', 'Trash', 'Spam'].map((text, index) => (
-                <ListItem button key={text}>
-                  <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
-                  <ListItemText primary={text} />
-                </ListItem>
-              ))}
-            </List> */}
-        </Drawer>
-        <main
-          className={clsx(classes.content, {
-            [classes.contentShift]: open,
-          })}
-        >
-          <div className={classes.drawerHeader} />
-          <Map mapRef={mapRef} filter={filter} setFilter={setFilter} />
-        </main>
-      
-      <Modal show={signupShow} onHide={handleSignupClose} centered>
-        <Modal.Header closeButton>
-          <Modal.Title>Sign Up</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          {error && <Alert variant="danger">{error}</Alert>}
-          <Form onSubmit={handleSignup}>
-          <Form.Group id="username">
-              <Form.Label>User Name (Seen by other users)</Form.Label>
-              <Form.Control type="username" ref={usernameRef} required />
-            </Form.Group>
-            <Form.Group id="email">
-              <Form.Label>Email</Form.Label>
-              <Form.Control type="email" ref={signupEmailRef} required />
-            </Form.Group>
-            <Form.Group id="password">
-              <Form.Label>Password</Form.Label>
-              <Form.Control type="password" ref={signupPasswordRef} required />
-            </Form.Group>
-            <Form.Group id="password-confirm">
-              <Form.Label>Password Confirmation</Form.Label>
-              <Form.Control type="password" ref={signupConfPasswordRef} required />
-            </Form.Group>
-            <Button disabled={loading} className="w-100" style={{backgroundColor: "#006633"}} type="submit">
-              Sign Up
-            </Button>
-          </Form>
-        </Modal.Body>
-        <Modal.Footer>
-          <div className="w-100 text-center">
-            Already have an Account?
-            <Button style={{margin: "4px"}} onClick={() => {handleSignupClose(); handleLoginShow();}}>Log In</Button>
-          </div>
-        </Modal.Footer>
-      </Modal>
-
-      <Modal show={loginShow} onHide={handleLoginClose} centered>
-        <Modal.Header closeButton>
-          <Modal.Title>Log In</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          {error && <Alert variant="danger">{error}</Alert>}
-          <Form onSubmit={handleLogin}>
-            <Form.Group id="email">
-              <Form.Label>Email</Form.Label>
-              <Form.Control type="email" ref={loginEmailRef} required />
-            </Form.Group>
-            <Form.Group id="password">
-              <Form.Label>Password</Form.Label>
-              <Form.Control type="password" ref={loginPasswordRef} required />
-            </Form.Group>
-            <Button disabled={loading} className="w-100" style={{backgroundColor: "#006633"}} type="submit">
-              Log In
-            </Button>
-          </Form>
-        </Modal.Body>
-        <Modal.Footer>
-          <div className="w-100 text-center">
-            Need an Account?
-            <Button style={{margin: "4px"}} onClick={() => {handleLoginClose(); handleSignupShow();}}>Sign Up</Button>
-          </div>
-        </Modal.Footer>
-      </Modal>
-      </div>
-    </>
+    <Modal show={loginShow} onHide={handleLoginClose} centered>
+      <Modal.Header closeButton>
+        <Modal.Title>Log In</Modal.Title>
+      </Modal.Header>
+      <Modal.Body>
+        {error && <Alert variant="danger">{error}</Alert>}
+        <Form onSubmit={handleLogin}>
+          <Form.Group id="email">
+            <Form.Label>Email</Form.Label>
+            <Form.Control type="email" ref={loginEmailRef} required />
+          </Form.Group>
+          <Form.Group id="password">
+            <Form.Label>Password</Form.Label>
+            <Form.Control type="password" ref={loginPasswordRef} required />
+          </Form.Group>
+          <Button disabled={loading} className="w-100" style={{backgroundColor: "#006633"}} type="submit">
+            Log In
+          </Button>
+        </Form>
+      </Modal.Body>
+      <Modal.Footer>
+        <div className="w-100 text-center">
+          Need an Account?
+          <Button style={{margin: "4px"}} onClick={() => {handleLoginClose(); handleSignupShow();}}>Sign Up</Button>
+        </div>
+      </Modal.Footer>
+    </Modal>
+    </div>
+  </>
   );
 }
