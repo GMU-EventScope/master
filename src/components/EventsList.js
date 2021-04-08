@@ -41,59 +41,52 @@ const EventsList = ({ mapRef }) => {
     mapRef.current.panTo({ lat, lng });
     mapRef.current.setZoom(14);
   }, []);
-
+  
   // Try to get events from 'Events' collection from the Firebase
-  const fetchEvents = async () => {
-    const response = db.collection("Events");
-    const data = await response.get();
 
-    const fetchedData = [];
+  const fetchEvents =  () => {
 
-    // Iterate throw the collections
-    data.docs.forEach((item) => {
-      // Push the fetched object to fetchedData array
-      fetchedData.push(item.data());
-
-      // set a new Marker based on the iterating item
-      setMarkers((current) => [
-        ...current,
-        {
-          lat: item.data().latitude,
-          lng: item.data().longitude,
-          date: item.data().date.toDate().toDateString(),
-          author: item.data().author,
-          title: item.data().title,
-          context: item.data().context,
-          type: item.data().type,
-        },
-      ]);
-    });
-    // set Events with fetchedDate array
-    setEvents(fetchedData);
-  };
-
-  // set up real-time listener
-  db.collection("users")
-    .orderBy("bio")
-    .onSnapshot((snapshot) => {
-      // console.log("real-time listener fired");
-
-      let changes = snapshot.docChanges();
-      // loop through each change
-      changes.forEach((change) => {
-        if (change.type == "modified") {
-          //console.log("modified detected");
-          console.log(change.doc.id);
-          // check if current user was modified
-          if (change.doc.id == auth.currentUser.uid) {
-            console.log("you changed something for this account");
-            //setEvents(change.doc.data().savedevents);
-            // TODO do something here that changes the left side bar
-            // this whole listener might need to be in another file
+    // this first "get" does nothing but delay so that auth.currentUser does not always return null
+    db.collection("users").get().then(() => {
+      const currUser = auth.currentUser;
+      console.log(currUser);
+      // get user doc matching user uid
+      if (currUser == null) {
+        setEvents([]);
+      }
+      else {
+        db.collection("users").doc(currUser.uid).get().then((userDoc) => {
+          if (userDoc.data() === undefined) {
+            
           }
-        }
-      });
+          var myEvents = userDoc.data().savedevents;
+          const fetchedData = [];
+          myEvents.forEach((eventID) => {
+            // get the document in Events matching the docID
+            db.collection("Events").doc(eventID).get().then((eventDoc) => {
+              
+              fetchedData.push(eventDoc.data());
+              
+              setMarkers((current) => [
+                ...current,
+                {
+                  lat: eventDoc.data().latitude,
+                  lng: eventDoc.data().longitude,
+                  date: eventDoc.data().date.toDate().toDateString(),
+                  author: eventDoc.data().author,
+                  title: eventDoc.data().title,
+                  context: eventDoc.data().context,
+                  type: eventDoc.data().type,
+                  id: eventDoc.id
+                },
+              ]);
+            })
+          });
+          setEvents(fetchedData);
+        });
+      }
     });
+  };
 
   // useEffect fetch events when the page renders
   useEffect(() => {
@@ -141,7 +134,7 @@ const EventsList = ({ mapRef }) => {
         />
       ) : null}
       {markers.map((marker) => (
-        <React.Fragment key={`${marker.lat}-${marker.lng}`}>
+        <div className="savedEventItem" key={marker.id}>
           <ListItem
             alignItems="flex-start"
             onClick={() => {
@@ -169,7 +162,7 @@ const EventsList = ({ mapRef }) => {
               }
             />
           </ListItem>
-        </React.Fragment>
+        </div>
       ))}
 
       {/* <ListItem>

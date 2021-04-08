@@ -103,7 +103,7 @@ export default [
         ]
     },
     {
-        "featureType": "landscape",
+        "featureType": "landscape.man_made",
         "elementType": "geometry",
         "stylers": [
             {
@@ -115,12 +115,12 @@ export default [
         ]
     },
     {
-        "featureType": "landscape",
+        "featureType": "landscape.man_made",
         "elementType": "geometry.fill",
         "stylers": [
             {
                 //this is like buildings and structures
-                //this a bit darker than the gmu yellow
+                //this a bit darker than the gmu yellow  ffbf00
                 "color" : "#ffbf00"
             }
         ]
@@ -157,7 +157,8 @@ export default [
         "elementType": "geometry.fill",
         "stylers": [
             {
-                //this is like the background color
+                // bg of campus
+                // mighgt want this to stick out a little bit from 006633
                 "color": "#006633"
             },
             {

@@ -49,6 +49,13 @@ const mapContainerStyle = {
   height: "85vh",
   width: "100%",
 };
+
+//GMU Location
+const center = {
+  lat: 38.82982569870483,
+  lng: -77.30736763569308,
+};
+
 const options = {
   styles: mapStyles,
   disableDefaultUI: true,
@@ -56,20 +63,16 @@ const options = {
   clickableIcons: false,
   restriction: {
     latLngBounds: {
-      east: -77.299341,
-      north: 38.838761,
-      south: 38.823618,
-      west: -77.318182,
+      east: center.lng + 0.01,
+      north: center.lat + 0.008,
+      south: center.lat - 0.005, 
+      west: center.lng - 0.025,
     },
     strictBounds: true,
   },
 };
 
-//GMU Location
-const center = {
-  lat: 38.82982569870483,
-  lng: -77.30736763569308,
-};
+
 
 const Map = ({ mapRef, filter, setFilter }) => {
   const classes = useStyles();
