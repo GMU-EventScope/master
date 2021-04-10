@@ -144,10 +144,7 @@ const theme = useTheme();
       } else {
         fetchedData.push(item.data());
 
-        
-        
-        
-       // const avatar = fbArray.storage.ref("MachineGunKelly.jpg").getDownloadURL().toString();
+      
         fbArray.storage.ref(item.data().pictureName)
         .getDownloadURL().then( url => {
           // set a new Marker based on the iterating item

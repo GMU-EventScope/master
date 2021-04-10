@@ -38,11 +38,12 @@ import Chip from "@material-ui/core/Chip";
 import { DataGrid } from "@material-ui/data-grid";
 import { Rating } from "@material-ui/lab";
 import PropTypes from "prop-types";
-import Avatar from '@material-ui/core/Avatar';
+import Avatar from "@material-ui/core/Avatar";
 
-import SchoolIcon from '@material-ui/icons/School';
-import BusinessIcon from '@material-ui/icons/Business';
-import PeopleIcon from '@material-ui/icons/People';
+import SchoolIcon from "@material-ui/icons/School";
+import BusinessIcon from "@material-ui/icons/Business";
+import PeopleIcon from "@material-ui/icons/People";
+import EventIcon from "@material-ui/icons/Event";
 
 import { useState, useEffect, useCallback, useRef } from "react";
 const useStyles = makeStyles((theme) => ({
@@ -75,18 +76,9 @@ const Filter = ({
 
   const today = new Date();
 
-  const [filteredMarkers, setFilteredMarkers] = useState(markers);
+  const testDate = "2021-02-20";
 
-  const todaytime =
-    today.getFullYear() +
-    "-" +
-    today.getMonth() +
-    "-" +
-    today.getDay() +
-    "T" +
-    today.getHours() +
-    ":" +
-    today.getMinutes();
+  const [filteredMarkers, setFilteredMarkers] = useState(markers);
 
   // [1, 2, 3 , 4, 5 ]
   const handleChange = (event) => {
@@ -98,7 +90,6 @@ const Filter = ({
     // setFilteredMarkers( markers.filter(marker => (marker.type === 0 && filterOptions.bySchool) || (marker.type === 1 && filterOptions.byOrganizer) || (marker.type === 2 && filterOptions.byStudent) ) )
   };
 
-
   const [selectedDate, setSelectedDate] = useState({
     startDate: new Date("2014-08-18T21:11:54"),
     endDate: new Date("2014-08-18T21:11:54"),
@@ -108,42 +99,54 @@ const Filter = ({
     setSelectedDate(date);
   };
 
-
-  //    { field: 'key', headerName: 'key', width: 130 },
-
-  function GetTypeOfPoster(value){
+  function GetTypeOfPoster(value) {
     // by School
-    if(value === 0){
-      return (<Chip label='School' color="primary" icon={<SchoolIcon />} />)
+    if (value === 0) {
+      return <Chip label="School" color="primary" icon={<SchoolIcon />} />;
     }
     // by Organizer
-    else if(value === 1){
-      return (<Chip label='Organizer' color="secondary" icon={<BusinessIcon />} />)
+    else if (value === 1) {
+      return (
+        <Chip label="Organizer" color="secondary" icon={<BusinessIcon />} />
+      );
     }
     // by Student
-    return (<Chip label='Student'  icon={<PeopleIcon />} />)
-    
+    return <Chip label="Student" icon={<PeopleIcon />} />;
   }
+
+  // value : target date
+  // addtionalDate : additional date to add (For filtering purpose)
+  // allEvents : boolean to display all no mater of dates
+function dateCompare(value, additionalDate, allEvents){
+  return allEvents? true : Date.parse(value) <= Date.parse(Date.parse(testDate) + additionalDate);
+}
 
 
   const columns = [
-    { field: "pictureURL", headerName: "Picture", width: 100,
-    renderCell: (params) => (
-      <>
-        <Avatar alt={params.value} src={params.value} />
-      </>
-    ), 
-  },
+    {
+      field: "pictureURL",
+      headerName: "Picture",
+      width: 100,
+      renderCell: (params) => (
+        <>
+          <Avatar alt={params.value} src={params.value} />
+        </>
+      ),
+    },
     { field: "author", headerName: "Author", width: 130 },
     { field: "title", headerName: "Title", width: 130 },
-    { field: "date", headerName: "Date", width: 160 },
-    { field: "type", headerName: "Posted By", width: 140 ,
-    renderCell: (params) => (
-      <>
-          {GetTypeOfPoster(params.value)}
-      </>
-    ),
-  },
+    { field: "date", headerName: "Date", width: 160 ,
+    renderCell: (params) => <>
+      
+      {params.value}
+      {dateCompare(params.value, 0).toString()}
+      </>,},
+    {
+      field: "type",
+      headerName: "Posted By",
+      width: 140,
+      renderCell: (params) => <>{GetTypeOfPoster(params.value)}</>,
+    },
     {
       field: "tags",
       headerName: "Tags",
@@ -162,14 +165,25 @@ const Filter = ({
       width: 230,
       renderCell: (params) => (
         <>
-          {" "}
           <Rating
             name="half-rating"
             defaultValue={params.value}
             precision={0.1}
             readOnly
-          />{" "}
+          />
           {params.value}
+        </>
+      ),
+    },
+    {
+      field: "detail",
+      headerName: "Details",
+      width: 120,
+      renderCell: (params) => (
+        <>
+          <IconButton aria-label="detail" color="secondary">
+            <EventIcon />
+          </IconButton>
         </>
       ),
     },
@@ -177,7 +191,7 @@ const Filter = ({
 
   return (
     <div className={classes.root}>
-      <div style={{ height: 700, width: "80%" }}>
+      <div style={{ height: 600, width: "70%" }}>
         <DataGrid
           rows={markers.filter(
             (marker) =>
@@ -351,17 +365,17 @@ const Filter = ({
           </FormGroup>
           <FormHelperText>Tags</FormHelperText>
         </FormControl>
-        {/* <TextField
-          id="datetime-local"
-          label="Start Date"
-          type="datetime-local"
-          // defaultValue={today}
-          className={classes.textField}
-          InputLabelProps={{
-            shrink: true,
-          }}
+        <TextField
+        id="date"
+        label="Date"
+        type="date"
+        defaultValue={testDate}
+        className={classes.textField}
+        InputLabelProps={{
+          shrink: true,
+        }}
         />
-
+        {/*
         <Button
           variant="contained"
           color="primary"
@@ -374,7 +388,6 @@ const Filter = ({
         >
           Save
         </Button> */}
-
       </div>
     </div>
   );
