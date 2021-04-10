@@ -62,68 +62,6 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function RatingInputValue(props) {
-  const classes = useStyles();
-  const { item, applyValue } = props;
-
-  const handleFilterChange = (event) => {
-    applyValue({ ...item, value: event.target.value });
-  };
-
-  return (
-    <div className={classes.root}>
-      <Rating
-        name="custom-rating-filter-operator"
-        placeholder="Filter value"
-        value={Number(item.value)}
-        onChange={handleFilterChange}
-        precision={0.5}
-      />
-    </div>
-  );
-}
-
-RatingInputValue.propTypes = {
-  applyValue: PropTypes.func.isRequired,
-  item: PropTypes.shape({
-    columnField: PropTypes.string,
-    id: PropTypes.number,
-    operatorValue: PropTypes.string,
-    value: PropTypes.string,
-  }).isRequired,
-};
-
-const ratingOnlyOperators = [
-  {
-    label: "From",
-    value: "from",
-    getApplyFilterFn: (filterItem, column) => {
-      if (
-        !filterItem.columnField ||
-        !filterItem.value ||
-        !filterItem.operatorValue
-      ) {
-        return null;
-      }
-
-      return (params) => {
-        const rowValue = column.valueGetter
-          ? column.valueGetter(params)
-          : params.value;
-        return Number(rowValue) >= Number(filterItem.value);
-      };
-    },
-    InputComponent: RatingInputValue,
-    InputComponentProps: { type: "number" },
-  },
-];
-
-
-// fbArray.storage.ref("MachineGunKelly.jpg")
-// .getDownloadURL().then( url => {
-//   console.log( "Got download url: ", url );
-// })
-
 const Filter = ({
   filter,
   setFilter,
@@ -160,10 +98,6 @@ const Filter = ({
     // setFilteredMarkers( markers.filter(marker => (marker.type === 0 && filterOptions.bySchool) || (marker.type === 1 && filterOptions.byOrganizer) || (marker.type === 2 && filterOptions.byStudent) ) )
   };
 
-  // TODO REMOVE THIS SHIT
-  const handleFilterChange = (name, checked) => {
-    setFilter({ ...filter, [name]: checked });
-  };
 
   const [selectedDate, setSelectedDate] = useState({
     startDate: new Date("2014-08-18T21:11:54"),
@@ -174,10 +108,6 @@ const Filter = ({
     setSelectedDate(date);
   };
 
-  const onSaveClick = (name, checked) => {
-    console.log(`${name} and ${checked}`);
-    handleFilterChange(name, checked);
-  };
 
   //    { field: 'key', headerName: 'key', width: 130 },
 
@@ -245,48 +175,8 @@ const Filter = ({
     },
   ];
 
-  // if (columns.length > 0) {
-  //   const ratingColumn = columns.find((col) => col.field === 'rating');
-  //   const newRatingColumn = {
-  //     ...ratingColumn,
-  //     filterOperators: ratingOnlyOperators,
-  //   };
-
-  //   const ratingColIndex = columns.findIndex((col) => col.field === 'rating');
-  //   columns[ratingColIndex] = newRatingColumn;
-  // }
-
   return (
     <div className={classes.root}>
-      {/* <ListItem button className={classes.nested}>
-          <ListItemIcon>
-            <StarBorder />
-          </ListItemIcon>
-          <ListItemText primary="Inside of Nest 2!" />
-        </ListItem>
-        <ListItem button className={classes.nested}>
-          <ListItemIcon>
-            <MailIcon />
-          </ListItemIcon>
-          <ListItemText primary="Another one" />
-        </ListItem>
-        <ListItem button className={classes.nested}>
-          <ListItemIcon>
-            <InboxIcon />
-          </ListItemIcon>
-          <ListItemText primary="And Another one" />
-        </ListItem> */}
-      {/* <FormControlLabel className={classes.nested}
-            control={
-              <Checkbox
-                checked={state.checkedA}
-                onChange={handleChange}
-                name="checkedA"
-                color="primary"
-              />
-            }
-            label="primary"
-          /> */}
       <div style={{ height: 700, width: "80%" }}>
         <DataGrid
           rows={markers.filter(
@@ -305,7 +195,7 @@ const Filter = ({
           )}
           columns={columns}
           pageSize={10}
-          columnTypes={{ rating: ratingOnlyOperators }}
+          // columnTypes={{ rating: ratingOnlyOperators }}
         />
       </div>
       <div className={classes.nested}>
@@ -320,7 +210,7 @@ const Filter = ({
                   name="bySchool"
                 />
               }
-              label="By School Faculties (Type 0)"
+              label="By School Faculties"
             />
             <FormControlLabel
               control={
@@ -330,7 +220,7 @@ const Filter = ({
                   name="byOrganizer"
                 />
               }
-              label="By Outside Organizers (Type 1)"
+              label="By Outside Organizers"
             />
             <FormControlLabel
               control={
@@ -340,13 +230,10 @@ const Filter = ({
                   name="byStudent"
                 />
               }
-              label="By Students (Type 2)"
+              label="By Students"
             />
           </FormGroup>
           {/* <FormHelperText>Be careful</FormHelperText> */}
-        </FormControl>
-
-        <FormControl component="fieldset">
           <FormLabel component="legend">Within</FormLabel>
           <FormGroup>
             <FormControlLabel
@@ -382,7 +269,7 @@ const Filter = ({
             <FormControlLabel
               control={
                 <Checkbox
-                  checked={filterOptions.from90d}
+                  checked={filterOptions.viewPast}
                   onChange={handleChange}
                   name="viewPast"
                 />
@@ -390,8 +277,8 @@ const Filter = ({
               label="View Past Events"
             />
           </FormGroup>
-          {/* <FormHelperText>Be careful</FormHelperText> */}
         </FormControl>
+
         <FormControl component="fieldset">
           <FormLabel component="legend">Tags</FormLabel>
           <FormGroup>
