@@ -88,6 +88,7 @@ const theme = useTheme();
 
   const [bottomOption, setBottomOption] = useState(false);
 
+
   // const mapRef = useRef();
 
   // Use Callbacks to make sure not rendering map everytime
@@ -142,6 +143,13 @@ const theme = useTheme();
       if (item.type === 1 && !filter.type1) {
       } else {
         fetchedData.push(item.data());
+
+        /*
+          fbArray.storage.ref("MachineGunKelly.jpg")
+          .getDownloadURL().then( url => {
+            console.log( "Got download url: ", url );
+          })
+        */
         // set a new Marker based on the iterating item
         setMarkers((current) => [
           ...current,
@@ -157,6 +165,7 @@ const theme = useTheme();
             id: item.id,
             tags: item.data().tags,
             rating: item.data().rating,
+            pictureName: item.data().pictureName,
           },
         ]);
       }
@@ -266,6 +275,8 @@ const theme = useTheme();
           >
             <Filter filter={testVisible} setFilter={settestVisible} toggleDrawer={toggleDrawer} filterOptions={filterOptions} setFilterOptions={setFilterOptions} markers={markers}/>
           </Drawer>
+
+          
           </div>
       </>
     </>

@@ -1,4 +1,5 @@
 import firebase from 'firebase';
+import "firebase/storage";
 require('firebase/auth')
 
 // Retrieve api key from .env
@@ -20,7 +21,8 @@ const firebaseApp=firebase.initializeApp(firebaseConfig);
 // If you want to use the realtime database, this has to be changed
 const db = firebase.firestore();
 const auth = firebase.auth();
+const storage = firebase.storage();
 
-const fbArray = {db, auth};
+const fbArray = {db, auth, storage};
 
 export default fbArray;
