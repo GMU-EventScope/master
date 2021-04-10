@@ -39,6 +39,11 @@ import { DataGrid } from "@material-ui/data-grid";
 import { Rating } from "@material-ui/lab";
 import PropTypes from "prop-types";
 import Avatar from '@material-ui/core/Avatar';
+
+import SchoolIcon from '@material-ui/icons/School';
+import BusinessIcon from '@material-ui/icons/Business';
+import PeopleIcon from '@material-ui/icons/People';
+
 import { useState, useEffect, useCallback, useRef } from "react";
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -175,6 +180,22 @@ const Filter = ({
   };
 
   //    { field: 'key', headerName: 'key', width: 130 },
+
+  function GetTypeOfPoster(value){
+    // by School
+    if(value === 0){
+      return (<Chip label='School' color="primary" icon={<SchoolIcon />} />)
+    }
+    // by Organizer
+    else if(value === 1){
+      return (<Chip label='Organizer' color="secondary" icon={<BusinessIcon />} />)
+    }
+    // by Student
+    return (<Chip label='Student'  icon={<PeopleIcon />} />)
+    
+  }
+
+
   const columns = [
     { field: "pictureURL", headerName: "Picture", width: 100,
     renderCell: (params) => (
@@ -185,8 +206,14 @@ const Filter = ({
   },
     { field: "author", headerName: "Author", width: 130 },
     { field: "title", headerName: "Title", width: 130 },
-    { field: "date", headerName: "Date", width: 230 },
-    { field: "type", headerName: "Type", width: 60 },
+    { field: "date", headerName: "Date", width: 160 },
+    { field: "type", headerName: "Posted By", width: 140 ,
+    renderCell: (params) => (
+      <>
+          {GetTypeOfPoster(params.value)}
+      </>
+    ),
+  },
     {
       field: "tags",
       headerName: "Tags",
@@ -260,7 +287,7 @@ const Filter = ({
             }
             label="primary"
           /> */}
-      <div style={{ height: 400, width: "80%" }}>
+      <div style={{ height: 700, width: "80%" }}>
         <DataGrid
           rows={markers.filter(
             (marker) =>
@@ -437,7 +464,7 @@ const Filter = ({
           </FormGroup>
           <FormHelperText>Tags</FormHelperText>
         </FormControl>
-        <TextField
+        {/* <TextField
           id="datetime-local"
           label="Start Date"
           type="datetime-local"
@@ -459,7 +486,7 @@ const Filter = ({
           }}
         >
           Save
-        </Button>
+        </Button> */}
 
       </div>
     </div>
