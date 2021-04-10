@@ -144,30 +144,32 @@ const theme = useTheme();
       } else {
         fetchedData.push(item.data());
 
-        /*
-          fbArray.storage.ref("MachineGunKelly.jpg")
-          .getDownloadURL().then( url => {
-            console.log( "Got download url: ", url );
-          })
-        */
-        // set a new Marker based on the iterating item
-        setMarkers((current) => [
-          ...current,
-          {
-            lat: item.data().latitude,
-            lng: item.data().longitude,
-            date: item.data().date.toDate().toDateString(),
-            author: item.data().author,
-            title: item.data().title,
-            context: item.data().context,
-            type: item.data().type,
-            key: item.id,
-            id: item.id,
-            tags: item.data().tags,
-            rating: item.data().rating,
-            pictureName: item.data().pictureName,
-          },
-        ]);
+        
+        
+        
+       // const avatar = fbArray.storage.ref("MachineGunKelly.jpg").getDownloadURL().toString();
+        fbArray.storage.ref(item.data().pictureName)
+        .getDownloadURL().then( url => {
+          // set a new Marker based on the iterating item
+          setMarkers((current) => [
+            ...current,
+            {
+              lat: item.data().latitude,
+              lng: item.data().longitude,
+              date: item.data().date.toDate().toDateString(),
+              author: item.data().author,
+              title: item.data().title,
+              context: item.data().context,
+              type: item.data().type,
+              key: item.id,
+              id: item.id,
+              tags: item.data().tags,
+              rating: item.data().rating,
+              pictureName: item.data().pictureName,
+              pictureURL: url,
+            },
+          ]);
+        })
       }
     });
     // set Events with fetchedDate array

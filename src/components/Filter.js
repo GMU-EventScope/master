@@ -38,6 +38,7 @@ import Chip from "@material-ui/core/Chip";
 import { DataGrid } from "@material-ui/data-grid";
 import { Rating } from "@material-ui/lab";
 import PropTypes from "prop-types";
+import Avatar from '@material-ui/core/Avatar';
 import { useState, useEffect, useCallback, useRef } from "react";
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -112,6 +113,12 @@ const ratingOnlyOperators = [
   },
 ];
 
+
+// fbArray.storage.ref("MachineGunKelly.jpg")
+// .getDownloadURL().then( url => {
+//   console.log( "Got download url: ", url );
+// })
+
 const Filter = ({
   filter,
   setFilter,
@@ -169,10 +176,17 @@ const Filter = ({
 
   //    { field: 'key', headerName: 'key', width: 130 },
   const columns = [
+    { field: "pictureURL", headerName: "Picture", width: 100,
+    renderCell: (params) => (
+      <>
+        <Avatar alt={params.value} src={params.value} />
+      </>
+    ), 
+  },
     { field: "author", headerName: "Author", width: 130 },
     { field: "title", headerName: "Title", width: 130 },
     { field: "date", headerName: "Date", width: 230 },
-    { field: "type", headerName: "Type", width: 130 },
+    { field: "type", headerName: "Type", width: 60 },
     {
       field: "tags",
       headerName: "Tags",
@@ -246,7 +260,7 @@ const Filter = ({
             }
             label="primary"
           /> */}
-      <div style={{ height: 400, width: "70%" }}>
+      <div style={{ height: 400, width: "80%" }}>
         <DataGrid
           rows={markers.filter(
             (marker) =>
@@ -446,6 +460,7 @@ const Filter = ({
         >
           Save
         </Button>
+
       </div>
     </div>
   );
