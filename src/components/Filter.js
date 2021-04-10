@@ -33,11 +33,11 @@ import TextField from "@material-ui/core/TextField";
 import Icon from "@material-ui/core/Icon";
 import SaveIcon from "@material-ui/icons/Save";
 import Button from "@material-ui/core/Button";
-import Switch from '@material-ui/core/Switch'
-
-import { DataGrid } from '@material-ui/data-grid';
-import { Rating } from '@material-ui/lab';
-import PropTypes from 'prop-types';
+import Switch from "@material-ui/core/Switch";
+import Chip from "@material-ui/core/Chip";
+import { DataGrid } from "@material-ui/data-grid";
+import { Rating } from "@material-ui/lab";
+import PropTypes from "prop-types";
 import { useState, useEffect, useCallback, useRef } from "react";
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -55,7 +55,6 @@ const useStyles = makeStyles((theme) => ({
     margin: theme.spacing(3),
   },
 }));
-
 
 function RatingInputValue(props) {
   const classes = useStyles();
@@ -90,8 +89,8 @@ RatingInputValue.propTypes = {
 
 const ratingOnlyOperators = [
   {
-    label: 'From',
-    value: 'from',
+    label: "From",
+    value: "from",
     getApplyFilterFn: (filterItem, column) => {
       if (
         !filterItem.columnField ||
@@ -109,12 +108,18 @@ const ratingOnlyOperators = [
       };
     },
     InputComponent: RatingInputValue,
-    InputComponentProps: { type: 'number' },
+    InputComponentProps: { type: "number" },
   },
 ];
 
-
-const Filter = ({ filter, setFilter, toggleDrawer, filterOptions, setFilterOptions, markers}) => {
+const Filter = ({
+  filter,
+  setFilter,
+  toggleDrawer,
+  filterOptions,
+  setFilterOptions,
+  markers,
+}) => {
   const classes = useStyles();
   const theme = useTheme();
 
@@ -135,15 +140,17 @@ const Filter = ({ filter, setFilter, toggleDrawer, filterOptions, setFilterOptio
 
   // [1, 2, 3 , 4, 5 ]
   const handleChange = (event) => {
-    console.log(`${event.target.name} ${event.target.checked}`)
-    setFilterOptions({ ...filterOptions, [event.target.name]: event.target.checked });
+    console.log(`${event.target.name} ${event.target.checked}`);
+    setFilterOptions({
+      ...filterOptions,
+      [event.target.name]: event.target.checked,
+    });
     // setFilteredMarkers( markers.filter(marker => (marker.type === 0 && filterOptions.bySchool) || (marker.type === 1 && filterOptions.byOrganizer) || (marker.type === 2 && filterOptions.byStudent) ) )
   };
 
   // TODO REMOVE THIS SHIT
   const handleFilterChange = (name, checked) => {
     setFilter({ ...filter, [name]: checked });
-    
   };
 
   const [selectedDate, setSelectedDate] = useState({
@@ -162,14 +169,40 @@ const Filter = ({ filter, setFilter, toggleDrawer, filterOptions, setFilterOptio
 
   //    { field: 'key', headerName: 'key', width: 130 },
   const columns = [
-    { field: 'author', headerName: 'Author', width: 130 },
-    { field: 'title', headerName: 'Title', width: 130 },
-    { field: 'date', headerName: 'Date', width: 230 },
-    { field: 'type', headerName: 'Type', width: 130 },
-    { field: 'tags', headerName: 'Tags', width: 230 },
-    { field: 'rating', headerName: 'Popularity', width: 230, renderCell: (params) => ( <> <Rating name="half-rating" defaultValue={params.value} precision={0.1} readOnly  /> {params.value}</>),  },
+    { field: "author", headerName: "Author", width: 130 },
+    { field: "title", headerName: "Title", width: 130 },
+    { field: "date", headerName: "Date", width: 230 },
+    { field: "type", headerName: "Type", width: 130 },
+    {
+      field: "tags",
+      headerName: "Tags",
+      width: 230,
+      renderCell: (params) => (
+        <>
+          {params.value.map((data) => (
+            <Chip label={data} color="primary" />
+          ))}
+        </>
+      ),
+    },
+    {
+      field: "rating",
+      headerName: "Popularity",
+      width: 230,
+      renderCell: (params) => (
+        <>
+          {" "}
+          <Rating
+            name="half-rating"
+            defaultValue={params.value}
+            precision={0.1}
+            readOnly
+          />{" "}
+          {params.value}
+        </>
+      ),
+    },
   ];
-  
 
   // if (columns.length > 0) {
   //   const ratingColumn = columns.find((col) => col.field === 'rating');
@@ -213,16 +246,26 @@ const Filter = ({ filter, setFilter, toggleDrawer, filterOptions, setFilterOptio
             }
             label="primary"
           /> */}
-      <div style={{ height: 400, width: '70%' }}>
-
-        <DataGrid rows={markers.filter(marker => ((marker.type === 0 && filterOptions.bySchool) || (marker.type === 1 && filterOptions.byOrganizer) || (marker.type === 2 && filterOptions.byStudent))
-                  && ( (marker.tags.includes('Free') && filterOptions.tagFree) || (marker.tags.includes('Sports') && filterOptions.tagSports) || (marker.tags.includes('Arts') && filterOptions.tagArts)
-                  || (marker.tags.includes('Club') && filterOptions.tagClub) || (marker.tags.includes('Fundraiser') && filterOptions.tagFundraiser) || (marker.tags.includes('NeedTicket') && filterOptions.tagNeedTicket) )
-          ) } columns={ columns } pageSize={10}
-
+      <div style={{ height: 400, width: "70%" }}>
+        <DataGrid
+          rows={markers.filter(
+            (marker) =>
+              ((marker.type === 0 && filterOptions.bySchool) ||
+                (marker.type === 1 && filterOptions.byOrganizer) ||
+                (marker.type === 2 && filterOptions.byStudent)) &&
+              ((marker.tags.includes("Free") && filterOptions.tagFree) ||
+                (marker.tags.includes("Sports") && filterOptions.tagSports) ||
+                (marker.tags.includes("Arts") && filterOptions.tagArts) ||
+                (marker.tags.includes("Club") && filterOptions.tagClub) ||
+                (marker.tags.includes("Fundraiser") &&
+                  filterOptions.tagFundraiser) ||
+                (marker.tags.includes("NeedTicket") &&
+                  filterOptions.tagNeedTicket))
+          )}
+          columns={columns}
+          pageSize={10}
           columnTypes={{ rating: ratingOnlyOperators }}
         />
-          
       </div>
       <div className={classes.nested}>
         <FormControl component="fieldset">
@@ -295,7 +338,7 @@ const Filter = ({ filter, setFilter, toggleDrawer, filterOptions, setFilterOptio
               }
               label="Within 90 Days"
             />
-                        <FormControlLabel
+            <FormControlLabel
               control={
                 <Checkbox
                   checked={filterOptions.from90d}
@@ -309,35 +352,77 @@ const Filter = ({ filter, setFilter, toggleDrawer, filterOptions, setFilterOptio
           {/* <FormHelperText>Be careful</FormHelperText> */}
         </FormControl>
         <FormControl component="fieldset">
-      <FormLabel component="legend">Tags</FormLabel>
-      <FormGroup>
-        <FormControlLabel
-          control={<Switch checked={filterOptions.tagFree} onChange={handleChange} name="tagFree" color="primary"/>}
-          label="Free"
-        />
-        <FormControlLabel
-          control={<Switch checked={filterOptions.tagSports} onChange={handleChange} name="tagSports" color="primary"/>}
-          label="Sports"
-        />
-        <FormControlLabel
-          control={<Switch checked={filterOptions.tagArts} onChange={handleChange} name="tagArts" color="primary"/>}
-          label="Arts"
-        />
-                <FormControlLabel
-          control={<Switch checked={filterOptions.tagClub} onChange={handleChange} name="tagClub" color="primary"/>}
-          label="Club"
-        />
-                <FormControlLabel
-          control={<Switch checked={filterOptions.tagFundraiser} onChange={handleChange} name="tagFundraiser" color="primary"/>}
-          label="Fundraiser"
-        />
-                <FormControlLabel
-          control={<Switch checked={filterOptions.tagNeedTicket} onChange={handleChange} name="tagNeedTicket" color="primary"/>}
-          label="Need Ticket"
-        />
-      </FormGroup>
-      <FormHelperText>Tags</FormHelperText>
-    </FormControl>
+          <FormLabel component="legend">Tags</FormLabel>
+          <FormGroup>
+            <FormControlLabel
+              control={
+                <Switch
+                  checked={filterOptions.tagFree}
+                  onChange={handleChange}
+                  name="tagFree"
+                  color="primary"
+                />
+              }
+              label="Free"
+            />
+            <FormControlLabel
+              control={
+                <Switch
+                  checked={filterOptions.tagSports}
+                  onChange={handleChange}
+                  name="tagSports"
+                  color="primary"
+                />
+              }
+              label="Sports"
+            />
+            <FormControlLabel
+              control={
+                <Switch
+                  checked={filterOptions.tagArts}
+                  onChange={handleChange}
+                  name="tagArts"
+                  color="primary"
+                />
+              }
+              label="Arts"
+            />
+            <FormControlLabel
+              control={
+                <Switch
+                  checked={filterOptions.tagClub}
+                  onChange={handleChange}
+                  name="tagClub"
+                  color="primary"
+                />
+              }
+              label="Club"
+            />
+            <FormControlLabel
+              control={
+                <Switch
+                  checked={filterOptions.tagFundraiser}
+                  onChange={handleChange}
+                  name="tagFundraiser"
+                  color="primary"
+                />
+              }
+              label="Fundraiser"
+            />
+            <FormControlLabel
+              control={
+                <Switch
+                  checked={filterOptions.tagNeedTicket}
+                  onChange={handleChange}
+                  name="tagNeedTicket"
+                  color="primary"
+                />
+              }
+              label="Need Ticket"
+            />
+          </FormGroup>
+          <FormHelperText>Tags</FormHelperText>
+        </FormControl>
         <TextField
           id="datetime-local"
           label="Start Date"
