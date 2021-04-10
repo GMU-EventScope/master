@@ -165,7 +165,7 @@ const Filter = ({ filter, setFilter, toggleDrawer, filterOptions, setFilterOptio
     { field: 'date', headerName: 'Date', width: 230 },
     { field: 'type', headerName: 'Type', width: 130 },
     { field: 'tags', headerName: 'Tags', width: 230 },
-    { field: 'rating', headerName: 'rating', width: 230, filterOperators: ratingOnlyOperators },
+    { field: 'rating', headerName: 'Popularity', width: 230, renderCell: (params) => ( <> <Rating name="half-rating" defaultValue={params.value} precision={0.1} readOnly  /> {params.value}</>),  },
   ];
   
 
