@@ -154,8 +154,8 @@ const Map = ({ mapRef, filter, setFilter }) => {
         !marker.tags.includes("Club")) &&
       ((marker.tags.includes("Fundraiser") && filterOptions.tagFundraiser) ||
         !marker.tags.includes("Fundraiser")) &&
-      ((marker.tags.includes("NeedTicket") && filterOptions.tagNeedTicket) ||
-        !marker.tags.includes("NeedTicket"))
+      ((marker.tags.includes("Needticket") && filterOptions.tagNeedTicket) ||
+        !marker.tags.includes("Needticket"))
     );
   }
 
