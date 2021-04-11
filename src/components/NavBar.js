@@ -135,7 +135,7 @@ export default function NavBar() {
     setOpenFolder(!openFolder);
   };
 
-  
+    
   const [filter, setFilter] = useState({
     type1: true,
     type2: true,
@@ -144,7 +144,7 @@ export default function NavBar() {
 
   const mapRef = useRef();
 
-  //////USER AUTHENTICATION//////
+  //////USER AUTHENTICATION//////... these all communicate with AuthContext.js
   const [signupShow, signupSetShow] = useState(false);
   const [loginShow, loginSetShow] = useState(false);
 
@@ -161,7 +161,11 @@ export default function NavBar() {
   const signupEmailRef = useRef();
   const signupPasswordRef = useRef();
   const signupConfPasswordRef = useRef();
-  const {signup, login} = useAuth();
+  const orgnameRef = useRef();
+  const signupOrgEmailRef = useRef();
+  const signupOrgPasswordRef = useRef();
+  const signupOrgConfPasswordRef = useRef();
+  const {signup, login, logout} = useAuth();
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const history = useHistory();
@@ -176,23 +180,14 @@ export default function NavBar() {
       return setError("Passwords do not match");
     }
 
-
     //this will attempt to signup user based on input and catch an error that occurs
     //this blocks further input after the submit button is first clicked, so you can't spam create 
     //the same account
     try {
       setError("");
       setLoading(true);
-      //await signup(signupEmailRef.current.value, signupPasswordRef.current.value);
+      await signup(signupEmailRef.current.value, signupPasswordRef.current.value, usernameRef.current.value);
       //history.push("/profile"); may need this in the future
-      auth.createUserWithEmailAndPassword(signupEmailRef.current.value, signupPasswordRef.current.value).then(cred => {
-        // add a document to the users collection
-        // uid of the user document will be the same uid as in the auth database 
-        return db.collection("users").doc(cred.user.uid).set({
-            username: usernameRef.current.value,
-            savedevents: [] // add the biography to the user
-        });
-      });
     } catch {
       setError("Failed to create an account");
     }
@@ -202,7 +197,7 @@ export default function NavBar() {
 
   //this logs people in with the stuff from the login form
   async function handleLogin(event) {
-    console.log(loginEmailRef.current.value);
+    console.log("Login Button was clicked!");
     event.preventDefault();
 
     try {
@@ -216,12 +211,19 @@ export default function NavBar() {
 
     setLoading(false);
   }
-  function logoutButton() {
-    console.log("Logout Button was clicked!")
-    auth.signOut().then(() => {
-      // function that runs when the user is signed out
-      console.log("user signed out");
-  })
+
+  //this handles logging out
+  async function handleLogout() {
+    setError("");
+
+    try {
+      setLoading(true);
+      await logout();
+      //history.push("/login");
+    } catch {
+      setError("Failed to log out");
+    }
+    setLoading(false);
   }
   /////////////////////////////////////////////////////////////////////////////
 
@@ -264,182 +266,233 @@ export default function NavBar() {
 
   return (
     <>
-    <div className={classes.root}>
-      <CssBaseline />
-      <AppBar
-        position="fixed"
-        className={clsx(classes.appBar, {
-          [classes.appBarShift]: open,
-        })}
-      >
-        <Toolbar style={{ backgroundColor: "#0fba06" }}>
-          <IconButton
-            color="inherit"
-            aria-label="open drawer"
-            onClick={handleDrawerOpen}
-            edge="start"
-            className={clsx(classes.menuButton, open && classes.hide)}
-          >
-            <MenuIcon />
-          </IconButton>
-          <Typography variant="h6" noWrap>
-            GMU EventScope📢
-          </Typography>
-          <section className={classes.rightToolbar}>
-            <button type="button" className="btn btn-signIn" onClick={handleLoginShow}> Login/SignUp </button>
-            <button type="button" className="btn btn-logout" onClick={logoutButton}> Log Out</button>
-            <button type="button" className="btn btn-viewSavedEvents" onClick={viewSavedEventsButton}> View Saved Events</button>
-          </section>
-        </Toolbar>
-      </AppBar>
-      <Drawer
-        className={classes.drawer}
-        variant="persistent"
-        anchor="left"
-        open={open}
-        classes={{
-          paper: classes.drawerPaper,
-        }}
-      >
-        <div className={classes.drawerHeader}>
-          <IconButton onClick={handleDrawerClose}>
-            {theme.direction === "ltr" ? (
-              <ChevronLeftIcon />
-            ) : (
-              <ChevronRightIcon />
-            )}
-          </IconButton>
-        </div>
+      <div className={classes.root}>
+        <CssBaseline />
+        <AppBar
+          position="fixed"
+          className={clsx(classes.appBar, {
+            [classes.appBarShift]: open,
+          })}
+        >
+          <Toolbar style={{ backgroundColor: "#0fba06" }}>
+            <IconButton
+              color="inherit"
+              aria-label="open drawer"
+              onClick={handleDrawerOpen}
+              edge="start"
+              className={clsx(classes.menuButton, open && classes.hide)}
+            >
+              <MenuIcon />
+            </IconButton>
+            <Typography variant="h6" noWrap>
+              GMU EventScope📢
+            </Typography>
+            <section className={classes.rightToolbar}>
+              <button type="button" className="btn btn-signIn" onClick={handleLoginShow}> Login/SignUp </button>
+              <button type="button" className="btn btn-logout" onClick={handleLogout}> Log Out</button>
+              <button type="button" className="btn btn-viewSavedEvents" onClick={viewSavedEventsButton}> View Saved Events</button>
+            </section>
+          </Toolbar>
+        </AppBar>
+        <Drawer
+          className={classes.drawer}
+          variant="persistent"
+          anchor="left"
+          open={open}
+          classes={{
+            paper: classes.drawerPaper,
+          }}
+        >
+          <div className={classes.drawerHeader}>
+            <IconButton onClick={handleDrawerClose}>
+              {theme.direction === "ltr" ? (
+                <ChevronLeftIcon />
+              ) : (
+                <ChevronRightIcon />
+              )}
+            </IconButton>
+          </div>
 
-        <Divider />
-
-        <ProfileCard />
-
-        <Divider />
-        <EventsList mapRef={mapRef} />
-
-        <Divider />
-        <ListItem button onClick={handleClick}>
-          <ListItemIcon>
-            <InboxIcon />
-          </ListItemIcon>
-          <ListItemText primary="List of Boxes" />
-          {openFolder ? <ExpandLess /> : <ExpandMore />}
-        </ListItem>
-        <Collapse in={openFolder} timeout="auto" unmountOnExit>
-          <List component="div" disablePadding>
-            <ListItem button className={classes.nested}>
-              <ListItemIcon>
-                <StarBorder />
-              </ListItemIcon>
-              <ListItemText primary="Inside of Nest !" />
-            </ListItem>
-            <ListItem button className={classes.nested}>
-              <ListItemIcon>
-                <MailIcon />
-              </ListItemIcon>
-              <ListItemText primary="Another one" />
-            </ListItem>
-            <ListItem button className={classes.nested}>
-              <ListItemIcon>
-                <InboxIcon />
-              </ListItemIcon>
-              <ListItemText primary="And Another one" />
-            </ListItem>
-          </List>
-        </Collapse>
-        {/* 
-          <List>
-            {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
-              <ListItem button key={text}>
-                <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
-                <ListItemText primary={text} />
-              </ListItem>
-            ))}
-          </List>
           <Divider />
-          <List>
-            {['All mail', 'Trash', 'Spam'].map((text, index) => (
-              <ListItem button key={text}>
-                <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
-                <ListItemText primary={text} />
+
+          <ProfileCard />
+
+          <Divider />
+          <EventsList mapRef={mapRef} />
+
+          <Divider />
+          <ListItem button onClick={handleClick}>
+            <ListItemIcon>
+              <InboxIcon />
+            </ListItemIcon>
+            <ListItemText primary="List of Boxes" />
+            {openFolder ? <ExpandLess /> : <ExpandMore />}
+          </ListItem>
+          <Collapse in={openFolder} timeout="auto" unmountOnExit>
+            <List component="div" disablePadding>
+              <ListItem button className={classes.nested}>
+                <ListItemIcon>
+                  <StarBorder />
+                </ListItemIcon>
+                <ListItemText primary="Inside of Nest !" />
               </ListItem>
-            ))}
-          </List> */}
-      </Drawer>
-      <main
-        className={clsx(classes.content, {
-          [classes.contentShift]: open,
-        })}
-      >
-        <div className={classes.drawerHeader} />
-        <Map mapRef={mapRef} filter={filter} setFilter={setFilter} />
-      </main>
-    
-    <Modal show={signupShow} onHide={handleSignupClose} centered>
-      <Modal.Header closeButton>
-        <Modal.Title>Sign Up</Modal.Title>
-      </Modal.Header>
-      <Modal.Body>
-        {error && <Alert variant="danger">{error}</Alert>}
-        <Form onSubmit={handleSignup}>
-        <Form.Group id="username">
+              <ListItem button className={classes.nested}>
+                <ListItemIcon>
+                  <MailIcon />
+                </ListItemIcon>
+                <ListItemText primary="Another one" />
+              </ListItem>
+              <ListItem button className={classes.nested}>
+                <ListItemIcon>
+                  <InboxIcon />
+                </ListItemIcon>
+                <ListItemText primary="And Another one" />
+              </ListItem>
+            </List>
+          </Collapse>
+          {/* 
+            <List>
+              {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
+                <ListItem button key={text}>
+                  <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
+                  <ListItemText primary={text} />
+                </ListItem>
+              ))}
+            </List>
+            <Divider />
+            <List>
+              {['All mail', 'Trash', 'Spam'].map((text, index) => (
+                <ListItem button key={text}>
+                  <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
+                  <ListItemText primary={text} />
+                </ListItem>
+              ))}
+            </List> */}
+        </Drawer>
+        <main
+          className={clsx(classes.content, {
+            [classes.contentShift]: open,
+          })}
+        >
+          <div className={classes.drawerHeader} />
+          <Map mapRef={mapRef} filter={filter} setFilter={setFilter} />
+        </main>
+
+{/********AUTHENTICATION MODALS********/}
+    {/*Non-organization Accounts*/}
+      <Modal show={signupShow} onHide={handleSignupClose} centered>
+        <Modal.Header closeButton>
+          <Modal.Title>Sign Up</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          {error && <Alert variant="danger">{error}</Alert>}
+          <Form onSubmit={handleSignup}>
+          <Form.Group id="username">
             <Form.Label>User Name (Seen by other users)</Form.Label>
             <Form.Control type="username" ref={usernameRef} required />
           </Form.Group>
-          <Form.Group id="email">
-            <Form.Label>Email</Form.Label>
-            <Form.Control type="email" ref={signupEmailRef} required />
-          </Form.Group>
-          <Form.Group id="password">
-            <Form.Label>Password</Form.Label>
-            <Form.Control type="password" ref={signupPasswordRef} required />
-          </Form.Group>
-          <Form.Group id="password-confirm">
-            <Form.Label>Password Confirmation</Form.Label>
-            <Form.Control type="password" ref={signupConfPasswordRef} required />
-          </Form.Group>
-          <Button disabled={loading} className="w-100" style={{backgroundColor: "#006633"}} type="submit">
-            Sign Up
-          </Button>
-        </Form>
-      </Modal.Body>
-      <Modal.Footer>
-        <div className="w-100 text-center">
-          Already have an Account?
-          <Button style={{margin: "4px"}} onClick={() => {handleSignupClose(); handleLoginShow();}}>Log In</Button>
-        </div>
-      </Modal.Footer>
-    </Modal>
+            <Form.Group id="email">
+              <Form.Label>Email</Form.Label>
+              <Form.Control type="email" ref={signupEmailRef} required />
+            </Form.Group>
+            <Form.Group id="password">
+              <Form.Label>Password</Form.Label>
+              <Form.Control type="password" ref={signupPasswordRef} required />
+            </Form.Group>
+            <Form.Group id="password-confirm">
+              <Form.Label>Password Confirmation</Form.Label>
+              <Form.Control type="password" ref={signupConfPasswordRef} required />
+            </Form.Group>
+            <Button disabled={loading} className="w-100" style={{backgroundColor: "#006633"}} type="submit">
+              Sign Up
+            </Button>
+          </Form>
+        </Modal.Body>
+        <Modal.Footer>
+          <div className="w-100 text-center">
+            Already have an Account?
+            <Button style={{margin: "4px"}} onClick={() => {handleSignupClose(); handleLoginShow();}}>Log In</Button>
+          </div>
+          <div className="w-100 text-center">
+            Are you an Organization?
+            <Button style={{margin: "4px"}} onClick={() => {handleSignupClose(); handleSignupOrgShow();}}>Organization Sign Up</Button>
+          </div>
+        </Modal.Footer>
+      </Modal>
 
-    <Modal show={loginShow} onHide={handleLoginClose} centered>
-      <Modal.Header closeButton>
-        <Modal.Title>Log In</Modal.Title>
-      </Modal.Header>
-      <Modal.Body>
-        {error && <Alert variant="danger">{error}</Alert>}
-        <Form onSubmit={handleLogin}>
-          <Form.Group id="email">
-            <Form.Label>Email</Form.Label>
-            <Form.Control type="email" ref={loginEmailRef} required />
+      <Modal show={loginShow} onHide={handleLoginClose} centered>
+        <Modal.Header closeButton>
+          <Modal.Title>Log In</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          {error && <Alert variant="danger">{error}</Alert>}
+          <Form onSubmit={handleLogin}>
+            <Form.Group id="email">
+              <Form.Label>Email</Form.Label>
+              <Form.Control type="email" ref={loginEmailRef} required />
+            </Form.Group>
+            <Form.Group id="password">
+              <Form.Label>Password</Form.Label>
+              <Form.Control type="password" ref={loginPasswordRef} required />
+            </Form.Group>
+            <Button disabled={loading} className="w-100" style={{backgroundColor: "#006633"}} type="submit">
+              Log In
+            </Button>
+          </Form>
+        </Modal.Body>
+        <Modal.Footer>
+          <div className="w-100 text-center">
+            Need an Account?
+            <Button style={{margin: "4px"}} onClick={() => {handleLoginClose(); handleSignupShow();}}>Sign Up</Button>
+          </div>
+          <div className="w-100 text-center">
+            Are you an Organization?
+            <Button style={{margin: "4px"}} onClick={() => {handleSignupClose(); handleSignupOrgShow();}}>Organization Log In</Button>
+          </div>
+        </Modal.Footer>
+      </Modal>
+
+    {/*Organization Accounts*/}
+      <Modal show={signupOrgShow} onHide={handleSignupOrgClose} centered>
+        <Modal.Header closeButton>
+          <Modal.Title>Organization Sign Up</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          {error && <Alert variant="danger">{error}</Alert>}
+          <Form onSubmit={handleSignupOrg}>
+          <Form.Group id="username">
+            <Form.Label>Organization Name (Seen by other users)</Form.Label>
+            <Form.Control type="username" ref={orgnameRef} required />
           </Form.Group>
-          <Form.Group id="password">
-            <Form.Label>Password</Form.Label>
-            <Form.Control type="password" ref={loginPasswordRef} required />
-          </Form.Group>
-          <Button disabled={loading} className="w-100" style={{backgroundColor: "#006633"}} type="submit">
-            Log In
-          </Button>
-        </Form>
-      </Modal.Body>
-      <Modal.Footer>
-        <div className="w-100 text-center">
-          Need an Account?
-          <Button style={{margin: "4px"}} onClick={() => {handleLoginClose(); handleSignupShow();}}>Sign Up</Button>
-        </div>
-      </Modal.Footer>
-    </Modal>
-    </div>
-  </>
+            <Form.Group id="email">
+              <Form.Label>Email</Form.Label>
+              <Form.Control type="email" ref={signupOrgEmailRef} required />
+            </Form.Group>
+            <Form.Group id="password">
+              <Form.Label>Password</Form.Label>
+              <Form.Control type="password" ref={signupOrgPasswordRef} required />
+            </Form.Group>
+            <Form.Group id="password-confirm">
+              <Form.Label>Password Confirmation</Form.Label>
+              <Form.Control type="password" ref={signupOrgConfPasswordRef} required />
+            </Form.Group>
+            <Button disabled={loading} className="w-100" style={{backgroundColor: "#006633"}} type="submit">
+              Sign Up
+            </Button>
+          </Form>
+        </Modal.Body>
+        <Modal.Footer>
+          <div className="w-100 text-center">
+            Already have an Organization Account?
+            <Button style={{margin: "4px"}} onClick={() => {handleSignupOrgClose(); handleLoginShow();}}>Log In</Button>
+          </div>
+          <div className="w-100 text-center">
+            Not an Organization?
+            <Button style={{margin: "4px"}} onClick={() => {handleSignupOrgClose(); handleSignupShow();}}>Log In</Button>
+          </div>
+        </Modal.Footer>
+      </Modal>
+      </div>
+    </>
   );
 }
