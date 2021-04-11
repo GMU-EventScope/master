@@ -5,18 +5,6 @@ import {
   Marker,
   InfoWindow,
 } from "@react-google-maps/api";
-import usePlacesAutocomplete, {
-  getGeocode,
-  getLatLng,
-} from "use-places-autocomplete";
-import {
-  Combobox,
-  ComboboxInput,
-  ComboboxPopover,
-  ComboboxList,
-  ComboboxOption,
-} from "@reach/combobox";
-
 import "@reach/combobox/styles.css";
 import mapStyles from "./mapStyles";
 
@@ -99,7 +87,6 @@ const Map = ({ mapRef, filter, setFilter }) => {
 
   // List of events as a useState
   const [events, setEvents] = useState([]);
-  const [testVisible, settestVisible] = useState(true);
   const [filterOptions, setFilterOptions] = useState({
     bySchool: true,
     byOrganizer: true,
@@ -123,7 +110,6 @@ const Map = ({ mapRef, filter, setFilter }) => {
     ) {
       return;
     }
-
     setBottomOption(open);
   };
 
@@ -158,12 +144,18 @@ const Map = ({ mapRef, filter, setFilter }) => {
 
   function filterByTag(marker) {
     return (
-      ((marker.tags.includes("Free") && filterOptions.tagFree) || (!marker.tags.includes("Free")) ) &&
-      ((marker.tags.includes("Sports") && filterOptions.tagSports) || (!marker.tags.includes("Sports")) ) &&
-      ((marker.tags.includes("Arts") && filterOptions.tagArts) || (!marker.tags.includes("Arts")) ) &&
-      ((marker.tags.includes("Club") && filterOptions.tagClub) || (!marker.tags.includes("Club")) ) &&
-      ((marker.tags.includes("Fundraiser") && filterOptions.tagFundraiser) || (!marker.tags.includes("Fundraiser")) ) &&
-      ((marker.tags.includes("NeedTicket") && filterOptions.tagNeedTicket) || (!marker.tags.includes("NeedTicket")) ) 
+      ((marker.tags.includes("Free") && filterOptions.tagFree) ||
+        !marker.tags.includes("Free")) &&
+      ((marker.tags.includes("Sports") && filterOptions.tagSports) ||
+        !marker.tags.includes("Sports")) &&
+      ((marker.tags.includes("Arts") && filterOptions.tagArts) ||
+        !marker.tags.includes("Arts")) &&
+      ((marker.tags.includes("Club") && filterOptions.tagClub) ||
+        !marker.tags.includes("Club")) &&
+      ((marker.tags.includes("Fundraiser") && filterOptions.tagFundraiser) ||
+        !marker.tags.includes("Fundraiser")) &&
+      ((marker.tags.includes("NeedTicket") && filterOptions.tagNeedTicket) ||
+        !marker.tags.includes("NeedTicket"))
     );
   }
 
@@ -283,48 +275,33 @@ const Map = ({ mapRef, filter, setFilter }) => {
         ) : null}
       </GoogleMap>
 
-      <>
-        {/* <Button
+      <div className={classes.button}>
+        <Button
           variant="contained"
           color="primary"
-          onClick={() => {
-            settestVisible(!testVisible);
-          }}
+          size="large"
+          startIcon={<SettingsIcon />}
+          onClick={toggleDrawer(true)}
         >
-          Primary
+          Filter
         </Button>
-        {testVisible.toString()} */}
-        <div className={classes.button}>
-          <Button
-            variant="contained"
-            color="primary"
-            size="large"
-            startIcon={<SettingsIcon />}
-            onClick={toggleDrawer(true)}
-          >
-            Filter
-          </Button>
 
-          <Drawer
-            anchor="bottom"
-            open={bottomOption}
-            onClose={toggleDrawer(false)}
-          >
-            <Filter
-              filter={testVisible}
-              setFilter={settestVisible}
-              toggleDrawer={toggleDrawer}
-              filterOptions={filterOptions}
-              setFilterOptions={setFilterOptions}
-              markers={markers}
-              panTo={panTo}
-              filterByDate={filterByDate}
-              filterByType={filterByType}
-              filterByTag={filterByTag}
-            />
-          </Drawer>
-        </div>
-      </>
+        <Drawer
+          anchor="bottom"
+          open={bottomOption}
+          onClose={toggleDrawer(false)}
+        >
+          <Filter
+            filterOptions={filterOptions}
+            setFilterOptions={setFilterOptions}
+            markers={markers}
+            panTo={panTo}
+            filterByDate={filterByDate}
+            filterByType={filterByType}
+            filterByTag={filterByTag}
+          />
+        </Drawer>
+      </div>
     </>
   );
 };

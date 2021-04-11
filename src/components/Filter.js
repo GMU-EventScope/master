@@ -1,43 +1,17 @@
 import React from "react";
-import fbArray from "../apis/firebase.js";
-
-import clsx from "clsx";
-import List from "@material-ui/core/List";
-import Collapse from "@material-ui/core/Collapse";
-import DraftsIcon from "@material-ui/icons/Drafts";
-import SendIcon from "@material-ui/icons/Send";
-import ExpandLess from "@material-ui/icons/ExpandLess";
-import ExpandMore from "@material-ui/icons/ExpandMore";
-import StarBorder from "@material-ui/icons/StarBorder";
-import Typography from "@material-ui/core/Typography";
-import Divider from "@material-ui/core/Divider";
 import IconButton from "@material-ui/core/IconButton";
-import MenuIcon from "@material-ui/icons/Menu";
-import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
-import ChevronRightIcon from "@material-ui/icons/ChevronRight";
-import ListItem from "@material-ui/core/ListItem";
-import ListItemIcon from "@material-ui/core/ListItemIcon";
-import ListItemText from "@material-ui/core/ListItemText";
-import InboxIcon from "@material-ui/icons/MoveToInbox";
-import MailIcon from "@material-ui/icons/Mail";
 import FormLabel from "@material-ui/core/FormLabel";
 import FormControl from "@material-ui/core/FormControl";
 import FormGroup from "@material-ui/core/FormGroup";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import FormHelperText from "@material-ui/core/FormHelperText";
 import Checkbox from "@material-ui/core/Checkbox";
-import CheckBoxOutlineBlankIcon from "@material-ui/icons/CheckBoxOutlineBlank";
-import CheckBoxIcon from "@material-ui/icons/CheckBox";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import TextField from "@material-ui/core/TextField";
-import Icon from "@material-ui/core/Icon";
-import SaveIcon from "@material-ui/icons/Save";
-import Button from "@material-ui/core/Button";
 import Switch from "@material-ui/core/Switch";
 import Chip from "@material-ui/core/Chip";
 import { DataGrid } from "@material-ui/data-grid";
 import { Rating } from "@material-ui/lab";
-import PropTypes from "prop-types";
 import Avatar from "@material-ui/core/Avatar";
 
 import SchoolIcon from "@material-ui/icons/School";
@@ -46,6 +20,7 @@ import PeopleIcon from "@material-ui/icons/People";
 import EventIcon from "@material-ui/icons/Event";
 
 import { useState, useEffect, useCallback, useRef } from "react";
+import { TramRounded } from "@material-ui/icons";
 const useStyles = makeStyles((theme) => ({
   root: {
     display: "flex",
@@ -64,9 +39,6 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const Filter = ({
-  filter,
-  setFilter,
-  toggleDrawer,
   filterOptions,
   setFilterOptions,
   markers,
@@ -76,33 +48,35 @@ const Filter = ({
   filterByTag,
 }) => {
   const classes = useStyles();
-  const theme = useTheme();
 
-  const [filteredMarkers, setFilteredMarkers] = useState(markers);
-
-  // [1, 2, 3 , 4, 5 ]
   const handleChange = (event) => {
     console.log(`${event.target.name} ${event.target.checked}`);
     setFilterOptions({
       ...filterOptions,
       [event.target.name]: event.target.checked,
     });
-    // setFilteredMarkers( markers.filter(marker => (marker.type === 0 && filterOptions.bySchool) || (marker.type === 1 && filterOptions.byOrganizer) || (marker.type === 2 && filterOptions.byStudent) ) )
   };
 
   function GetTypeOfPoster(value, key) {
     // by School
     if (value === 0) {
-      return <Chip label="School" color="primary" icon={<SchoolIcon /> } key={key}/>;
+      return (
+        <Chip label="School" color="primary" icon={<SchoolIcon />} key={key} />
+      );
     }
     // by Organizer
     else if (value === 1) {
       return (
-        <Chip label="Organizer" color="secondary" icon={<BusinessIcon />} key={key}/>
+        <Chip
+          label="Organizer"
+          color="secondary"
+          icon={<BusinessIcon />}
+          key={key}
+        />
       );
     }
     // by Student
-    return <Chip label="Student" icon={<PeopleIcon />} key={key}/>;
+    return <Chip label="Student" icon={<PeopleIcon />} key={key} />;
   }
 
   const columns = [
@@ -127,7 +101,9 @@ const Filter = ({
       field: "type",
       headerName: "Posted By",
       width: 140,
-      renderCell: (params) => <>{GetTypeOfPoster(params.value, params.row.id)}</>,
+      renderCell: (params) => (
+        <>{GetTypeOfPoster(params.value, params.row.id)}</>
+      ),
     },
     {
       field: "tags",
@@ -166,7 +142,10 @@ const Filter = ({
           <IconButton
             aria-label="detail"
             color="secondary"
-            onClick={() => panTo({ lat: params.row.lat, lng: params.row.lng })}
+            onClick={() => {
+              panTo({ lat: params.row.lat, lng: params.row.lng });
+              //toggleDrawer(false)
+            }}
           >
             <EventIcon />
           </IconButton>
