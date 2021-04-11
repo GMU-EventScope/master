@@ -112,7 +112,7 @@ const theme = useTheme();
     from7d: true,
     from30d: true,
     from90d: true,
-    viewPast: false,
+    viewAll: false,
     tagFree: true,
     tagSports: true,
     tagArts: true,
@@ -153,7 +153,7 @@ const theme = useTheme();
             {
               lat: item.data().latitude,
               lng: item.data().longitude,
-              date: item.data().date.toDate().toDateString(),
+              date: item.data().date.toDate().toLocaleString().split(",")[0], //toDateString()
               author: item.data().author,
               title: item.data().title,
               context: item.data().context,

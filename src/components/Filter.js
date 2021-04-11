@@ -77,7 +77,9 @@ const Filter = ({
   const today = new Date();
 
   const testDate = "2021-02-20";
-
+  const testDate7 = "2021-02-27";
+  const testDate30 = "2021-03-20";
+  const testDate90 = "2021-05-20";
   const [filteredMarkers, setFilteredMarkers] = useState(markers);
 
   // [1, 2, 3 , 4, 5 ]
@@ -115,12 +117,41 @@ const Filter = ({
   }
 
   // value : target date
-  // addtionalDate : additional date to add (For filtering purpose)
+  // compareDate : a date to compare with value (For filtering purpose)
   // allEvents : boolean to display all no mater of dates
-function dateCompare(value, additionalDate, allEvents){
-  return allEvents? true : Date.parse(value) <= Date.parse(Date.parse(testDate) + additionalDate);
-}
+  function dateCompare(value, compareDate, allEvents) {
+    return allEvents
+      ? true
+      : ( Date.parse(value) < Date.parse(compareDate) );
+  }
 
+  function filterByDate(marker) {
+    return (
+      (dateCompare(marker.date, testDate7, false) && filterOptions.from7d) ||
+      (dateCompare(marker.date, testDate30, false) && filterOptions.from30d) ||
+      (dateCompare(marker.date, testDate90, false) && filterOptions.from90d) ||
+      (dateCompare(marker.date, testDate, true) && filterOptions.viewAll) 
+    );
+  }
+
+  function filterByType(marker) {
+    return (
+      (marker.type === 0 && filterOptions.bySchool) ||
+      (marker.type === 1 && filterOptions.byOrganizer) ||
+      (marker.type === 2 && filterOptions.byStudent)
+    );
+  }
+
+  function filterByTag(marker) {
+    return (
+      (marker.tags.includes("Free") && filterOptions.tagFree) ||
+      (marker.tags.includes("Sports") && filterOptions.tagSports) ||
+      (marker.tags.includes("Arts") && filterOptions.tagArts) ||
+      (marker.tags.includes("Club") && filterOptions.tagClub) ||
+      (marker.tags.includes("Fundraiser") && filterOptions.tagFundraiser) ||
+      (marker.tags.includes("NeedTicket") && filterOptions.tagNeedTicket)
+    );
+  }
 
   const columns = [
     {
@@ -135,12 +166,24 @@ function dateCompare(value, additionalDate, allEvents){
     },
     { field: "author", headerName: "Author", width: 130 },
     { field: "title", headerName: "Title", width: 130 },
-    { field: "date", headerName: "Date", width: 160 ,
-    renderCell: (params) => <>
-      
-      {params.value}
-      {dateCompare(params.value, 0).toString()}
-      </>,},
+    {
+      field: "date",
+      headerName: "Date",
+      width: 360,
+      renderCell: (params) => (
+        <>
+          {params.value}
+                   
+          { dateCompare(params.value, testDate, false).toString() }
+         
+          { dateCompare(params.value, testDate7, false).toString() }
+   
+          { dateCompare(params.value, testDate30, false).toString() }
+          
+          { dateCompare(params.value, testDate90, false).toString() }
+        </>
+      ),
+    },
     {
       field: "type",
       headerName: "Posted By",
@@ -195,17 +238,7 @@ function dateCompare(value, additionalDate, allEvents){
         <DataGrid
           rows={markers.filter(
             (marker) =>
-              ((marker.type === 0 && filterOptions.bySchool) ||
-                (marker.type === 1 && filterOptions.byOrganizer) ||
-                (marker.type === 2 && filterOptions.byStudent)) &&
-              ((marker.tags.includes("Free") && filterOptions.tagFree) ||
-                (marker.tags.includes("Sports") && filterOptions.tagSports) ||
-                (marker.tags.includes("Arts") && filterOptions.tagArts) ||
-                (marker.tags.includes("Club") && filterOptions.tagClub) ||
-                (marker.tags.includes("Fundraiser") &&
-                  filterOptions.tagFundraiser) ||
-                (marker.tags.includes("NeedTicket") &&
-                  filterOptions.tagNeedTicket))
+            (filterByType(marker) && filterByTag(marker) && filterByDate(marker))
           )}
           columns={columns}
           pageSize={10}
@@ -283,12 +316,12 @@ function dateCompare(value, additionalDate, allEvents){
             <FormControlLabel
               control={
                 <Checkbox
-                  checked={filterOptions.viewPast}
+                  checked={filterOptions.viewAll}
                   onChange={handleChange}
-                  name="viewPast"
+                  name="viewAll"
                 />
               }
-              label="View Past Events"
+              label="View All Events"
             />
           </FormGroup>
         </FormControl>
@@ -366,14 +399,14 @@ function dateCompare(value, additionalDate, allEvents){
           <FormHelperText>Tags</FormHelperText>
         </FormControl>
         <TextField
-        id="date"
-        label="Date"
-        type="date"
-        defaultValue={testDate}
-        className={classes.textField}
-        InputLabelProps={{
-          shrink: true,
-        }}
+          id="date"
+          label="Date"
+          type="date"
+          defaultValue={testDate}
+          className={classes.textField}
+          InputLabelProps={{
+            shrink: true,
+          }}
         />
         {/*
         <Button
