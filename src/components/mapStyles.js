@@ -103,34 +103,13 @@ export default [
         ]
     },
     {
-        "featureType": "landscape.man_made",
-        "elementType": "geometry",
-        "stylers": [
-            {
-                "color": "#000000"
-            },
-            {
-                "lightness": 20
-            }
-        ]
-    },
-    {
-        "featureType": "landscape.man_made",
+        // don't think this works. (human-made seems to be part of a beta?)
+        "featureType": "landscape.human_made.buildings",
         "elementType": "geometry.fill",
         "stylers": [
             {
-                //this is like buildings and structures
-                //this a bit darker than the gmu yellow  ffbf00
+                //this is buildings
                 "color" : "#ffbf00"
-            }
-        ]
-    },
-    {
-        "featureType": "landscape",
-        "elementType": "geometry.stroke",
-        "stylers": [
-            {
-                "color": "#4d6059"
             }
         ]
     },
@@ -138,8 +117,9 @@ export default [
         "featureType": "landscape.natural",
         "elementType": "geometry.fill",
         "stylers": [
-            {
-                "color": "#006633"
+            {   
+                //temp color to differentiate from campus
+                "color": "#00937A"
             }
         ]
     },
@@ -157,8 +137,18 @@ export default [
         "elementType": "geometry.fill",
         "stylers": [
             {
-                // bg of campus
-                // mighgt want this to stick out a little bit from 006633
+            },
+            {
+                "lightness": 0
+            }
+        ]
+    },
+    {
+        "featureType": "poi.school",
+        "elementType": "geometry.fill",
+        "stylers": [
+            {
+                //campus
                 "color": "#006633"
             },
             {
@@ -270,7 +260,7 @@ export default [
         "elementType": "geometry.fill",
         "stylers": [
             {
-                //this is the local roads and path in campus
+                //local roads and path in campus
                 "color" : "#628473"
             }
         ]
@@ -326,7 +316,8 @@ export default [
         "stylers": [
             {
                 //color of water
-                "color": "#468081"
+                //"color": "#083d91"
+                "color": "#134F5F"
             }
         ]
     },
