@@ -102,9 +102,21 @@ export default [
             }
         ]
     },
+    /*
     {
-        // don't think this works. (human-made seems to be part of a beta?)
+        // don't think this works. (human-made seems to be part the vector map)
         "featureType": "landscape.human_made.buildings",
+        "elementType": "geometry.fill",
+        "stylers": [
+            {
+                //this is buildings
+                "color" : "#ffbf00"
+            }
+        ]
+    },*/
+    {
+        //problem with this is we can't specifiy buildings so it creates that yellow blob at the top.
+        "featureType": "landscape.man-made",
         "elementType": "geometry.fill",
         "stylers": [
             {
