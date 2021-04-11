@@ -74,7 +74,7 @@ const options = {
 
 
 
-const Map = ({ mapRef, filter, setFilter }) => {
+const Map = ({ mapRef, filter, setFilter, savedEvents, setSavedEvents }) => {
   const classes = useStyles();
 const theme = useTheme();
   // Load the google map api key from .env file by useLoadScript function
@@ -141,13 +141,16 @@ const theme = useTheme();
           {
             lat: item.data().latitude,
             lng: item.data().longitude,
-            date: item.data().date.toDate().toDateString(),
+            date: item.data().date,
             author: item.data().author,
             title: item.data().title,
             context: item.data().context,
             type: item.data().type,
             key: item.id,
-            id: item.id,
+            building: item.data().building,
+            room: item.data().room,
+            enddate: item.data().enddate, 
+            link: item.data().link
           },
         ]);
       }
@@ -218,6 +221,13 @@ const theme = useTheme();
               lat={selected.lat}
               lng={selected.lng}
               docID={selected.key}
+              building={selected.building}
+              room={selected.room}
+              date={selected.date}
+              enddate={selected.enddate}
+              link={selected.link}
+              savedEvents={savedEvents} 
+              setSavedEvents={setSavedEvents}
             />
           </InfoWindow>
         ) : null}

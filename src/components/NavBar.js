@@ -142,6 +142,9 @@ export default function NavBar() {
     type3: true,
   });
 
+  // used in the left side bar, passed to the map which passes to EventMarker
+  const [savedEvents, setSavedEvents] = useState([]);
+
   const mapRef = useRef();
 
   //////USER AUTHENTICATION//////
@@ -316,7 +319,7 @@ export default function NavBar() {
         <ProfileCard />
 
         <Divider />
-        <EventsList mapRef={mapRef} />
+        <EventsList mapRef={mapRef} savedEvents={savedEvents} setSavedEvents={setSavedEvents}/>
 
         <Divider />
         <ListItem button onClick={handleClick}>
@@ -373,7 +376,7 @@ export default function NavBar() {
         })}
       >
         <div className={classes.drawerHeader} />
-        <Map mapRef={mapRef} filter={filter} setFilter={setFilter} />
+        <Map mapRef={mapRef} filter={filter} setFilter={setFilter} savedEvents={savedEvents} setSavedEvents={setSavedEvents}/>
       </main>
     
     <Modal show={signupShow} onHide={handleSignupClose} centered>
