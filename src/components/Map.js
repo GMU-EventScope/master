@@ -63,10 +63,10 @@ const options = {
   clickableIcons: false,
   restriction: {
     latLngBounds: {
-      east: center.lng + 0.01,
+      east: center.lng + 0.011,
       north: center.lat + 0.008,
-      south: center.lat - 0.005, 
-      west: center.lng - 0.025,
+      south: center.lat - 0.006, 
+      west: center.lng - 0.0225,
     },
     strictBounds: true,
   },
