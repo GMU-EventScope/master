@@ -90,19 +90,19 @@ const Filter = ({
     // setFilteredMarkers( markers.filter(marker => (marker.type === 0 && filterOptions.bySchool) || (marker.type === 1 && filterOptions.byOrganizer) || (marker.type === 2 && filterOptions.byStudent) ) )
   };
 
-  function GetTypeOfPoster(value) {
+  function GetTypeOfPoster(value, key) {
     // by School
     if (value === 0) {
-      return <Chip label="School" color="primary" icon={<SchoolIcon />} />;
+      return <Chip label="School" color="primary" icon={<SchoolIcon /> } key={key}/>;
     }
     // by Organizer
     else if (value === 1) {
       return (
-        <Chip label="Organizer" color="secondary" icon={<BusinessIcon />} />
+        <Chip label="Organizer" color="secondary" icon={<BusinessIcon />} key={key}/>
       );
     }
     // by Student
-    return <Chip label="Student" icon={<PeopleIcon />} />;
+    return <Chip label="Student" icon={<PeopleIcon />} key={key}/>;
   }
 
   const columns = [
@@ -127,7 +127,7 @@ const Filter = ({
       field: "type",
       headerName: "Posted By",
       width: 140,
-      renderCell: (params) => <>{GetTypeOfPoster(params.value)}</>,
+      renderCell: (params) => <>{GetTypeOfPoster(params.value, params.row.id)}</>,
     },
     {
       field: "tags",
@@ -136,7 +136,7 @@ const Filter = ({
       renderCell: (params) => (
         <>
           {params.value.map((data) => (
-            <Chip label={data} color="primary" />
+            <Chip label={data} color="primary" key={data} />
           ))}
         </>
       ),
