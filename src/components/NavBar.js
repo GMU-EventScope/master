@@ -149,11 +149,14 @@ export default function NavBar() {
 
   //////USER AUTHENTICATION//////... these all communicate with AuthContext.js
   const [signupShow, signupSetShow] = useState(false);
+  const [signupOrgShow, signupOrgSetShow] = useState(false);
   const [loginShow, loginSetShow] = useState(false);
 
   //handle visibility of the login or signup modals
   const handleSignupClose = () => signupSetShow(false);
   const handleSignupShow = () => signupSetShow(true);
+  const handleSignupOrgClose = () => signupOrgSetShow(false);
+  const handleSignupOrgShow = () => signupOrgSetShow(true);
   const handleLoginClose = () => loginSetShow(false);
   const handleLoginShow = () => loginSetShow(true);
 
@@ -189,7 +192,32 @@ export default function NavBar() {
     try {
       setError("");
       setLoading(true);
-      await signup(signupEmailRef.current.value, signupPasswordRef.current.value, usernameRef.current.value);
+      await signup(signupEmailRef.current.value, signupPasswordRef.current.value, usernameRef.current.value, "user");
+      //history.push("/profile"); may need this in the future
+    } catch {
+      setError("Failed to create an account");
+    }
+
+    setLoading(false);
+  }
+
+  //this signs up ORGANIZATIONS from the org signup form
+  async function handleSignupOrg(event) {
+    console.log("Sign Up Button was clicked!");
+    event.preventDefault();
+
+    //this just makes sure the passwords match
+    if (signupOrgPasswordRef.current.value !== signupOrgConfPasswordRef.current.value) {
+      return setError("Passwords do not match");
+    }
+
+    //this will attempt to signup user based on input and catch an error that occurs
+    //this blocks further input after the submit button is first clicked, so you can't spam create 
+    //the same account
+    try {
+      setError("");
+      setLoading(true);
+      await signup(signupEmailRef.current.value, signupPasswordRef.current.value, orgnameRef.current.value, "org");
       //history.push("/profile"); may need this in the future
     } catch {
       setError("Failed to create an account");
@@ -506,7 +534,7 @@ export default function NavBar() {
           </div>
           <div className="w-100 text-center">
             Not an Organization?
-            <Button style={{margin: "4px"}} onClick={() => {handleSignupOrgClose(); handleSignupShow();}}>Log In</Button>
+            <Button style={{margin: "4px"}} onClick={() => {handleSignupOrgClose(); handleSignupShow();}}>Sign Up</Button>
           </div>
         </Modal.Footer>
       </Modal>
