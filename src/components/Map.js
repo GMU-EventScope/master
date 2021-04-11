@@ -185,7 +185,9 @@ const theme = useTheme();
         zoom={16}
         center={center}
         options={options}
-        //onClick={onMapClick}
+        onClick={() => {
+          setSelected(null);
+        }}
         onLoad={onMapLoad}
       >
         {markers.filter(marker => (marker.type === 0 && filterOptions.bySchool) || (marker.type === 1 && filterOptions.byOrganizer) || (marker.type === 2 && filterOptions.byStudent) ).map((marker) => (
@@ -229,6 +231,7 @@ const theme = useTheme();
               savedEvents={savedEvents} 
               setSavedEvents={setSavedEvents}
             />
+            
           </InfoWindow>
         ) : null}
       </GoogleMap>
