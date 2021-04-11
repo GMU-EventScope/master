@@ -142,6 +142,9 @@ export default function NavBar() {
     type3: true,
   });
 
+  // used in the left side bar, passed to the map which passes to EventMarker
+  const [savedEvents, setSavedEvents] = useState([]);
+
   const mapRef = useRef();
 
   //////USER AUTHENTICATION//////... these all communicate with AuthContext.js
@@ -266,53 +269,99 @@ export default function NavBar() {
 
   return (
     <>
-      <div className={classes.root}>
-        <CssBaseline />
-        <AppBar
-          position="fixed"
-          className={clsx(classes.appBar, {
-            [classes.appBarShift]: open,
-          })}
-        >
-          <Toolbar style={{ backgroundColor: "#0fba06" }}>
-            <IconButton
-              color="inherit"
-              aria-label="open drawer"
-              onClick={handleDrawerOpen}
-              edge="start"
-              className={clsx(classes.menuButton, open && classes.hide)}
-            >
-              <MenuIcon />
-            </IconButton>
-            <Typography variant="h6" noWrap>
-              GMU EventScope📢
-            </Typography>
-            <section className={classes.rightToolbar}>
-              <button type="button" className="btn btn-signIn" onClick={handleLoginShow}> Login/SignUp </button>
-              <button type="button" className="btn btn-logout" onClick={handleLogout}> Log Out</button>
-              <button type="button" className="btn btn-viewSavedEvents" onClick={viewSavedEventsButton}> View Saved Events</button>
-            </section>
-          </Toolbar>
-        </AppBar>
-        <Drawer
-          className={classes.drawer}
-          variant="persistent"
-          anchor="left"
-          open={open}
-          classes={{
-            paper: classes.drawerPaper,
-          }}
-        >
-          <div className={classes.drawerHeader}>
-            <IconButton onClick={handleDrawerClose}>
-              {theme.direction === "ltr" ? (
-                <ChevronLeftIcon />
-              ) : (
-                <ChevronRightIcon />
-              )}
-            </IconButton>
-          </div>
+    <div className={classes.root}>
+      <CssBaseline />
+      <AppBar
+        position="fixed"
+        className={clsx(classes.appBar, {
+          [classes.appBarShift]: open,
+        })}
+      >
+        <Toolbar style={{ backgroundColor: "#0fba06" }}>
+          <IconButton
+            color="inherit"
+            aria-label="open drawer"
+            onClick={handleDrawerOpen}
+            edge="start"
+            className={clsx(classes.menuButton, open && classes.hide)}
+          >
+            <MenuIcon />
+          </IconButton>
+          <Typography variant="h6" noWrap>
+            GMU EventScope📢
+          </Typography>
+          <section className={classes.rightToolbar}>
+            <button type="button" className="btn btn-signIn" onClick={handleLoginShow}> Login/SignUp </button>
+            <button type="button" className="btn btn-logout" onClick={handleLogout}> Log Out</button>
+            <button type="button" className="btn btn-viewSavedEvents" onClick={viewSavedEventsButton}> View Saved Events</button>
+          </section>
+        </Toolbar>
+      </AppBar>
+      <Drawer
+        className={classes.drawer}
+        variant="persistent"
+        anchor="left"
+        open={open}
+        classes={{
+          paper: classes.drawerPaper,
+        }}
+      >
+        <div className={classes.drawerHeader}>
+          <IconButton onClick={handleDrawerClose}>
+            {theme.direction === "ltr" ? (
+              <ChevronLeftIcon />
+            ) : (
+              <ChevronRightIcon />
+            )}
+          </IconButton>
+        </div>
 
+        <Divider />
+
+        <ProfileCard />
+
+        <Divider />
+        <EventsList mapRef={mapRef} savedEvents={savedEvents} setSavedEvents={setSavedEvents}/>
+
+        <Divider />
+        <ListItem button onClick={handleClick}>
+          <ListItemIcon>
+            <InboxIcon />
+          </ListItemIcon>
+          <ListItemText primary="List of Boxes" />
+          {openFolder ? <ExpandLess /> : <ExpandMore />}
+        </ListItem>
+        <Collapse in={openFolder} timeout="auto" unmountOnExit>
+          <List component="div" disablePadding>
+            <ListItem button className={classes.nested}>
+              <ListItemIcon>
+                <StarBorder />
+              </ListItemIcon>
+              <ListItemText primary="Inside of Nest !" />
+            </ListItem>
+            <ListItem button className={classes.nested}>
+              <ListItemIcon>
+                <MailIcon />
+              </ListItemIcon>
+              <ListItemText primary="Another one" />
+            </ListItem>
+            <ListItem button className={classes.nested}>
+              <ListItemIcon>
+                <InboxIcon />
+              </ListItemIcon>
+              <ListItemText primary="And Another one" />
+            </ListItem>
+          </List>
+        </Collapse>
+        {/* 
+          <List>
+            {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
+              <ListItem button key={text}>
+                <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
+                <ListItemText primary={text} />
+              </ListItem>
+            ))}
+          </List>
           <Divider />
 
           <ProfileCard />
@@ -336,58 +385,27 @@ export default function NavBar() {
                 </ListItemIcon>
                 <ListItemText primary="Inside of Nest !" />
               </ListItem>
-              <ListItem button className={classes.nested}>
-                <ListItemIcon>
-                  <MailIcon />
-                </ListItemIcon>
-                <ListItemText primary="Another one" />
-              </ListItem>
-              <ListItem button className={classes.nested}>
-                <ListItemIcon>
-                  <InboxIcon />
-                </ListItemIcon>
-                <ListItemText primary="And Another one" />
-              </ListItem>
-            </List>
-          </Collapse>
-          {/* 
-            <List>
-              {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
-                <ListItem button key={text}>
-                  <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
-                  <ListItemText primary={text} />
-                </ListItem>
-              ))}
-            </List>
-            <Divider />
-            <List>
-              {['All mail', 'Trash', 'Spam'].map((text, index) => (
-                <ListItem button key={text}>
-                  <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
-                  <ListItemText primary={text} />
-                </ListItem>
-              ))}
-            </List> */}
-        </Drawer>
-        <main
-          className={clsx(classes.content, {
-            [classes.contentShift]: open,
-          })}
-        >
-          <div className={classes.drawerHeader} />
-          <Map mapRef={mapRef} filter={filter} setFilter={setFilter} />
-        </main>
-
+            ))}
+          </List> */}
+      </Drawer>
+      <main
+        className={clsx(classes.content, {
+          [classes.contentShift]: open,
+        })}
+      >
+        <div className={classes.drawerHeader} />
+        <Map mapRef={mapRef} filter={filter} setFilter={setFilter} savedEvents={savedEvents} setSavedEvents={setSavedEvents}/>
+      </main>
 {/********AUTHENTICATION MODALS********/}
     {/*Non-organization Accounts*/}
-      <Modal show={signupShow} onHide={handleSignupClose} centered>
-        <Modal.Header closeButton>
-          <Modal.Title>Sign Up</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          {error && <Alert variant="danger">{error}</Alert>}
-          <Form onSubmit={handleSignup}>
-          <Form.Group id="username">
+    <Modal show={signupShow} onHide={handleSignupClose} centered>
+      <Modal.Header closeButton>
+        <Modal.Title>Sign Up</Modal.Title>
+      </Modal.Header>
+      <Modal.Body>
+        {error && <Alert variant="danger">{error}</Alert>}
+        <Form onSubmit={handleSignup}>
+        <Form.Group id="username">
             <Form.Label>User Name (Seen by other users)</Form.Label>
             <Form.Control type="username" ref={usernameRef} required />
           </Form.Group>

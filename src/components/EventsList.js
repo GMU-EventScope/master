@@ -30,7 +30,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const EventsList = ({ mapRef }) => {
+const EventsList = ({ mapRef, savedEvents, setSavedEvents }) => {
   // List of events as a useState
   const [events, setEvents] = useState([]);
 
@@ -67,7 +67,7 @@ const EventsList = ({ mapRef }) => {
               
               fetchedData.push(eventDoc.data());
               
-              setMarkers((current) => [
+              setSavedEvents((current) => [
                 ...current,
                 {
                   lat: eventDoc.data().latitude,
@@ -77,7 +77,7 @@ const EventsList = ({ mapRef }) => {
                   title: eventDoc.data().title,
                   context: eventDoc.data().context,
                   type: eventDoc.data().type,
-                  id: eventDoc.id
+                  docID: eventDoc.docID
                 },
               ]);
             })
@@ -133,8 +133,8 @@ const EventsList = ({ mapRef }) => {
           mapRef={mapRef}
         />
       ) : null}
-      {markers.map((marker) => (
-        <div className="savedEventItem" key={marker.id}>
+      {savedEvents.map((marker) => (
+        <div className="savedEventItem" key={marker.docID}>
           <ListItem
             alignItems="flex-start"
             onClick={() => {
