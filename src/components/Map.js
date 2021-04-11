@@ -25,10 +25,9 @@ import fbArray from "../apis/firebase.js";
 import { useState, useEffect, useCallback, useRef } from "react";
 import Button from "@material-ui/core/Button";
 import Drawer from "@material-ui/core/Drawer";
-import SettingsIcon from '@material-ui/icons/Settings';
+import SettingsIcon from "@material-ui/icons/Settings";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
-import Filter from './Filter'
-
+import Filter from "./Filter";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -37,8 +36,7 @@ const useStyles = makeStyles((theme) => ({
   button: {
     display: "flex",
     alignContent: "center",
-    justifyContent: "center"
-    
+    justifyContent: "center",
   },
 }));
 
@@ -65,18 +63,16 @@ const options = {
     latLngBounds: {
       east: center.lng + 0.01,
       north: center.lat + 0.008,
-      south: center.lat - 0.005, 
+      south: center.lat - 0.005,
       west: center.lng - 0.025,
     },
     strictBounds: true,
   },
 };
 
-
-
 const Map = ({ mapRef, filter, setFilter }) => {
   const classes = useStyles();
-const theme = useTheme();
+  const theme = useTheme();
   // Load the google map api key from .env file by useLoadScript function
   const { isLoaded, loadError } = useLoadScript({
     googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAP_API_KEY,
@@ -87,7 +83,6 @@ const theme = useTheme();
   const [selected, setSelected] = useState(null);
 
   const [bottomOption, setBottomOption] = useState(false);
-
 
   // const mapRef = useRef();
 
@@ -122,12 +117,55 @@ const theme = useTheme();
   });
 
   const toggleDrawer = (open) => (event) => {
-    if (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
+    if (
+      event.type === "keydown" &&
+      (event.key === "Tab" || event.key === "Shift")
+    ) {
       return;
     }
 
     setBottomOption(open);
   };
+
+  const testDate = "2021-02-20";
+  const testDate7 = "2021-02-27";
+  const testDate30 = "2021-03-20";
+  const testDate90 = "2021-05-20";
+  // value : target date
+  // compareDate : a date to compare with value (For filtering purpose)
+  // allEvents : boolean to display all no mater of dates
+  function dateCompare(value, compareDate, allEvents) {
+    return allEvents ? true : Date.parse(value) < Date.parse(compareDate);
+  }
+  //filterByDate={filterByDate} filterByType={filterByType} filterByTag={filterByTag}
+  // filterByDate, filterByType, filterByTag
+  function filterByDate(marker) {
+    return (
+      (dateCompare(marker.date, testDate7, false) && filterOptions.from7d) ||
+      (dateCompare(marker.date, testDate30, false) && filterOptions.from30d) ||
+      (dateCompare(marker.date, testDate90, false) && filterOptions.from90d) ||
+      (dateCompare(marker.date, testDate, true) && filterOptions.viewAll)
+    );
+  }
+
+  function filterByType(marker) {
+    return (
+      (marker.type === 0 && filterOptions.bySchool) ||
+      (marker.type === 1 && filterOptions.byOrganizer) ||
+      (marker.type === 2 && filterOptions.byStudent)
+    );
+  }
+
+  function filterByTag(marker) {
+    return (
+      ((marker.tags.includes("Free") && filterOptions.tagFree) || (!marker.tags.includes("Free")) ) &&
+      ((marker.tags.includes("Sports") && filterOptions.tagSports) || (!marker.tags.includes("Sports")) ) &&
+      ((marker.tags.includes("Arts") && filterOptions.tagArts) || (!marker.tags.includes("Arts")) ) &&
+      ((marker.tags.includes("Club") && filterOptions.tagClub) || (!marker.tags.includes("Club")) ) &&
+      ((marker.tags.includes("Fundraiser") && filterOptions.tagFundraiser) || (!marker.tags.includes("Fundraiser")) ) &&
+      ((marker.tags.includes("NeedTicket") && filterOptions.tagNeedTicket) || (!marker.tags.includes("NeedTicket")) ) 
+    );
+  }
 
   // Try to get events from 'Events' collection from the Firebase
   const fetchEvents = async () => {
@@ -144,29 +182,30 @@ const theme = useTheme();
       } else {
         fetchedData.push(item.data());
 
-      
-        fbArray.storage.ref(item.data().pictureName)
-        .getDownloadURL().then( url => {
-          // set a new Marker based on the iterating item
-          setMarkers((current) => [
-            ...current,
-            {
-              lat: item.data().latitude,
-              lng: item.data().longitude,
-              date: item.data().date.toDate().toLocaleString().split(",")[0], //toDateString()
-              author: item.data().author,
-              title: item.data().title,
-              context: item.data().context,
-              type: item.data().type,
-              key: item.id,
-              id: item.id,
-              tags: item.data().tags,
-              rating: item.data().rating,
-              pictureName: item.data().pictureName,
-              pictureURL: url,
-            },
-          ]);
-        })
+        fbArray.storage
+          .ref(item.data().pictureName)
+          .getDownloadURL()
+          .then((url) => {
+            // set a new Marker based on the iterating item
+            setMarkers((current) => [
+              ...current,
+              {
+                lat: item.data().latitude,
+                lng: item.data().longitude,
+                date: item.data().date.toDate().toLocaleString().split(",")[0], //toDateString()
+                author: item.data().author,
+                title: item.data().title,
+                context: item.data().context,
+                type: item.data().type,
+                key: item.id,
+                id: item.id,
+                tags: item.data().tags,
+                rating: item.data().rating,
+                pictureName: item.data().pictureName,
+                pictureURL: url,
+              },
+            ]);
+          });
       }
     });
     // set Events with fetchedDate array
@@ -202,28 +241,28 @@ const theme = useTheme();
         //onClick={onMapClick}
         onLoad={onMapLoad}
       >
-        {markers.filter(marker => 
-        (marker.type === 0 && filterOptions.bySchool) || (marker.type === 1 && filterOptions.byOrganizer) || (marker.type === 2 && filterOptions.byStudent) 
-        && ( (marker.tags.includes('Free') && filterOptions.tagFree) || (marker.tags.includes('Sports') && filterOptions.tagSports) || (marker.tags.includes('Arts') && filterOptions.tagArts)
-                  || (marker.tags.includes('Club') && filterOptions.tagClub) || (marker.tags.includes('Fundraiser') && filterOptions.tagFundraiser) || (marker.tags.includes('NeedTicket') && filterOptions.tagNeedTicket) )
-        ).map((marker) => (
-
-              <Marker
-                key={`${marker.lat}-${marker.lng}`}
-                position={{ lat: marker.lat, lng: marker.lng }}
-                onClick={() => {
-                  setSelected(marker);
-                }}
-                icon={{
-                  url: getLogoType(marker.type),
-                  origin: new window.google.maps.Point(0, 0),
-                  anchor: new window.google.maps.Point(15, 15),
-                  scaledSize: new window.google.maps.Size(70, 70),
-                }}
-              />
-              
-            ))
-}
+        {markers
+          .filter(
+            (marker) =>
+              filterByType(marker) &&
+              filterByTag(marker) &&
+              filterByDate(marker)
+          )
+          .map((marker) => (
+            <Marker
+              key={`${marker.lat}-${marker.lng}`}
+              position={{ lat: marker.lat, lng: marker.lng }}
+              onClick={() => {
+                setSelected(marker);
+              }}
+              icon={{
+                url: getLogoType(marker.type),
+                origin: new window.google.maps.Point(0, 0),
+                anchor: new window.google.maps.Point(15, 15),
+                scaledSize: new window.google.maps.Size(70, 70),
+              }}
+            />
+          ))}
 
         {selected ? (
           <InfoWindow
@@ -269,14 +308,22 @@ const theme = useTheme();
           <Drawer
             anchor="bottom"
             open={bottomOption}
-             onClose={toggleDrawer(false)}
-               
+            onClose={toggleDrawer(false)}
           >
-            <Filter filter={testVisible} setFilter={settestVisible} toggleDrawer={toggleDrawer} filterOptions={filterOptions} setFilterOptions={setFilterOptions} markers={markers}/>
+            <Filter
+              filter={testVisible}
+              setFilter={settestVisible}
+              toggleDrawer={toggleDrawer}
+              filterOptions={filterOptions}
+              setFilterOptions={setFilterOptions}
+              markers={markers}
+              panTo={panTo}
+              filterByDate={filterByDate}
+              filterByType={filterByType}
+              filterByTag={filterByTag}
+            />
           </Drawer>
-
-          
-          </div>
+        </div>
       </>
     </>
   );

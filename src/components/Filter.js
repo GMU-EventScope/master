@@ -70,16 +70,14 @@ const Filter = ({
   filterOptions,
   setFilterOptions,
   markers,
+  panTo,
+  filterByDate,
+  filterByType,
+  filterByTag,
 }) => {
   const classes = useStyles();
   const theme = useTheme();
 
-  const today = new Date();
-
-  const testDate = "2021-02-20";
-  const testDate7 = "2021-02-27";
-  const testDate30 = "2021-03-20";
-  const testDate90 = "2021-05-20";
   const [filteredMarkers, setFilteredMarkers] = useState(markers);
 
   // [1, 2, 3 , 4, 5 ]
@@ -90,15 +88,6 @@ const Filter = ({
       [event.target.name]: event.target.checked,
     });
     // setFilteredMarkers( markers.filter(marker => (marker.type === 0 && filterOptions.bySchool) || (marker.type === 1 && filterOptions.byOrganizer) || (marker.type === 2 && filterOptions.byStudent) ) )
-  };
-
-  const [selectedDate, setSelectedDate] = useState({
-    startDate: new Date("2014-08-18T21:11:54"),
-    endDate: new Date("2014-08-18T21:11:54"),
-  });
-
-  const handleDateChange = (date) => {
-    setSelectedDate(date);
   };
 
   function GetTypeOfPoster(value) {
@@ -114,43 +103,6 @@ const Filter = ({
     }
     // by Student
     return <Chip label="Student" icon={<PeopleIcon />} />;
-  }
-
-  // value : target date
-  // compareDate : a date to compare with value (For filtering purpose)
-  // allEvents : boolean to display all no mater of dates
-  function dateCompare(value, compareDate, allEvents) {
-    return allEvents
-      ? true
-      : ( Date.parse(value) < Date.parse(compareDate) );
-  }
-
-  function filterByDate(marker) {
-    return (
-      (dateCompare(marker.date, testDate7, false) && filterOptions.from7d) ||
-      (dateCompare(marker.date, testDate30, false) && filterOptions.from30d) ||
-      (dateCompare(marker.date, testDate90, false) && filterOptions.from90d) ||
-      (dateCompare(marker.date, testDate, true) && filterOptions.viewAll) 
-    );
-  }
-
-  function filterByType(marker) {
-    return (
-      (marker.type === 0 && filterOptions.bySchool) ||
-      (marker.type === 1 && filterOptions.byOrganizer) ||
-      (marker.type === 2 && filterOptions.byStudent)
-    );
-  }
-
-  function filterByTag(marker) {
-    return (
-      (marker.tags.includes("Free") && filterOptions.tagFree) ||
-      (marker.tags.includes("Sports") && filterOptions.tagSports) ||
-      (marker.tags.includes("Arts") && filterOptions.tagArts) ||
-      (marker.tags.includes("Club") && filterOptions.tagClub) ||
-      (marker.tags.includes("Fundraiser") && filterOptions.tagFundraiser) ||
-      (marker.tags.includes("NeedTicket") && filterOptions.tagNeedTicket)
-    );
   }
 
   const columns = [
@@ -169,20 +121,7 @@ const Filter = ({
     {
       field: "date",
       headerName: "Date",
-      width: 360,
-      renderCell: (params) => (
-        <>
-          {params.value}
-                   
-          { dateCompare(params.value, testDate, false).toString() }
-         
-          { dateCompare(params.value, testDate7, false).toString() }
-   
-          { dateCompare(params.value, testDate30, false).toString() }
-          
-          { dateCompare(params.value, testDate90, false).toString() }
-        </>
-      ),
+      width: 160,
     },
     {
       field: "type",
@@ -224,7 +163,11 @@ const Filter = ({
       width: 120,
       renderCell: (params) => (
         <>
-          <IconButton aria-label="detail" color="secondary">
+          <IconButton
+            aria-label="detail"
+            color="secondary"
+            onClick={() => panTo({ lat: params.row.lat, lng: params.row.lng })}
+          >
             <EventIcon />
           </IconButton>
         </>
@@ -238,7 +181,9 @@ const Filter = ({
         <DataGrid
           rows={markers.filter(
             (marker) =>
-            (filterByType(marker) && filterByTag(marker) && filterByDate(marker))
+              filterByType(marker) &&
+              filterByTag(marker) &&
+              filterByDate(marker)
           )}
           columns={columns}
           pageSize={10}
@@ -402,7 +347,7 @@ const Filter = ({
           id="date"
           label="Date"
           type="date"
-          defaultValue={testDate}
+          defaultValue={"2021-02-20"}
           className={classes.textField}
           InputLabelProps={{
             shrink: true,
