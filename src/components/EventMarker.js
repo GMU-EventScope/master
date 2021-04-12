@@ -176,13 +176,13 @@
             {props.date &&
               <div>
               <Card.Subtitle><u>Starting: </u></Card.Subtitle>
-              <Card.Text style={{fontSize: 18}}><p>{props.date.toDate().toDateString()} @ {getTimeString(props.date)}</p></Card.Text>
+              <Card.Text style={{fontSize: 18}}><p>{props.date}</p></Card.Text>
               </div>
             }
             {props.enddate &&
               <div>
               <Card.Subtitle><u>Ending: </u></Card.Subtitle>
-              <Card.Text style={{fontSize: 18}}><p>{props.enddate.toDate().toDateString()} @ {getTimeString(props.enddate)}</p></Card.Text>
+              <Card.Text style={{fontSize: 18}}><p>{props.enddate}</p></Card.Text>
               </div>
             }
             {props.context &&
