@@ -1,40 +1,26 @@
 import React from "react";
-import clsx from "clsx";
-import List from "@material-ui/core/List";
-import Collapse from "@material-ui/core/Collapse";
-import DraftsIcon from "@material-ui/icons/Drafts";
-import SendIcon from "@material-ui/icons/Send";
-import ExpandLess from "@material-ui/icons/ExpandLess";
-import ExpandMore from "@material-ui/icons/ExpandMore";
-import StarBorder from "@material-ui/icons/StarBorder";
-import Typography from "@material-ui/core/Typography";
-import Divider from "@material-ui/core/Divider";
 import IconButton from "@material-ui/core/IconButton";
-import MenuIcon from "@material-ui/icons/Menu";
-import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
-import ChevronRightIcon from "@material-ui/icons/ChevronRight";
-import ListItem from "@material-ui/core/ListItem";
-import ListItemIcon from "@material-ui/core/ListItemIcon";
-import ListItemText from "@material-ui/core/ListItemText";
-import InboxIcon from "@material-ui/icons/MoveToInbox";
-import MailIcon from "@material-ui/icons/Mail";
 import FormLabel from "@material-ui/core/FormLabel";
 import FormControl from "@material-ui/core/FormControl";
 import FormGroup from "@material-ui/core/FormGroup";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import FormHelperText from "@material-ui/core/FormHelperText";
 import Checkbox from "@material-ui/core/Checkbox";
-import CheckBoxOutlineBlankIcon from "@material-ui/icons/CheckBoxOutlineBlank";
-import CheckBoxIcon from "@material-ui/icons/CheckBox";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import TextField from "@material-ui/core/TextField";
-import Icon from "@material-ui/core/Icon";
-import SaveIcon from "@material-ui/icons/Save";
-import Button from "@material-ui/core/Button";
+import Switch from "@material-ui/core/Switch";
+import Chip from "@material-ui/core/Chip";
+import { DataGrid } from "@material-ui/data-grid";
+import { Rating } from "@material-ui/lab";
+import Avatar from "@material-ui/core/Avatar";
 
-import { DataGrid } from '@material-ui/data-grid';
+import SchoolIcon from "@material-ui/icons/School";
+import BusinessIcon from "@material-ui/icons/Business";
+import PeopleIcon from "@material-ui/icons/People";
+import EventIcon from "@material-ui/icons/Event";
 
 import { useState, useEffect, useCallback, useRef } from "react";
+import { TramRounded } from "@material-ui/icons";
 const useStyles = makeStyles((theme) => ({
   root: {
     display: "flex",
@@ -52,107 +38,136 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Filter = ({ filter, setFilter, toggleDrawer, filterOptions, setFilterOptions, markers}) => {
+const Filter = ({
+  filterOptions,
+  setFilterOptions,
+  markers,
+  panTo,
+  filterByDate,
+  filterByType,
+  filterByTag,
+}) => {
   const classes = useStyles();
-  const theme = useTheme();
-
-  const today = new Date();
-
-  const [filteredMarkers, setFilteredMarkers] = useState(markers);
-
-  const todaytime =
-    today.getFullYear() +
-    "-" +
-    today.getMonth() +
-    "-" +
-    today.getDay() +
-    "T" +
-    today.getHours() +
-    ":" +
-    today.getMinutes();
-
 
   const handleChange = (event) => {
-    setFilterOptions({ ...filterOptions, [event.target.name]: event.target.checked });
-    // setFilteredMarkers( markers.filter(marker => (marker.type === 0 && filterOptions.bySchool) || (marker.type === 1 && filterOptions.byOrganizer) || (marker.type === 2 && filterOptions.byStudent) ) )
+    console.log(`${event.target.name} ${event.target.checked}`);
+    setFilterOptions({
+      ...filterOptions,
+      [event.target.name]: event.target.checked,
+    });
   };
 
-  const handleFilterChange = (name, checked) => {
-    setFilter({ ...filter, [name]: checked });
-    
-  };
-
-  const [selectedDate, setSelectedDate] = useState({
-    startDate: new Date("2014-08-18T21:11:54"),
-    endDate: new Date("2014-08-18T21:11:54"),
-  });
-
-  const handleDateChange = (date) => {
-    setSelectedDate(date);
-  };
-
-  const onSaveClick = (name, checked) => {
-    console.log(`${name} and ${checked}`);
-    handleFilterChange(name, checked);
-  };
-
+  function GetTypeOfPoster(value, key) {
+    // by School
+    if (value === 0) {
+      return (
+        <Chip label="School" color="primary" icon={<SchoolIcon />} key={key} />
+      );
+    }
+    // by Organizer
+    else if (value === 1) {
+      return (
+        <Chip
+          label="Organizer"
+          color="secondary"
+          icon={<BusinessIcon />}
+          key={key}
+        />
+      );
+    }
+    // by Student
+    return <Chip label="Student" icon={<PeopleIcon />} key={key} />;
+  }
 
   const columns = [
-    { field: 'key', headerName: 'key', width: 130 },
-    { field: 'author', headerName: 'author', width: 130 },
-    { field: 'title', headerName: 'Title', width: 130 },
-    { field: 'date', headerName: 'date', width: 230 },
-    { field: 'type', headerName: 'Type', width: 130 },
+    {
+      field: "pictureURL",
+      headerName: "Picture",
+      width: 100,
+      renderCell: (params) => (
+        <>
+          <Avatar alt={params.value} src={params.value} />
+        </>
+      ),
+    },
+    { field: "author", headerName: "Author", width: 130 },
+    { field: "title", headerName: "Title", width: 130 },
+    {
+      field: "date",
+      headerName: "Date",
+      width: 160,
+    },
+    {
+      field: "type",
+      headerName: "Posted By",
+      width: 140,
+      renderCell: (params) => (
+        <>{GetTypeOfPoster(params.value, params.row.id)}</>
+      ),
+    },
+    {
+      field: "tags",
+      headerName: "Tags",
+      width: 230,
+      renderCell: (params) => (
+        <>
+          {params.value.map((data) => (
+            <Chip label={data} color="primary" key={data} />
+          ))}
+        </>
+      ),
+    },
+    {
+      field: "rating",
+      headerName: "Popularity",
+      width: 230,
+      renderCell: (params) => (
+        <>
+          <Rating
+            name="half-rating"
+            defaultValue={params.value}
+            precision={0.1}
+            readOnly
+          />
+          {params.value}
+        </>
+      ),
+    },
+    {
+      field: "detail",
+      headerName: "Details",
+      width: 120,
+      renderCell: (params) => (
+        <>
+          <IconButton
+            aria-label="detail"
+            color="secondary"
+            onClick={() => {
+              panTo({ lat: params.row.lat, lng: params.row.lng });
+              //toggleDrawer(false)
+            }}
+          >
+            <EventIcon />
+          </IconButton>
+        </>
+      ),
+    },
   ];
-  
-  const rows = [
-    { id: 1, lastName: 'Snow', firstName: 'Jon', age: 35 },
-    { id: 2, lastName: 'Lannister', firstName: 'Cersei', age: 42 },
-    { id: 3, lastName: 'Lannister', firstName: 'Jaime', age: 45 },
-    { id: 4, lastName: 'Stark', firstName: 'Arya', age: 16 },
-    { id: 5, lastName: 'Targaryen', firstName: 'Daenerys', age: null },
-    { id: 6, lastName: 'Melisandre', firstName: null, age: 150 },
-    { id: 7, lastName: 'Clifford', firstName: 'Ferrara', age: 44 },
-    { id: 8, lastName: 'Frances', firstName: 'Rossini', age: 36 },
-    { id: 9, lastName: 'Roxie', firstName: 'Harvey', age: 65 },
-  ];
-  
 
   return (
     <div className={classes.root}>
-      {/* <ListItem button className={classes.nested}>
-          <ListItemIcon>
-            <StarBorder />
-          </ListItemIcon>
-          <ListItemText primary="Inside of Nest 2!" />
-        </ListItem>
-        <ListItem button className={classes.nested}>
-          <ListItemIcon>
-            <MailIcon />
-          </ListItemIcon>
-          <ListItemText primary="Another one" />
-        </ListItem>
-        <ListItem button className={classes.nested}>
-          <ListItemIcon>
-            <InboxIcon />
-          </ListItemIcon>
-          <ListItemText primary="And Another one" />
-        </ListItem> */}
-      {/* <FormControlLabel className={classes.nested}
-            control={
-              <Checkbox
-                checked={state.checkedA}
-                onChange={handleChange}
-                name="checkedA"
-                color="primary"
-              />
-            }
-            label="primary"
-          /> */}
-      <div style={{ height: 400, width: '70%' }}>
-
-        <DataGrid rows={markers.filter(marker => (marker.type === 0 && filterOptions.bySchool) || (marker.type === 1 && filterOptions.byOrganizer) || (marker.type === 2 && filterOptions.byStudent) ) } columns={ columns } pageSize={5} checkboxSelection />
-          
+      <div style={{ height: 500, width: "70%" }}>
+        <DataGrid
+          rows={markers.filter(
+            (marker) =>
+              filterByType(marker) &&
+              filterByTag(marker) &&
+              filterByDate(marker)
+          )}
+          columns={columns}
+          pageSize={10}
+          // columnTypes={{ rating: ratingOnlyOperators }}
+        />
       </div>
       <div className={classes.nested}>
         <FormControl component="fieldset">
@@ -166,7 +181,7 @@ const Filter = ({ filter, setFilter, toggleDrawer, filterOptions, setFilterOptio
                   name="bySchool"
                 />
               }
-              label="By School Faculties (Type 0)"
+              label="By School Faculties"
             />
             <FormControlLabel
               control={
@@ -176,7 +191,7 @@ const Filter = ({ filter, setFilter, toggleDrawer, filterOptions, setFilterOptio
                   name="byOrganizer"
                 />
               }
-              label="By Outside Organizers (Type 1)"
+              label="By Outside Organizers"
             />
             <FormControlLabel
               control={
@@ -186,13 +201,10 @@ const Filter = ({ filter, setFilter, toggleDrawer, filterOptions, setFilterOptio
                   name="byStudent"
                 />
               }
-              label="By Students (Type 2)"
+              label="By Students"
             />
           </FormGroup>
           {/* <FormHelperText>Be careful</FormHelperText> */}
-        </FormControl>
-
-        <FormControl component="fieldset">
           <FormLabel component="legend">Within</FormLabel>
           <FormGroup>
             <FormControlLabel
@@ -225,21 +237,102 @@ const Filter = ({ filter, setFilter, toggleDrawer, filterOptions, setFilterOptio
               }
               label="Within 90 Days"
             />
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={filterOptions.viewAll}
+                  onChange={handleChange}
+                  name="viewAll"
+                />
+              }
+              label="View All Events"
+            />
           </FormGroup>
-          {/* <FormHelperText>Be careful</FormHelperText> */}
         </FormControl>
 
+        <FormControl component="fieldset">
+          <FormLabel component="legend">Tags</FormLabel>
+          <FormGroup>
+            <FormControlLabel
+              control={
+                <Switch
+                  checked={filterOptions.tagFree}
+                  onChange={handleChange}
+                  name="tagFree"
+                  color="primary"
+                />
+              }
+              label="Free"
+            />
+            <FormControlLabel
+              control={
+                <Switch
+                  checked={filterOptions.tagSports}
+                  onChange={handleChange}
+                  name="tagSports"
+                  color="primary"
+                />
+              }
+              label="Sports"
+            />
+            <FormControlLabel
+              control={
+                <Switch
+                  checked={filterOptions.tagArts}
+                  onChange={handleChange}
+                  name="tagArts"
+                  color="primary"
+                />
+              }
+              label="Arts"
+            />
+            <FormControlLabel
+              control={
+                <Switch
+                  checked={filterOptions.tagClub}
+                  onChange={handleChange}
+                  name="tagClub"
+                  color="primary"
+                />
+              }
+              label="Club"
+            />
+            <FormControlLabel
+              control={
+                <Switch
+                  checked={filterOptions.tagFundraiser}
+                  onChange={handleChange}
+                  name="tagFundraiser"
+                  color="primary"
+                />
+              }
+              label="Fundraiser"
+            />
+            <FormControlLabel
+              control={
+                <Switch
+                  checked={filterOptions.tagNeedTicket}
+                  onChange={handleChange}
+                  name="tagNeedTicket"
+                  color="primary"
+                />
+              }
+              label="Need Ticket"
+            />
+          </FormGroup>
+          <FormHelperText>Tags</FormHelperText>
+        </FormControl>
         <TextField
-          id="datetime-local"
-          label="Start Date"
-          type="datetime-local"
-          // defaultValue={today}
+          id="date"
+          label="Date"
+          type="date"
+          defaultValue={"2021-02-20"}
           className={classes.textField}
           InputLabelProps={{
             shrink: true,
           }}
         />
-
+        {/*
         <Button
           variant="contained"
           color="primary"
@@ -251,7 +344,7 @@ const Filter = ({ filter, setFilter, toggleDrawer, filterOptions, setFilterOptio
           }}
         >
           Save
-        </Button>
+        </Button> */}
       </div>
     </div>
   );

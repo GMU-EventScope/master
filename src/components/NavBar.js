@@ -140,6 +140,12 @@ export default function NavBar() {
     type1: true,
     type2: true,
     type3: true,
+    filterTagFree: true,
+    filterTagSports: true,
+    filterTagArts: true,
+    filterTagClub: true,
+    filterTagFundraiser: true,
+    filterTagNeedTicket: true,
   });
 
   // used in the left side bar, passed to the map which passes to EventMarker
@@ -378,40 +384,6 @@ export default function NavBar() {
             </ListItem>
           </List>
         </Collapse>
-        {/* 
-          <List>
-            {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
-              <ListItem button key={text}>
-                <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
-                <ListItemText primary={text} />
-              </ListItem>
-            ))}
-          </List>
-          <Divider />
-
-          <ProfileCard />
-
-          <Divider />
-          <EventsList mapRef={mapRef} />
-
-          <Divider />
-          <ListItem button onClick={handleClick}>
-            <ListItemIcon>
-              <InboxIcon />
-            </ListItemIcon>
-            <ListItemText primary="List of Boxes" />
-            {openFolder ? <ExpandLess /> : <ExpandMore />}
-          </ListItem>
-          <Collapse in={openFolder} timeout="auto" unmountOnExit>
-            <List component="div" disablePadding>
-              <ListItem button className={classes.nested}>
-                <ListItemIcon>
-                  <StarBorder />
-                </ListItemIcon>
-                <ListItemText primary="Inside of Nest !" />
-              </ListItem>
-            ))}
-          </List> */}
       </Drawer>
       <main
         className={clsx(classes.content, {
