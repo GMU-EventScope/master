@@ -156,7 +156,7 @@ const Filter = ({
 
   return (
     <div className={classes.root}>
-      <div style={{ height: 600, width: "70%" }}>
+      <div style={{ height: 500, width: "70%" }}>
         <DataGrid
           rows={markers.filter(
             (marker) =>
