@@ -67,70 +67,23 @@ export default [
         ]
     },
     {
-        "featureType": "administrative",
+        "featureType": "all",
         "elementType": "geometry.fill",
         "stylers": [
-            {
-                "saturation": 26
-            },
-            {
-                "color": "#ffffff"
-            },
-            {
-                "lightness": 0
-            },
-            {
-                "visibility": "on"
+            {   
+                //default color if not specified, im using this for parking lots
+                "color": "#76ef92"
             }
         ]
     },
-    {
-        "featureType": "administrative",
-        "elementType": "geometry.stroke",
-        "stylers": [
-            {
-                "visibility": "on"
-            },
-            {
-                "weight": 2
-            },
-            {
-                "color": "#000000"
-            },
-            {
-                "lightness": 17
-            }
-        ]
-    },
-    /*
-    {
-        // don't think this works. (human-made seems to be part the vector map)
-        "featureType": "landscape.human_made.buildings",
-        "elementType": "geometry.fill",
-        "stylers": [
-            {
-                //this is buildings
-                "color" : "#ffbf00"
-            }
-        ]
-    },*/
     {
         //problem with this landscapes is we can't specifiy buildings so it creates that yellow blob at the top.
+        // (human-made seems to be part the vector map), so we would need to use that
         "featureType": "landscape.man_made",
         "elementType": "geometry.fill",
         "stylers": [
             {
                 //this is buildings
-                "color" : "#ffbf00"
-            }
-        ]
-    },
-    {
-        "featureType": "landscape.natural ",
-        "elementType": "geometry.fill",
-        "stylers": [
-            {
-                //this is stadiums and fields for some reason..
                 "color" : "#ffbf00"
             }
         ]
@@ -155,10 +108,12 @@ export default [
         ]
     },
     {
-        "featureType": "poi",
+        "featureType": "poi.school",
         "elementType": "geometry.fill",
         "stylers": [
             {
+                //campus area
+                "color": "#006633"
             },
             {
                 "lightness": 0
@@ -166,12 +121,40 @@ export default [
         ]
     },
     {
-        "featureType": "poi.school",
+        "featureType": "poi.sports_complex",
         "elementType": "geometry.fill",
         "stylers": [
             {
-                //campus
-                "color": "#006633"
+                //campus sports buildings
+                "color": "#ffbf00"
+            },
+            {
+                "lightness": 0
+            }
+        ]
+    },
+    {
+        "featureType": "poi.park",
+        "elementType": "geometry.fill",
+        "stylers": [
+            {
+                //parks
+                "color": "#ffbf00"
+            },
+            {
+                "lightness": 0
+            }
+        ]
+    },
+    {
+        "featureType": "poi.business",
+        "elementType": "geometry.fill",
+        "stylers": [
+            {
+                //for some reason this targets the spuhler field and other buildings
+                //along with a big blob at the bottom left of map
+                //which is why i made it the same color as "outside campus"
+                "color": "#00937A"
             },
             {
                 "lightness": 0
