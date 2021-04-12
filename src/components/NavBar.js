@@ -46,7 +46,7 @@ import { useAuth } from "../contexts/AuthContext";
 import { useHistory } from "react-router-dom";
 import { Form, Button, Alert } from "react-bootstrap";
 
-// get firebase stuff
+//get firebase stuff
 const db = fbArray.db;
 const auth = fbArray.auth;
 
@@ -174,7 +174,6 @@ export default function NavBar() {
   const {signup, login, logout} = useAuth();
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-  const history = useHistory();
 
   //this signs people up with the stuff from the signup form
   async function handleSignup(event) {
@@ -193,7 +192,6 @@ export default function NavBar() {
       setError("");
       setLoading(true);
       await signup(signupEmailRef.current.value, signupPasswordRef.current.value, usernameRef.current.value, "user");
-      //history.push("/profile"); may need this in the future
     } catch {
       setError("Failed to create an account");
     }
@@ -235,7 +233,6 @@ export default function NavBar() {
       setError("");
       setLoading(true);
       await login(loginEmailRef.current.value, loginPasswordRef.current.value);
-      //history.push("/profile"); may need this in the future
     } catch {
       setError("Failed to log in");
     }
@@ -490,10 +487,6 @@ export default function NavBar() {
           <div className="w-100 text-center">
             Need an Account?
             <Button style={{margin: "4px"}} onClick={() => {handleLoginClose(); handleSignupShow();}}>Sign Up</Button>
-          </div>
-          <div className="w-100 text-center">
-            Are you an Organization?
-            <Button style={{margin: "4px"}} onClick={() => {handleSignupClose(); handleSignupOrgShow();}}>Organization Log In</Button>
           </div>
         </Modal.Footer>
       </Modal>

@@ -1,4 +1,4 @@
-import React, {useContext, useState, useEffect} from "react";
+import React, {useContext, useState, useRef, useEffect} from "react";
 import fbArray from '../apis/firebase.js';
 
 const AuthContext = React.createContext();
@@ -55,7 +55,7 @@ export function AuthProvider({ children }) {
     const unsubscribe = auth.onAuthStateChanged(user => {
       setCurrentUser(user);
       setLoading(false);
-    })
+    });
 
     return unsubscribe
   }, [])
