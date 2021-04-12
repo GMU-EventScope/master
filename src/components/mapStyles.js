@@ -115,8 +115,8 @@ export default [
         ]
     },*/
     {
-        //problem with this is we can't specifiy buildings so it creates that yellow blob at the top.
-        "featureType": "landscape.man-made",
+        //problem with this landscapes is we can't specifiy buildings so it creates that yellow blob at the top.
+        "featureType": "landscape.man_made",
         "elementType": "geometry.fill",
         "stylers": [
             {
@@ -126,11 +126,21 @@ export default [
         ]
     },
     {
+        "featureType": "landscape.natural ",
+        "elementType": "geometry.fill",
+        "stylers": [
+            {
+                //this is stadiums and fields for some reason..
+                "color" : "#ffbf00"
+            }
+        ]
+    },
+    {
         "featureType": "landscape.natural",
         "elementType": "geometry.fill",
         "stylers": [
             {   
-                //temp color to differentiate from campus
+                //temp color for outside campus
                 "color": "#00937A"
             }
         ]
@@ -328,7 +338,6 @@ export default [
         "stylers": [
             {
                 //color of water
-                //"color": "#083d91"
                 "color": "#134F5F"
             }
         ]
