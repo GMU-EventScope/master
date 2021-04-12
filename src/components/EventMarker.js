@@ -1,5 +1,5 @@
   import React from 'react'
-  import {Button, Card, ListGroup, ListGroupItem} from 'react-bootstrap'
+  import {Button, Card, ListGroup, ListGroupItem,ButtonToolbar,ButtonGroup } from 'react-bootstrap'
   import 'bootstrap/dist/css/bootstrap.min.css';
   //import './EventMarker.css';
   import useButtonLoader from './Buttons.js';
@@ -20,8 +20,8 @@
     //button hook thing, name the buttons here (static text, loading text)
     //useButtonLoader is in Button.js (for loading buttons)
     const [Button1Load,setLoadingButton1] = useButtonLoader("Attend","Updating..");
-    const [Button2Load,setLoadingButton2] = useButtonLoader("Save Event","Saving..");
-    const [Button3Load,setLoadingButton3] = useButtonLoader("Report","Getting Report Ready..");
+    const [Button2Load,setLoadingButton2] = useButtonLoader("Save","Saving..");
+    const [Button3Load,setLoadingButton3] = useButtonLoader("Report","Reporting..");
     
     // used to display the end date, but only if it is entered
     let useLocation = "";
@@ -36,7 +36,7 @@
     const Button1 = () => {
       //loading
       setLoadingButton1(true);
-      loadingDelay(220).then(() => {
+      loadingDelay(320).then(() => {
         console.log("This does nothing right now, need to figure out the best way to store this data.")
 
         //stops loading
@@ -48,7 +48,7 @@
     const Button2 = () => {
       //loading
       setLoadingButton2(true);
-      loadingDelay(420).then(() => {
+      loadingDelay(320).then(() => {
         // find current user doc in firestore
         const user = auth.currentUser;
         if (!user) {
@@ -121,7 +121,7 @@
     const Button3 = () => {
       //loading
       setLoadingButton3(true);
-      loadingDelay(420).then(() => {
+      loadingDelay(320).then(() => {
         //fetch stuff is placeholder
         fetch("https://jsonplaceholder.typicode.com/todos/1")
         .then((response) => response.json())
@@ -158,7 +158,14 @@
     //<Card.Img letiant="top" src="/gmulogo.png" />
     return (
         <div>
-          <Card style={{ width: '25rem'}} bg={"Light"} >   
+          <Card  options={{
+        pane: "overlayLayer",
+        alignBottom: true,
+        boxStyle: {
+            boxShadow: `3px 3px 10px rgba(0,0,0,0.6)`
+        },
+        closeBoxURL : ""
+    }} style={{ width: '25rem'}} bg={"Light"} >   
           <Card.Header>
             <Card.Text size="18">
               <h3>{props.title}</h3> Hosted by <b>{props.author}</b>
@@ -195,12 +202,17 @@
                 <Card.Link style={{fontSize: 18}} href={props.link} target="_blank"><p>Event Link</p></Card.Link>
               </div>
             }
-            <Button letiant="primary mr-2" size='lg' onClick={Button1} ref={Button1Load}>
-            </Button>
-            <Button letiant="info mr-2" size='lg' onClick={Button2} ref={Button2Load}>
-            </Button>
-            <Button letiant="danger mr-2" size='lg' onClick={Button3} ref={Button3Load}>
-            </Button>
+            <ButtonToolbar>
+              <ButtonGroup className="mr-2">
+                <Button letiant="primary mr-2" size='lg' onClick={Button1} ref={Button1Load}></Button>
+              </ButtonGroup>
+              <ButtonGroup className="mr-2">
+                <Button letiant="info mr-2" size='lg' onClick={Button2} ref={Button2Load}></Button>
+              </ButtonGroup>
+              <ButtonGroup className="mr-2">
+                <Button letiant="danger mr-2" size='lg' onClick={Button3} ref={Button3Load}></Button>
+              </ButtonGroup>
+            </ButtonToolbar>
             <a href="" className="btn btn-outline-success btn-sm">Read More</a>
           </Card.Body>
         </Card>
