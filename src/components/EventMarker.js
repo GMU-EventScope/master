@@ -166,7 +166,7 @@
     //<Card.Img letiant="top" src="/gmulogo.png" />
     return (
         <div>
-          <Card style={{ width: '25rem'}} bg={"success"} border={"warning"}>   
+          <Card style={{ width: '25rem'}} bg={"Light"} >   
           <Card.Header>
             <Card.Text size="18">
               <h3>{props.title}</h3> Hosted by <b>{props.author}</b>
