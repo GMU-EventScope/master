@@ -166,7 +166,7 @@ export default function NavBar() {
   const handleLoginClose = () => loginSetShow(false);
   const handleLoginShow = () => loginSetShow(true);
 
-  //stored variables for authentication
+  //stored letiables for authentication
   const loginEmailRef = useRef();
   const loginPasswordRef = useRef();
   const usernameRef = useRef();
@@ -264,12 +264,12 @@ export default function NavBar() {
   function viewSavedEventsButton() {
 
     // get current user
-    var user = auth.currentUser;
+    let user = auth.currentUser;
     // if user exists (you are signed in)
     if (user) {
       // access the correct document in "users"
       db.collection("users").doc(user.uid).get().then(doc => {
-        var myEvents = doc.data().savedevents;
+        let myEvents = doc.data().savedevents;
         //console.log(myEvents);
         // loop through event uids saved in the savedevents array
         if (!(myEvents === undefined)) {
@@ -318,7 +318,7 @@ export default function NavBar() {
           >
             <MenuIcon />
           </IconButton>
-          <Typography variant="h6" noWrap>
+          <Typography letiant="h6" noWrap>
             GMU EventScope📢
           </Typography>
           <section className={classes.rightToolbar}>
@@ -330,7 +330,7 @@ export default function NavBar() {
       </AppBar>
       <Drawer
         className={classes.drawer}
-        variant="persistent"
+        letiant="persistent"
         anchor="left"
         open={open}
         classes={{
@@ -400,7 +400,7 @@ export default function NavBar() {
         <Modal.Title>Sign Up</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        {error && <Alert variant="danger">{error}</Alert>}
+        {error && <Alert letiant="danger">{error}</Alert>}
         <Form onSubmit={handleSignup}>
         <Form.Group id="username">
             <Form.Label>User Name (Seen by other users)</Form.Label>
@@ -440,7 +440,7 @@ export default function NavBar() {
           <Modal.Title>Log In</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          {error && <Alert variant="danger">{error}</Alert>}
+          {error && <Alert letiant="danger">{error}</Alert>}
           <Form onSubmit={handleLogin}>
             <Form.Group id="email">
               <Form.Label>Email</Form.Label>
@@ -469,7 +469,7 @@ export default function NavBar() {
           <Modal.Title>Organization Sign Up</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          {error && <Alert variant="danger">{error}</Alert>}
+          {error && <Alert letiant="danger">{error}</Alert>}
           <Form onSubmit={handleSignupOrg}>
           <Form.Group id="username">
             <Form.Label>Organization Name (Seen by other users)</Form.Label>

@@ -24,7 +24,7 @@
     const [Button3Load,setLoadingButton3] = useButtonLoader("Report","Getting Report Ready..");
     
     // used to display the end date, but only if it is entered
-    var useLocation = "";
+    let useLocation = "";
     if (props.building) {
       useLocation = "Located in " + props.building
       if (props.room) {
@@ -77,14 +77,14 @@
             }
             else {
               // get current list of events
-              var myEvents = doc.data().savedevents;
+              let myEvents = doc.data().savedevents;
 
               if (myEvents === undefined) {
                 myEvents = [];
               }
               // check if the event is already saved
               // TODO move this to a server-side function
-              var found = false;
+              let found = false;
               myEvents.forEach(eventID => {
                 if (eventID === curEvent) {
                   console.log("Event is already saved")
@@ -143,9 +143,9 @@
 
     // gets a nice looking x:xx xm output
     function getTimeString(input) {
-      var date = input.toDate();
-      var hoursString = date.getHours();
-      var ampm = "am"
+      let date = input.toDate();
+      let hoursString = date.getHours();
+      let ampm = "am"
       if (parseInt(hoursString) >= 12) {
         ampm = "pm";
         if (parseInt(hoursString) > 12) {
@@ -155,15 +155,15 @@
       if (parseInt(hoursString) == 0) {
         hoursString = "12";
       }
-      var minutes = date.getMinutes().toString();
-      console.log(minutes.length)
+      let minutes = date.getMinutes().toString();
+      //console.log(minutes.length)
       if (minutes.length < 2) {
         minutes = "0" + minutes;
       }
       return hoursString + ":" + minutes + " " + ampm;
     }
 
-    //<Card.Img variant="top" src="/gmulogo.png" />
+    //<Card.Img letiant="top" src="/gmulogo.png" />
     return (
         <div>
           <Card style={{ width: '25rem'}} bg={"success"} border={"warning"}>   
@@ -203,11 +203,11 @@
                 <Card.Link style={{fontSize: 18}} href={props.link} target="_blank"><p>Event Link</p></Card.Link>
               </div>
             }
-            <Button variant="primary mr-2" size='lg' onClick={Button1} ref={Button1Load}>
+            <Button letiant="primary mr-2" size='lg' onClick={Button1} ref={Button1Load}>
             </Button>
-            <Button variant="info mr-2" size='lg' onClick={Button2} ref={Button2Load}>
+            <Button letiant="info mr-2" size='lg' onClick={Button2} ref={Button2Load}>
             </Button>
-            <Button variant="danger mr-2" size='lg' onClick={Button3} ref={Button3Load}>
+            <Button letiant="danger mr-2" size='lg' onClick={Button3} ref={Button3Load}>
             </Button>
             <a href="" className="btn btn-outline-success btn-sm">Read More</a>
           </Card.Body>
