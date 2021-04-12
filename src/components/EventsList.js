@@ -59,7 +59,7 @@ const EventsList = ({ mapRef, savedEvents, setSavedEvents }) => {
           if (userDoc.data() === undefined) {
             
           }
-          var myEvents = userDoc.data().savedevents;
+          let myEvents = userDoc.data().savedevents;
           const fetchedData = [];
           myEvents.forEach((eventID) => {
             // get the document in Events matching the docID
