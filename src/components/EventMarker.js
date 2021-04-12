@@ -32,29 +32,21 @@
       }
     }
     
-
-
-    //eventually change placeholder stuff to connect to firebase
-    //would also need to modify and add user stuff (so ex. save event saves to right account)
-
-    // might be a bad way of adding 0.420s delay (below in button consts)...
-    // could fetch then do loadingDelay()?
-
     //I'm here
     const Button1 = () => {
-      //essential
+      //loading
       setLoadingButton1(true);
       loadingDelay(220).then(() => {
         console.log("This does nothing right now, need to figure out the best way to store this data.")
 
-        //esential
+        //stops loading
         setLoadingButton1(false);
       }); 
     };
 
     //Save Event
     const Button2 = () => {
-      //essential
+      //loading
       setLoadingButton2(true);
       loadingDelay(420).then(() => {
         // find current user doc in firestore
@@ -120,14 +112,14 @@
             } 
         });
         
-        //esential
+        //stops loading
         setLoadingButton2(false);
       });
     };
 
     //Report
     const Button3 = () => {
-      //essential
+      //loading
       setLoadingButton3(true);
       loadingDelay(420).then(() => {
         //fetch stuff is placeholder
@@ -135,7 +127,7 @@
         .then((response) => response.json())
         .then((json) => {
           console.log(json);
-          //esential
+          //stops loading
           setLoadingButton3(false);
         });
       });
