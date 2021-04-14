@@ -221,10 +221,10 @@ export default function NavBar() {
     try {
       setError("");
       setLoading(true);
-      await signup(signupEmailRef.current.value, signupPasswordRef.current.value, orgnameRef.current.value, "org");
-      //history.push("/profile"); may need this in the future
+      var errorMessage = await signup(signupOrgEmailRef.current.value, signupOrgPasswordRef.current.value, orgnameRef.current.value, "org");
+      console.log(errorMessage);
     } catch {
-      setError("Failed to create an account");
+      setError(errorMessage);
     }
 
     setLoading(false);

@@ -24,7 +24,12 @@ export function AuthProvider({ children }) {
           username: username,
           accountType: accountType,
           savedevents: [] // add the biography to the user;
-      });
+      }).catch((error) => {
+        var errorCode = error.code;
+        var errorMessage = error.message;
+        console.log(errorMessage);
+        return errorMessage;
+      })
     });
   }
 
