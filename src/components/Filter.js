@@ -47,7 +47,8 @@ const Filter = ({
   filterByType,
   filterByTag,
   setSelected,
-  setBottomOption
+  setBottomOption,
+  setMarkers
 }) => {
   const classes = useStyles();
 
@@ -161,7 +162,7 @@ const Filter = ({
 
   return (
     <div className={classes.root}>
-      <div style={{ height: 500, width: "70%" }}>
+      <div style={{ height: 450, width: "70%" }}>
         <DataGrid
           rows={markers.filter(
             (marker) =>
@@ -171,6 +172,7 @@ const Filter = ({
           )}
           columns={columns}
           pageSize={10}
+
           // columnTypes={{ rating: ratingOnlyOperators }}
         />
       </div>

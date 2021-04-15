@@ -325,6 +325,7 @@ const Map = ({ mapRef, filter, setFilter, savedEvents, setSavedEvents }) => {
             filterByTag={filterByTag}
             setSelected={setSelected}
             setBottomOption={setBottomOption}
+            setMarkers={setMarkers}
           />
         </Drawer>
       </div>
