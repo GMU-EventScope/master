@@ -49,16 +49,16 @@ const options = {
   clickableIcons: false,
   restriction: {
     latLngBounds: {
-      east: center.lng + 0.01,
+      east: center.lng + 0.011,
       north: center.lat + 0.008,
-      south: center.lat - 0.005,
-      west: center.lng - 0.025,
+      south: center.lat - 0.006, 
+      west: center.lng - 0.0249,
     },
     strictBounds: true,
   },
 };
 
-const Map = ({ mapRef, filter, setFilter }) => {
+const Map = ({ mapRef, filter, setFilter, savedEvents, setSavedEvents }) => {
   const classes = useStyles();
   const theme = useTheme();
   // Load the google map api key from .env file by useLoadScript function
@@ -230,7 +230,9 @@ const Map = ({ mapRef, filter, setFilter }) => {
         zoom={16}
         center={center}
         options={options}
-        //onClick={onMapClick}
+        onClick={() => {
+          setSelected(null);
+        }}
         onLoad={onMapLoad}
       >
         {markers
@@ -270,7 +272,15 @@ const Map = ({ mapRef, filter, setFilter }) => {
               lat={selected.lat}
               lng={selected.lng}
               docID={selected.key}
+              building={selected.building}
+              room={selected.room}
+              date={selected.date}
+              enddate={selected.enddate}
+              link={selected.link}
+              savedEvents={savedEvents} 
+              setSavedEvents={setSavedEvents}
             />
+            
           </InfoWindow>
         ) : null}
       </GoogleMap>
