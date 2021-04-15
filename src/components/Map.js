@@ -10,7 +10,7 @@ import mapStyles from "./mapStyles";
 
 import EventMarker from "./EventMarker";
 import fbArray from "../apis/firebase.js";
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useState, useEffect, useCallback } from "react";
 import Button from "@material-ui/core/Button";
 import Drawer from "@material-ui/core/Drawer";
 import SettingsIcon from "@material-ui/icons/Settings";
@@ -60,7 +60,6 @@ const options = {
 
 const Map = ({ mapRef, filter, setFilter, savedEvents, setSavedEvents }) => {
   const classes = useStyles();
-  const theme = useTheme();
   // Load the google map api key from .env file by useLoadScript function
   const { isLoaded, loadError } = useLoadScript({
     googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAP_API_KEY,
@@ -71,8 +70,6 @@ const Map = ({ mapRef, filter, setFilter, savedEvents, setSavedEvents }) => {
   const [selected, setSelected] = useState(null);
 
   const [bottomOption, setBottomOption] = useState(false);
-
-  // const mapRef = useRef();
 
   // Use Callbacks to make sure not rendering map everytime
   const onMapLoad = useCallback((map) => {
@@ -202,7 +199,6 @@ const Map = ({ mapRef, filter, setFilter, savedEvents, setSavedEvents }) => {
     });
     // set Events with fetchedDate array
     setEvents(fetchedData);
-    console.log(`map rendered again !`);
   };
 
   // useEffect fetch events when the page renders
@@ -309,6 +305,8 @@ const Map = ({ mapRef, filter, setFilter, savedEvents, setSavedEvents }) => {
             filterByDate={filterByDate}
             filterByType={filterByType}
             filterByTag={filterByTag}
+            setSelected={setSelected}
+            setBottomOption={setBottomOption}
           />
         </Drawer>
       </div>

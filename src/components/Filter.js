@@ -46,6 +46,8 @@ const Filter = ({
   filterByDate,
   filterByType,
   filterByTag,
+  setSelected,
+  setBottomOption
 }) => {
   const classes = useStyles();
 
@@ -144,6 +146,9 @@ const Filter = ({
             color="secondary"
             onClick={() => {
               panTo({ lat: params.row.lat, lng: params.row.lng });
+              setSelected(params.row);
+             console.log(params.row)
+             setBottomOption(false)
               //toggleDrawer(false)
             }}
           >
