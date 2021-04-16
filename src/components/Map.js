@@ -10,7 +10,7 @@ import mapStyles from "./mapStyles";
 
 import EventMarker from "./EventMarker";
 import fbArray from "../apis/firebase.js";
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useState, useEffect, useCallback } from "react";
 import Button from "@material-ui/core/Button";
 import Drawer from "@material-ui/core/Drawer";
 import SettingsIcon from "@material-ui/icons/Settings";
@@ -60,7 +60,6 @@ const options = {
 
 const Map = ({ mapRef, filter, setFilter, savedEvents, setSavedEvents }) => {
   const classes = useStyles();
-  const theme = useTheme();
   // Load the google map api key from .env file by useLoadScript function
   const { isLoaded, loadError } = useLoadScript({
     googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAP_API_KEY,
@@ -71,8 +70,6 @@ const Map = ({ mapRef, filter, setFilter, savedEvents, setSavedEvents }) => {
   const [selected, setSelected] = useState(null);
 
   const [bottomOption, setBottomOption] = useState(false);
-
-  // const mapRef = useRef();
 
   // Use Callbacks to make sure not rendering map everytime
   const onMapLoad = useCallback((map) => {
@@ -195,6 +192,7 @@ const Map = ({ mapRef, filter, setFilter, savedEvents, setSavedEvents }) => {
                 rating: item.data().rating,
                 pictureName: item.data().pictureName,
                 pictureURL: url,
+                size: 70
               },
             ]);
           });
@@ -202,7 +200,6 @@ const Map = ({ mapRef, filter, setFilter, savedEvents, setSavedEvents }) => {
     });
     // set Events with fetchedDate array
     setEvents(fetchedData);
-    console.log(`map rendered again !`);
   };
 
   // useEffect fetch events when the page renders
@@ -215,11 +212,11 @@ const Map = ({ mapRef, filter, setFilter, savedEvents, setSavedEvents }) => {
 
   // simple function to differentiate types
   function getLogoType(type) {
-    if (type == 1) {
-      return `/patriotlogo.png`;
-    } else if (type == 2) {
-      return `/gmustar.png`;
-    } else return `/wearemason.png`;
+    if (type === 0) {
+      return `/school.png`;
+    } else if (type === 1) {
+      return `/building.png`;
+    } else return `/graduates.png`;
   }
 
   return (
@@ -249,11 +246,28 @@ const Map = ({ mapRef, filter, setFilter, savedEvents, setSavedEvents }) => {
               onClick={() => {
                 setSelected(marker);
               }}
+              onMouseOver={() => {
+                setMarkers(
+                  markers.map(item => 
+                      item.id === marker.id 
+                      ? {...item, size : 80} 
+                      : item 
+                ))              
+              }}
+              onMouseOut={() => {
+                setMarkers(
+                  markers.map(item => 
+                      item.id === marker.id 
+                      ? {...item, size : 70} 
+                      : item 
+                )) 
+              }}  
+
               icon={{
                 url: getLogoType(marker.type),
                 origin: new window.google.maps.Point(0, 0),
                 anchor: new window.google.maps.Point(15, 15),
-                scaledSize: new window.google.maps.Size(70, 70),
+                scaledSize: new window.google.maps.Size(marker.size, marker.size),
               }}
             />
           ))}
@@ -309,6 +323,9 @@ const Map = ({ mapRef, filter, setFilter, savedEvents, setSavedEvents }) => {
             filterByDate={filterByDate}
             filterByType={filterByType}
             filterByTag={filterByTag}
+            setSelected={setSelected}
+            setBottomOption={setBottomOption}
+            setMarkers={setMarkers}
           />
         </Drawer>
       </div>
