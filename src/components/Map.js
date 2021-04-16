@@ -50,7 +50,7 @@ const options = {
   restriction: {
     latLngBounds: {
       east: center.lng + 0.011,
-      north: center.lat + 0.008,
+      north: center.lat + 0.00666,
       south: center.lat - 0.006, 
       west: center.lng - 0.0249,
     },
