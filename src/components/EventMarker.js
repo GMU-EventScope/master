@@ -166,7 +166,7 @@
         },
         closeBoxURL : ""
     }} style={{ width: '25rem' }} bg={"Light"} >   
-        <Card.Img letiant="top" src="/gmulogo.png" style={{width: 220, height: 220, borderRadius: 200}}/>
+        <Card.Img letiant="top" class="mx-auto" src="/gmulogo.png" style={{width: 220, height: 220, borderRadius: 200}}/>
           <Card.Header className="text-center">
             <Card.Text size="18">
               <h3>{props.title}</h3> Hosted by <b>{props.author}</b>
