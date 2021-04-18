@@ -43,7 +43,6 @@ import fbArray from '../apis/firebase.js';
 //auth (login/signup) stuff//
 import Modal from "react-bootstrap/Modal";
 import { useAuth } from "../contexts/AuthContext";
-import { useHistory } from "react-router-dom";
 import { Form, Button, Alert } from "react-bootstrap";
 
 //get firebase stuff
@@ -166,7 +165,7 @@ export default function NavBar() {
   const handleLoginClose = () => loginSetShow(false);
   const handleLoginShow = () => loginSetShow(true);
 
-  //stored letiables for authentication
+  //stored values for authentication
   const loginEmailRef = useRef();
   const loginPasswordRef = useRef();
   const usernameRef = useRef();
@@ -418,7 +417,7 @@ export default function NavBar() {
               <Form.Label>Password Confirmation</Form.Label>
               <Form.Control type="password" ref={signupConfPasswordRef} required />
             </Form.Group>
-            <Button disabled={loading} className="w-100" style={{backgroundColor: "#006633"}} type="submit">
+            <Button disabled={loading} className="w-100" style={{backgroundColor: "#006633"}} onClick={handleSignupClose}type="submit">
               Sign Up
             </Button>
           </Form>
@@ -450,7 +449,7 @@ export default function NavBar() {
               <Form.Label>Password</Form.Label>
               <Form.Control type="password" ref={loginPasswordRef} required />
             </Form.Group>
-            <Button disabled={loading} className="w-100" style={{backgroundColor: "#006633"}} type="submit">
+            <Button disabled={loading} className="w-100" style={{backgroundColor: "#006633"}} onClick={handleLoginClose} type="submit">
               Log In
             </Button>
           </Form>
@@ -487,7 +486,7 @@ export default function NavBar() {
               <Form.Label>Password Confirmation</Form.Label>
               <Form.Control type="password" ref={signupOrgConfPasswordRef} required />
             </Form.Group>
-            <Button disabled={loading} className="w-100" style={{backgroundColor: "#006633"}} type="submit">
+            <Button disabled={loading} className="w-100" style={{backgroundColor: "#006633"}} onClick={handleSignupOrgClose} type="submit">
               Sign Up
             </Button>
           </Form>

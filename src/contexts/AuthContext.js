@@ -1,4 +1,4 @@
-import React, {useContext, useState, useRef, useEffect} from "react";
+import React, {useContext, useState,  useEffect} from "react";
 import fbArray from '../apis/firebase.js';
 
 const AuthContext = React.createContext();
@@ -25,7 +25,6 @@ export function AuthProvider({ children }) {
           accountType: accountType,
           savedevents: [] // add the biography to the user;
       }).catch((error) => {
-        var errorCode = error.code;
         var errorMessage = error.message;
         console.log(errorMessage);
         return errorMessage;
