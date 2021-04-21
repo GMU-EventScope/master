@@ -166,7 +166,7 @@
         },
         closeBoxURL : ""
     }} style={{ width: '25rem' }} bg={"Light"} >   
-        <Card.Img letiant="top" class="mx-auto" src="/gmulogo.png" style={{width: 220, height: 220, borderRadius: 200}}/>
+        <Card.Img variant="top" class="mx-auto" src="/gmulogo.png" style={{width: 220, height: 220, borderRadius: 200}}/>
           <Card.Header className="text-center">
             <Card.Text size="18">
               <h3>{props.title}</h3> Hosted by <b>{props.author}</b>
@@ -205,13 +205,13 @@
             }
             <ButtonToolbar>
               <ButtonGroup className="mr-2">
-                <Button letiant="primary mr-2" size='lg' onClick={Button1} ref={Button1Load}></Button>
+                <Button variant="primary mr-2" size='lg' onClick={Button1} ref={Button1Load}></Button>
               </ButtonGroup>
               <ButtonGroup className="mr-2">
-                <Button letiant="info mr-2" size='lg' onClick={Button2} ref={Button2Load}></Button>
+                <Button variant="info mr-2" size='lg' onClick={Button2} ref={Button2Load}></Button>
               </ButtonGroup>
               <ButtonGroup className="mr-2">
-                <Button letiant="danger mr-2" size='lg' onClick={Button3} ref={Button3Load}></Button>
+                <Button variant="danger mr-2" size='lg' onClick={Button3} ref={Button3Load}></Button>
               </ButtonGroup>
             </ButtonToolbar>
             <a href="" className="btn btn-outline-success btn-sm">Read More</a>
