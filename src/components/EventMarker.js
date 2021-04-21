@@ -1,7 +1,6 @@
   import React from 'react'
   import {Button, Card, ListGroup, ListGroupItem,ButtonToolbar,ButtonGroup } from 'react-bootstrap'
   import 'bootstrap/dist/css/bootstrap.min.css';
-  //import './EventMarker.css';
   import useButtonLoader from './Buttons.js';
   import fbArray from '../apis/firebase.js';
 
@@ -156,17 +155,19 @@
     }
 
     //<Card.Img letiant="top" src="/gmulogo.png" />
+
     return (
         <div>
-          <Card  options={{
+          <Card options={{
         pane: "overlayLayer",
         alignBottom: true,
         boxStyle: {
             boxShadow: `3px 3px 10px rgba(0,0,0,0.6)`
         },
         closeBoxURL : ""
-    }} style={{ width: '25rem'}} bg={"Light"} >   
-          <Card.Header>
+    }} style={{ width: '25rem' }} bg={"Light"} >   
+        <Card.Img letiant="top" class="mx-auto" src="/gmulogo.png" style={{width: 220, height: 220, borderRadius: 200}}/>
+          <Card.Header className="text-center">
             <Card.Text size="18">
               <h3>{props.title}</h3> Hosted by <b>{props.author}</b>
             </Card.Text>
