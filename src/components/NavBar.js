@@ -17,7 +17,7 @@ import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
 import InboxIcon from "@material-ui/icons/MoveToInbox";
 import MailIcon from "@material-ui/icons/Mail";
-
+import MaterialButton from '@material-ui/core/Button';
 //Button from "@material-ui/core/Button";
 
 import Collapse from "@material-ui/core/Collapse";
@@ -109,6 +109,9 @@ const useStyles = makeStyles((theme) => ({
   rightToolbar: {
     marginLeft: "auto",
     marginRight: -12,
+    '& > *': {
+      margin: theme.spacing(0.5),
+    },
   },
   nested: {
     paddingLeft: theme.spacing(4),
@@ -321,9 +324,17 @@ export default function NavBar() {
             GMU EventScope📢
           </Typography>
           <section className={classes.rightToolbar}>
-            <button type="button" className="btn btn-signIn" onClick={handleLoginShow}> Login/SignUp </button>
-            <button type="button" className="btn btn-logout" onClick={handleLogout}> Log Out</button>
-            <button type="button" className="btn btn-viewSavedEvents" onClick={viewSavedEventsButton}> View Saved Events</button>
+            <MaterialButton variant="outlined" onClick={handleLoginShow}>
+            Login/SignUp
+            </MaterialButton>
+            <MaterialButton variant="outlined" onClick={handleLogout}>
+            Log Out
+            </MaterialButton>
+            <MaterialButton variant="outlined" onClick={viewSavedEventsButton}>
+            View Saved Events
+            </MaterialButton>
+
+
           </section>
         </Toolbar>
       </AppBar>
