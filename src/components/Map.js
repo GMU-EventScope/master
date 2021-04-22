@@ -57,7 +57,6 @@ const db = fbArray.db;
 const libraries = ["places"];
 const mapContainerStyle = {
   height:"calc(100vh - 64px)",
-  // height: "100vh",
   width: "100%",
 };
 
