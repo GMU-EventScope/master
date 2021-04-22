@@ -16,7 +16,7 @@ import { makeStyles, useTheme } from "@material-ui/core/styles";
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    display: "flex",
+    flex: "1 1 auto",
   },
   button: {
     display: "flex",
@@ -41,7 +41,8 @@ const useStyles = makeStyles((theme) => ({
 const db = fbArray.db;
 const libraries = ["places"];
 const mapContainerStyle = {
-  height: "90vh",
+  height:"calc(100vh - 64px)",
+  // height: "100vh",
   width: "100%",
 };
 
@@ -229,7 +230,7 @@ const Map = ({ mapRef, filter, setFilter, savedEvents, setSavedEvents }) => {
   }
 
   return (
-    <>
+    <div className={classes.root}>
       <GoogleMap
         id="map"
         mapContainerStyle={mapContainerStyle}
@@ -344,7 +345,7 @@ const Map = ({ mapRef, filter, setFilter, savedEvents, setSavedEvents }) => {
           />
         </Drawer>
       </div> */}
-    </>
+    </div>
   );
 };
 
