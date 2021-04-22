@@ -30,6 +30,9 @@ import NotificationsIcon from "@material-ui/icons/Notifications";
 import SearchIcon from '@material-ui/icons/Search';
 import InputBase from '@material-ui/core/InputBase';
 
+import Snackbar from '@material-ui/core/Snackbar';
+import MuiAlert from '@material-ui/lab/Alert';
+
 import FaceIcon from '@material-ui/icons/Face';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import AccountBoxIcon from '@material-ui/icons/AccountBox';
@@ -208,6 +211,11 @@ export default function NavBar() {
   const handleMenuClose = () => {
     setAnchorEl(null);
   };
+
+  const handleMenuCloseWithSnackBar = (message, severity) => {
+    handleSnackBarClick(message, severity);
+    setAnchorEl(null);
+  };
   const renderMenu = (
     <Menu
       anchorEl={anchorEl}
@@ -218,25 +226,25 @@ export default function NavBar() {
       open={isMenuOpen}
       onClose={handleMenuClose}
     >
-      <MenuItem onClick={handleMenuClose}>
+      <MenuItem onClick={() => handleMenuCloseWithSnackBar('Profile Clicked', 'error')}>
         <ListItemIcon>
           <FaceIcon />
         </ListItemIcon>
         <Typography variant="inherit">Profile</Typography>
       </MenuItem>
-      <MenuItem onClick={handleMenuClose}>
+      <MenuItem onClick={() => handleMenuCloseWithSnackBar('My account Clicked', 'warning')}>
         <ListItemIcon>
           <AccountBoxIcon />
         </ListItemIcon>
         <Typography variant="inherit">My account</Typography>
       </MenuItem>
-      <MenuItem onClick={handleMenuClose}>
+      <MenuItem onClick={() => handleMenuCloseWithSnackBar('View Saved Events Clicked', 'info')}>
         <ListItemIcon>
           <EventIcon />
         </ListItemIcon>
         <Typography variant="inherit">View Saved Events</Typography>
       </MenuItem>
-      <MenuItem onClick={handleMenuClose}>
+      <MenuItem onClick={() => handleMenuCloseWithSnackBar('Logout Clicked', 'success')}>
         <ListItemIcon>
           <ExitToAppIcon />
         </ListItemIcon>
@@ -244,6 +252,29 @@ export default function NavBar() {
       </MenuItem>
     </Menu>
   );
+
+
+  const [snackbarOpen, setSnackbaropen] = React.useState(false);
+  const [snackbarMessage, setSnackbarMessage] = React.useState('');
+  const [snackbarSeverity, setSnackbarSeverity] = React.useState('success');
+  const handleSnackBarClick = (message, severity) => {
+    setSnackbarMessage(message);
+    setSnackbarSeverity(severity);
+    setSnackbaropen(true);
+  };
+
+  const handleSnackBarClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setSnackbaropen(false);
+  };
+
+  function Alert(props) {
+    return <MuiAlert elevation={6} variant="filled" {...props} />;
+  }
+
+
 
   //handle visibility of the login or signup modals
   const handleSignupClose = () => signupSetShow(false);
@@ -445,16 +476,18 @@ export default function NavBar() {
             />
           </div>
             <section className={classes.rightToolbar}>
-              <IconButton aria-label="show 4 new mails" color="inherit">
-                <Badge badgeContent={4} color="secondary">
+              <IconButton aria-label="show 4 new mails" color="inherit"
+              onClick={()=> handleSnackBarClick('infobox Clicked !', 'success')}>
+                <Badge badgeContent={1} color="secondary">
                   <MailIcon />
                 </Badge>
               </IconButton>
               <IconButton
                 aria-label="show 17 new notifications"
                 color="inherit"
+                onClick={()=> handleSnackBarClick('Bell Clicked', 'error')}
               >
-                <Badge badgeContent={17} color="secondary">
+                <Badge badgeContent={5} color="secondary">
                   <NotificationsIcon />
                 </Badge>
               </IconButton>
@@ -749,6 +782,12 @@ export default function NavBar() {
           </Modal.Footer>
         </Modal>
       </div>
+      <Snackbar open={snackbarOpen} autoHideDuration={5000} onClose={handleSnackBarClose}>
+      <Alert onClose={handleSnackBarClose} severity={snackbarSeverity}>
+        {snackbarMessage}
+      </Alert>
+    </Snackbar>
+
       {renderMenu}
     </>
   );

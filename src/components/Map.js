@@ -196,8 +196,9 @@ const Map = ({ mapRef, filter, setFilter, savedEvents, setSavedEvents }) => {
       } else {
         fetchedData.push(item.data());
 
+
         fbArray.storage
-          .ref(item.data().pictureName)
+          .ref(`profile/${item.data().pictureName}`)
           .getDownloadURL()
           .then((url) => {
             // set a new Marker based on the iterating item
@@ -221,6 +222,7 @@ const Map = ({ mapRef, filter, setFilter, savedEvents, setSavedEvents }) => {
               },
             ]);
           });
+        
       }
     });
     // set Events with fetchedDate array
