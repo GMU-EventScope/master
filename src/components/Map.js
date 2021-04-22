@@ -7,12 +7,15 @@ import {
 } from "@react-google-maps/api";
 import "@reach/combobox/styles.css";
 import Fab from '@material-ui/core/Fab';
-import SettingsIcon from '@material-ui/icons/Settings';
+import EditLocationOutlinedIcon from '@material-ui/icons/EditLocationOutlined';
+import { green } from '@material-ui/core/colors';
 import mapStyles from "./mapStyles";
 import EventMarker from "./EventMarker";
 import fbArray from "../apis/firebase.js";
 import { useState, useEffect, useCallback } from "react";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
+import Filter from './Filter'
+import Drawer from '@material-ui/core/Drawer';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -25,14 +28,26 @@ const useStyles = makeStyles((theme) => ({
   },
   filterButton: {
     position: "fixed",
-    bottom: 50,
+    bottom: 30,
     right: 60,
   },
   margin: {
     margin: theme.spacing(1),
+    color: theme.palette.common.white,
+    backgroundColor: green[500],
+    '&:hover': {
+      backgroundColor: green[600],
+    },
   },
   extendedIcon: {
     marginRight: theme.spacing(1),
+  },
+  fabGreen: {
+    color: theme.palette.common.white,
+    backgroundColor: green[500],
+    '&:hover': {
+      backgroundColor: green[600],
+    },
   },
   
 }));
@@ -309,10 +324,28 @@ const Map = ({ mapRef, filter, setFilter, savedEvents, setSavedEvents }) => {
         ) : null}
       </GoogleMap>
       <div className={classes.filterButton}>
-        <Fab variant="extended" color="primary" aria-label="add" className={classes.margin}>
-            <SettingsIcon className={classes.extendedIcon} />
+        <Fab variant="extended" color="inherit" aria-label="add" className={classes.margin} onClick={toggleDrawer(true)}>
+            <EditLocationOutlinedIcon className={classes.extendedIcon} />
             Filter
         </Fab>
+        <Drawer
+          anchor="bottom"
+          open={bottomOption}
+          onClose={toggleDrawer(false)}
+        >
+        <Filter
+            filterOptions={filterOptions}
+            setFilterOptions={setFilterOptions}
+            markers={markers}
+            panTo={panTo}
+            filterByDate={filterByDate}
+            filterByType={filterByType}
+            filterByTag={filterByTag}
+            setSelected={setSelected}
+            setBottomOption={setBottomOption}
+            setMarkers={setMarkers}
+          />
+        </Drawer>
       </div>
 
       {/* <div className={classes.button}>
