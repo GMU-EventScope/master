@@ -1,7 +1,7 @@
 <h1 align="center">
 	<img
-		width="300"
-		alt="The Lounge"
+		width="400"
+		alt="EventScope"
 		src="img/logo_h.png">
 </h1>
 
@@ -11,11 +11,11 @@
 
 <p align="center">
 	<strong>
-		<a href="">Website</a>
+		<a href="">Demo Website</a>
 		•
 		<a href="">Docs</a>
 		•
-		<a href="">Demo</a>
+		<a href="">Demo Video</a>
 	</strong>
 </p>
 <!-- <p align="center">
@@ -47,6 +47,15 @@
 
 To learn more about configuration, usage and features of EventScope, take a look at [the website](https://).
 
+
+## Bulit With
+
+* [NodeJS](https://nodejs.org/en/)
+* [ReactJs](https://reactjs.org/)
+* [FireBase](https://firebase.google.com/)
+* [Material UI](https://material-ui.com/)
+* [React Bootstrap](https://react-bootstrap.github.io/)
+
 ## Installation and usage
 
 The Lounge requires latest [Node.js](https://nodejs.org/) LTS version or more recent.
@@ -63,8 +72,8 @@ npm install
 npm start
 ```
 
-⚠️ While it is the most recent codebase, this is not production-ready! Run at
-your own risk. It is also not recommended to run this as root.
+⚠️ While it is the most recent codebase, this is not production-ready! 
+Run at your own risk. It is also not recommended to run this as root.
 
 ## Development setup
 
@@ -73,11 +82,14 @@ fork.
 
 Before submitting any change, make sure to:
 
-- Read the [Contributing instructions](https://github.com/thelounge/thelounge/blob/master/.github/CONTRIBUTING.md#contributing)
+- Create your Feature Branch (`git checkout -b feature/yourbranch`)
+- Commit your Changes (`git commit -m 'Add some yourbranch'`)
+- Push to the Branch (`git push origin feature/yourbranch`)
 - Run `npm test` to execute linters and test suite
 - Run `npm build` if you change or add anything in `src/contexts` or `src/components`
 - `npm dev` can be used to start EventScope with hot module reloading
+- Open a pull request
 
 ## License
 
-Distributed under the MIT License. See `LICENSE` for more information.
+Distributed under the GNU General Public License v3.0. See `LICENSE` for more information.
