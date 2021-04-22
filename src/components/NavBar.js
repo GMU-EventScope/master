@@ -23,6 +23,11 @@ import ExpandLess from "@material-ui/icons/ExpandLess";
 import ExpandMore from "@material-ui/icons/ExpandMore";
 import StarBorder from "@material-ui/icons/StarBorder";
 
+import Badge from '@material-ui/core/Badge';
+import AccountCircle from '@material-ui/icons/AccountCircle';
+import NotificationsIcon from '@material-ui/icons/Notifications';
+
+
 import Map from "./Map";
 import ProfileCard from "./ProfileCard";
 import EventsList from "./EventsList";
@@ -316,6 +321,26 @@ export default function NavBar() {
           <span role="img" aria-label="mapemoji">🗺️</span> GMU EventScope <span role="img" aria-label="megaphoneemoji">📢</span>
           </Typography>
           <section className={classes.rightToolbar}>
+            <IconButton aria-label="show 4 new mails" color="inherit">
+              <Badge badgeContent={4} color="secondary">
+                <MailIcon />
+              </Badge>
+            </IconButton>
+            <IconButton aria-label="show 17 new notifications" color="inherit">
+              <Badge badgeContent={17} color="secondary">
+                <NotificationsIcon />
+              </Badge>
+            </IconButton>
+            <IconButton
+              edge="end"
+              aria-label="account of current user"
+              // aria-controls={}
+              aria-haspopup="true"
+              // onClick={handleProfileMenuOpen}
+              color="inherit"
+            >
+              <AccountCircle />
+            </IconButton>
             <MaterialButton variant="outlined" color="inherit" onClick={handleLoginShow}>
             Login/SignUp
             </MaterialButton>

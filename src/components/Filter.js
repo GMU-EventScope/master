@@ -18,6 +18,8 @@ import SchoolIcon from "@material-ui/icons/School";
 import BusinessIcon from "@material-ui/icons/Business";
 import PeopleIcon from "@material-ui/icons/People";
 import EventIcon from "@material-ui/icons/Event";
+import WhatshotIcon from '@material-ui/icons/Whatshot';
+
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -128,6 +130,7 @@ const Filter = ({
             name="half-rating"
             defaultValue={params.value}
             precision={0.1}
+            icon={<WhatshotIcon fontSize="inherit" />}
             readOnly
           />
           {params.value}
