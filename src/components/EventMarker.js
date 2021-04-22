@@ -1,5 +1,5 @@
   import React from 'react'
-  import {Button, Card, ListGroup, ListGroupItem,ButtonToolbar,ButtonGroup } from 'react-bootstrap'
+  import {Button, Card,ButtonToolbar,ButtonGroup } from 'react-bootstrap'
   import 'bootstrap/dist/css/bootstrap.min.css';
   import useButtonLoader from './Buttons.js';
   import fbArray from '../apis/firebase.js';
@@ -106,7 +106,7 @@
                   savedevents: myEvents
                 });
 
-                props.setSavedEvents(props.savedEvents.filter(item => item.docID != curEvent));
+                props.setSavedEvents(props.savedEvents.filter(item => item.docID !== curEvent));
               }
             } 
         });
@@ -133,26 +133,26 @@
     };
 
     // gets a nice looking x:xx xm output
-    function getTimeString(input) {
-      let date = input.toDate();
-      let hoursString = date.getHours();
-      let ampm = "am"
-      if (parseInt(hoursString) >= 12) {
-        ampm = "pm";
-        if (parseInt(hoursString) > 12) {
-          hoursString = (parseInt(hoursString)-12).toString();
-        }
-      }
-      if (parseInt(hoursString) == 0) {
-        hoursString = "12";
-      }
-      let minutes = date.getMinutes().toString();
-      //console.log(minutes.length)
-      if (minutes.length < 2) {
-        minutes = "0" + minutes;
-      }
-      return hoursString + ":" + minutes + " " + ampm;
-    }
+    // function getTimeString(input) {
+    //   let date = input.toDate();
+    //   let hoursString = date.getHours();
+    //   let ampm = "am"
+    //   if (parseInt(hoursString) >= 12) {
+    //     ampm = "pm";
+    //     if (parseInt(hoursString) > 12) {
+    //       hoursString = (parseInt(hoursString)-12).toString();
+    //     }
+    //   }
+    //   if (parseInt(hoursString) == 0) {
+    //     hoursString = "12";
+    //   }
+    //   let minutes = date.getMinutes().toString();
+    //   //console.log(minutes.length)
+    //   if (minutes.length < 2) {
+    //     minutes = "0" + minutes;
+    //   }
+    //   return hoursString + ":" + minutes + " " + ampm;
+    // }
 
     return (
         <div>

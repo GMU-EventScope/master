@@ -18,11 +18,7 @@ import ListItemText from "@material-ui/core/ListItemText";
 import InboxIcon from "@material-ui/icons/MoveToInbox";
 import MailIcon from "@material-ui/icons/Mail";
 import MaterialButton from '@material-ui/core/Button';
-//Button from "@material-ui/core/Button";
-
 import Collapse from "@material-ui/core/Collapse";
-import DraftsIcon from "@material-ui/icons/Drafts";
-import SendIcon from "@material-ui/icons/Send";
 import ExpandLess from "@material-ui/icons/ExpandLess";
 import ExpandMore from "@material-ui/icons/ExpandMore";
 import StarBorder from "@material-ui/icons/StarBorder";
@@ -30,11 +26,8 @@ import StarBorder from "@material-ui/icons/StarBorder";
 import Map from "./Map";
 import ProfileCard from "./ProfileCard";
 import EventsList from "./EventsList";
-import Popup from "./Popup";
 
-import Filter from "./Filter"
-
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useState ,useRef } from "react";
 
 
 
@@ -43,7 +36,6 @@ import fbArray from '../apis/firebase.js';
 //auth (login/signup) stuff//
 import Modal from "react-bootstrap/Modal";
 import { useAuth } from "../contexts/AuthContext";
-import { useHistory } from "react-router-dom";
 import { Form, Button, Alert } from "react-bootstrap";
 
 //get firebase stuff
@@ -321,7 +313,7 @@ export default function NavBar() {
             <MenuIcon />
           </IconButton>
           <Typography variant="h6" noWrap>
-           🗺️ GMU EventScope 📢
+          <span role="img" aria-label="mapemoji">🗺️</span> GMU EventScope <span role="img" aria-label="megaphoneemoji">📢</span>
           </Typography>
           <section className={classes.rightToolbar}>
             <MaterialButton variant="outlined" color="inherit" onClick={handleLoginShow}>

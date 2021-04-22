@@ -13,7 +13,7 @@ import mapStyles from "./mapStyles";
 import EventMarker from "./EventMarker";
 import fbArray from "../apis/firebase.js";
 import { useState, useEffect, useCallback } from "react";
-import { makeStyles, useTheme } from "@material-ui/core/styles";
+import { makeStyles } from "@material-ui/core/styles";
 import Filter from './Filter'
 import Drawer from '@material-ui/core/Drawer';
 
