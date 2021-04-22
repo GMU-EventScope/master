@@ -321,16 +321,16 @@ export default function NavBar() {
             <MenuIcon />
           </IconButton>
           <Typography variant="h6" noWrap>
-            GMU EventScope📢
+           🗺️ GMU EventScope 📢
           </Typography>
           <section className={classes.rightToolbar}>
-            <MaterialButton variant="outlined" onClick={handleLoginShow}>
+            <MaterialButton variant="outlined" color="inherit" onClick={handleLoginShow}>
             Login/SignUp
             </MaterialButton>
-            <MaterialButton variant="outlined" onClick={handleLogout}>
+            <MaterialButton variant="outlined" color="inherit" onClick={handleLogout}>
             Log Out
             </MaterialButton>
-            <MaterialButton variant="outlined" onClick={viewSavedEventsButton}>
+            <MaterialButton variant="outlined" color="inherit" onClick={viewSavedEventsButton}>
             View Saved Events
             </MaterialButton>
           </section>

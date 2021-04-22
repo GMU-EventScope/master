@@ -154,8 +154,6 @@
       return hoursString + ":" + minutes + " " + ampm;
     }
 
-    //<Card.Img letiant="top" src="/gmulogo.png" />
-
     return (
         <div>
           <Card options={{

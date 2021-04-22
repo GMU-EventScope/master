@@ -6,16 +6,13 @@ import {
   InfoWindow,
 } from "@react-google-maps/api";
 import "@reach/combobox/styles.css";
+import Fab from '@material-ui/core/Fab';
+import SettingsIcon from '@material-ui/icons/Settings';
 import mapStyles from "./mapStyles";
-
 import EventMarker from "./EventMarker";
 import fbArray from "../apis/firebase.js";
 import { useState, useEffect, useCallback } from "react";
-import Button from "@material-ui/core/Button";
-import Drawer from "@material-ui/core/Drawer";
-import SettingsIcon from "@material-ui/icons/Settings";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
-import Filter from "./Filter";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -26,13 +23,25 @@ const useStyles = makeStyles((theme) => ({
     alignContent: "center",
     justifyContent: "center",
   },
+  filterButton: {
+    position: "fixed",
+    bottom: 50,
+    right: 60,
+  },
+  margin: {
+    margin: theme.spacing(1),
+  },
+  extendedIcon: {
+    marginRight: theme.spacing(1),
+  },
+  
 }));
 
 // get firebase stuff
 const db = fbArray.db;
 const libraries = ["places"];
 const mapContainerStyle = {
-  height: "85vh",
+  height: "90vh",
   width: "100%",
 };
 
@@ -298,8 +307,14 @@ const Map = ({ mapRef, filter, setFilter, savedEvents, setSavedEvents }) => {
           </InfoWindow>
         ) : null}
       </GoogleMap>
+      <div className={classes.filterButton}>
+        <Fab variant="extended" color="primary" aria-label="add" className={classes.margin}>
+            <SettingsIcon className={classes.extendedIcon} />
+            Filter
+        </Fab>
+      </div>
 
-      <div className={classes.button}>
+      {/* <div className={classes.button}>
         <Button
           variant="contained"
           color="primary"
@@ -328,7 +343,7 @@ const Map = ({ mapRef, filter, setFilter, savedEvents, setSavedEvents }) => {
             setMarkers={setMarkers}
           />
         </Drawer>
-      </div>
+      </div> */}
     </>
   );
 };
