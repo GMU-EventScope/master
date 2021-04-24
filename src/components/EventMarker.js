@@ -1,5 +1,5 @@
   import React from 'react'
-  import {Button, Card, ListGroup, ListGroupItem,ButtonToolbar,ButtonGroup,Container,Row,Col} from 'react-bootstrap'
+  import {Button, Card, ListGroup, ListGroupItem,ButtonToolbar,ButtonGroup,Container,Row,Col,Carousel} from 'react-bootstrap'
   import 'bootstrap/dist/css/bootstrap.min.css';
   import useButtonLoader from './Buttons.js';
   import fbArray from '../apis/firebase.js';
@@ -187,18 +187,28 @@
             boxStyle: {
                 boxShadow: `3px 3px 10px rgba(0,0,0,0.6)`
             }}} 
-          style={{ width: '40rem', height: '36.5rem'}} bg={"Light"} >   
-        <Card.Img variant="top" class="rounded" style={{ width: '640px', height: '360px'}} src="/gmucampus.jpg" rounded fluid/>
+          style={{ width: '642px', height: '36.1rem'}} bg={"Light"} >   
+          <Carousel autoPlay={false} controls={false} indicators={true}>
+              <Carousel.Item>
+              <Card.Img variant="top" class="rounded" style={{ width: '640px', height: '360px'}} src="/gmucampus.jpg" rounded fluid/>
+              </Carousel.Item>
+              <Carousel.Item>
+              <Card.Img variant="top" class="rounded" style={{ width: '640px', height: '360px'}} src="/gmucampus2.jpg" rounded fluid/>
+              </Carousel.Item>
+              <Carousel.Item>
+              <Card.Img variant="top" class="rounded" style={{ width: '640px', height: '360px'}} src="/crew2.jfif" rounded fluid/>
+              </Carousel.Item>
+          </Carousel>
           <Container fluid>
             <Row>
               <Col xs={8}>
                 <Card.Header className="text-left">
-                <Card.Text size="18" >
+                <Card.Text>
                   <h3>{props.title}</h3> <p>Hosted by <span class="name">{props.author}</span></p>
                 </Card.Text>
                 {props.context &&
                   <div>
-                    <Card.Text><p>{props.context}</p></Card.Text>
+                    <Card.Text><p className="desc">{props.context}</p></Card.Text>
                   </div>
                 }
                 </Card.Header> 

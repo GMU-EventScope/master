@@ -14,6 +14,11 @@ span.name {
     color:#0A6634;font-weight:bold;font-family:Helvetica;font-size:20 
 }
 
+/*description*/
+.desc{
+    color:#3c3c3c;font-family:Helvetica;font-size:14 
+}
+
 /*event attend and save color and style*/
 .event-btn {
     background-color: #006633;
@@ -27,3 +32,7 @@ span.name {
     justify-content:center;
 }
 
+.carousel .carousel-control{
+    display: none;
+    visibility: hidden;
+}
