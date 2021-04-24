@@ -1,8 +1,9 @@
   import React from 'react'
-  import {Button, Card, ListGroup, ListGroupItem,ButtonToolbar,ButtonGroup } from 'react-bootstrap'
+  import {Button, Card, ListGroup, ListGroupItem,ButtonToolbar,ButtonGroup,Container,Row,Col} from 'react-bootstrap'
   import 'bootstrap/dist/css/bootstrap.min.css';
   import useButtonLoader from './Buttons.js';
   import fbArray from '../apis/firebase.js';
+  import './EventMarker.css';
 
   // get firebase stuff
   const db = fbArray.db;
@@ -19,8 +20,8 @@
     //button hook thing, name the buttons here (static text, loading text)
     //useButtonLoader is in Button.js (for loading buttons)
     const [Button1Load,setLoadingButton1] = useButtonLoader("Attend","Updating..");
-    const [Button2Load,setLoadingButton2] = useButtonLoader("Save","Saving..");
-    const [Button3Load,setLoadingButton3] = useButtonLoader("Report","Reporting..");
+    const [Button2Load,setLoadingButton2] = useButtonLoader("✩","★");
+    //const [Button3Load,setLoadingButton3] = useButtonLoader("Report","Reporting..");
     
     // used to display the end date, but only if it is entered
     let useLocation = "";
@@ -116,6 +117,7 @@
       });
     };
 
+    /*
     //Report
     const Button3 = () => {
       //loading
@@ -131,6 +133,7 @@
         });
       });
     };
+    */
 
     // gets a nice looking x:xx xm output
     function getTimeString(input) {
@@ -154,25 +157,9 @@
       return hoursString + ":" + minutes + " " + ampm;
     }
 
-    //<Card.Img letiant="top" src="/gmulogo.png" />
-
-    return (
-        <div>
-          <Card options={{
-        pane: "overlayLayer",
-        alignBottom: true,
-        boxStyle: {
-            boxShadow: `3px 3px 10px rgba(0,0,0,0.6)`
-        },
-        closeBoxURL : ""
-    }} style={{ width: '25rem' }} bg={"Light"} >   
-        <Card.Img letiant="top" class="mx-auto" src="/gmulogo.png" style={{width: 220, height: 220, borderRadius: 200}}/>
-          <Card.Header className="text-center">
-            <Card.Text size="18">
-              <h3>{props.title}</h3> Hosted by <b>{props.author}</b>
-            </Card.Text>
-          </Card.Header> 
-          <Card.Body>
+    
+    //<Card.Img variant="top" class="mx-auto" src="/gmulogo.png" style={{width: 220, height: 220, borderRadius: 200}}/>
+    /*
             {props.date &&
               <div>
               <Card.Subtitle><u>Starting: </u></Card.Subtitle>
@@ -185,37 +172,73 @@
               <Card.Text style={{fontSize: 18}}><p>{props.enddate}</p></Card.Text>
               </div>
             }
-            {props.context &&
-              <div>
-                <Card.Subtitle><u>Description</u></Card.Subtitle>
-                <Card.Text><p>{props.context}</p></Card.Text>
-              </div>
-            }
-            {useLocation &&
-              <div>
-                <Card.Subtitle>Location:</Card.Subtitle>
-                <Card.Text><p>{useLocation}</p></Card.Text>
-              </div>
-            }
-            {props.link &&
-              <div>
-                <Card.Subtitle><u>Link:</u></Card.Subtitle>
-                <Card.Link style={{fontSize: 18}} href={props.link} target="_blank"><p>Event Link</p></Card.Link>
-              </div>
-            }
-            <ButtonToolbar>
-              <ButtonGroup className="mr-2">
-                <Button letiant="primary mr-2" size='lg' onClick={Button1} ref={Button1Load}></Button>
+    */
+      //report button code
+  /*<ButtonGroup className="mr-2">
+                <Button variant="danger mr-2" size='s' onClick={Button3} ref={Button3Load}></Button>
               </ButtonGroup>
-              <ButtonGroup className="mr-2">
-                <Button letiant="info mr-2" size='lg' onClick={Button2} ref={Button2Load}></Button>
-              </ButtonGroup>
-              <ButtonGroup className="mr-2">
-                <Button letiant="danger mr-2" size='lg' onClick={Button3} ref={Button3Load}></Button>
-              </ButtonGroup>
-            </ButtonToolbar>
-            <a href="" className="btn btn-outline-success btn-sm">Read More</a>
-          </Card.Body>
+  */
+    
+    return (
+        <div>
+          <Card options={{
+            pane: "overlayLayer",
+            alignBottom: true,
+            boxStyle: {
+                boxShadow: `3px 3px 10px rgba(0,0,0,0.6)`
+            }}} 
+          style={{ width: '40rem', height: '36.5rem'}} bg={"Light"} >   
+        <Card.Img variant="top" class="rounded" style={{ width: '640px', height: '360px'}} src="/gmucampus.jpg" rounded fluid/>
+          <Container fluid>
+            <Row>
+              <Col xs={8}>
+                <Card.Header className="text-left">
+                <Card.Text size="18" >
+                  <h3>{props.title}</h3> <p>Hosted by <span class="name">{props.author}</span></p>
+                </Card.Text>
+                {props.context &&
+                  <div>
+                    <Card.Text><p>{props.context}</p></Card.Text>
+                  </div>
+                }
+                </Card.Header> 
+              </Col>
+              <Col xs={4}>
+               <Card.Body>
+                  {props.context &&
+                    <div>
+                      <Card.Text style={{fontSize: 16}}><p><span class="name">{props.date}</span></p></Card.Text>
+                    </div>
+                  }
+                  {
+                    <div>
+                      <Card.Text><p>Attendee stuff</p></Card.Text>
+                    </div>
+                  }
+                  {
+                    <div>
+                      <Card.Text><p>Location stuff: {useLocation}</p></Card.Text>
+                    </div>
+                  }
+              </Card.Body>
+              </Col>
+            </Row>
+            <Row>
+                <Col xs={8} >
+                  <Button href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" size='s' variant="link" className="learnmore-btn" style={{alignSelf:'right'}}>Learn More</Button>
+                </Col>
+                <Col>
+                  <ButtonToolbar>
+                    <ButtonGroup className="ml-3">
+                       <Button className='event-btn' size='s' onClick={Button1} ref={Button1Load}></Button>
+                     </ButtonGroup>
+                    <ButtonGroup className="ml-2">
+                     <Button className='event-btn' size='s' onClick={Button2} ref={Button2Load}></Button>
+                   </ButtonGroup>
+                 </ButtonToolbar>
+                </Col>
+            </Row>
+            </Container>
         </Card>
         </div>
       )
