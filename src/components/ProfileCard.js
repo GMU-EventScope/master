@@ -4,7 +4,6 @@ import { useState, useRef, useEffect } from "react";
 import { makeStyles } from '@material-ui/core/styles';
 import Avatar from '@material-ui/core/Avatar';
 import Typography from '@material-ui/core/Typography';
-import { Form, Button, Alert } from "react-bootstrap";
 
 const useStyles = makeStyles((theme) => ({
   root: {

@@ -17,8 +17,7 @@ import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
 import InboxIcon from "@material-ui/icons/MoveToInbox";
 import MailIcon from "@material-ui/icons/Mail";
-
-//Button from "@material-ui/core/Button";
+import Button from "@material-ui/core/Button";
 
 import Collapse from "@material-ui/core/Collapse";
 import DraftsIcon from "@material-ui/icons/Drafts";
@@ -43,7 +42,7 @@ import fbArray from '../apis/firebase.js';
 //auth (login/signup) stuff//
 import Modal from "react-bootstrap/Modal";
 import { useAuth } from "../contexts/AuthContext";
-import { Form, Button, Alert } from "react-bootstrap";
+import { Form, Alert } from "react-bootstrap";
 
 //get firebase stuff
 const db = fbArray.db;
@@ -166,17 +165,21 @@ export default function NavBar() {
   const handleLoginShow = () => loginSetShow(true);
 
   //stored values for authentication
+    //normal auth
   const loginEmailRef = useRef();
   const loginPasswordRef = useRef();
   const usernameRef = useRef();
   const signupEmailRef = useRef();
   const signupPasswordRef = useRef();
   const signupConfPasswordRef = useRef();
+    //org auth
   const orgnameRef = useRef();
   const signupOrgEmailRef = useRef();
   const signupOrgPasswordRef = useRef();
   const signupOrgConfPasswordRef = useRef();
+
   const {signup, login, logout} = useAuth();
+  const [loggedIn, setLoggedIn] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -197,6 +200,8 @@ export default function NavBar() {
       setError("");
       setLoading(true);
       await signup(signupEmailRef.current.value, signupPasswordRef.current.value, usernameRef.current.value, "user");
+      handleSignupClose();
+      setLoggedIn(true);
     } catch {
       setError("Failed to create an account");
     }
@@ -220,10 +225,11 @@ export default function NavBar() {
     try {
       setError("");
       setLoading(true);
-      var errorMessage = await signup(signupOrgEmailRef.current.value, signupOrgPasswordRef.current.value, orgnameRef.current.value, "org");
-      console.log(errorMessage);
+      await signup(signupOrgEmailRef.current.value, signupOrgPasswordRef.current.value, orgnameRef.current.value, "org");
+      handleSignupOrgClose();
+      setLoggedIn(true);
     } catch {
-      setError(errorMessage);
+      setError("Failed to log in");
     }
 
     setLoading(false);
@@ -238,6 +244,8 @@ export default function NavBar() {
       setError("");
       setLoading(true);
       await login(loginEmailRef.current.value, loginPasswordRef.current.value);
+      handleLoginClose();
+      setLoggedIn(true);
     } catch {
       setError("Failed to log in");
     }
@@ -252,7 +260,7 @@ export default function NavBar() {
     try {
       setLoading(true);
       await logout();
-      //history.push("/login");
+      setLoggedIn(false);
     } catch {
       setError("Failed to log out");
     }
@@ -317,12 +325,15 @@ export default function NavBar() {
           >
             <MenuIcon />
           </IconButton>
-          <Typography letiant="h6" noWrap>
+          <Typography variant="h6" noWrap>
             GMU EventScope📢
           </Typography>
           <section className={classes.rightToolbar}>
-            <button type="button" className="btn btn-signIn" onClick={handleLoginShow}> Login/SignUp </button>
-            <button type="button" className="btn btn-logout" onClick={handleLogout}> Log Out</button>
+            {loggedIn === false ?
+              (<button type="button" className="btn btn-signIn" onClick={handleLoginShow}> Login/SignUp </button>)
+              :
+              (<button type="button" className="btn btn-logout" onClick={handleLogout}> Log Out</button>)
+            }
             <button type="button" className="btn btn-viewSavedEvents" onClick={viewSavedEventsButton}> View Saved Events</button>
           </section>
         </Toolbar>
@@ -417,7 +428,7 @@ export default function NavBar() {
               <Form.Label>Password Confirmation</Form.Label>
               <Form.Control type="password" ref={signupConfPasswordRef} required />
             </Form.Group>
-            <Button disabled={loading} className="w-100" style={{backgroundColor: "#006633"}} onClick={handleSignupClose}type="submit">
+            <Button disabled={loading} className="w-100" style={{color: "white", backgroundColor: "#006633"}} type="submit">
               Sign Up
             </Button>
           </Form>
@@ -449,7 +460,7 @@ export default function NavBar() {
               <Form.Label>Password</Form.Label>
               <Form.Control type="password" ref={loginPasswordRef} required />
             </Form.Group>
-            <Button disabled={loading} className="w-100" style={{backgroundColor: "#006633"}} onClick={handleLoginClose} type="submit">
+            <Button disabled={loading} className="w-100" style={{backgroundColor: "#006633"}} type="submit">
               Log In
             </Button>
           </Form>
@@ -486,7 +497,7 @@ export default function NavBar() {
               <Form.Label>Password Confirmation</Form.Label>
               <Form.Control type="password" ref={signupOrgConfPasswordRef} required />
             </Form.Group>
-            <Button disabled={loading} className="w-100" style={{backgroundColor: "#006633"}} onClick={handleSignupOrgClose} type="submit">
+            <Button disabled={loading} className="w-100" style={{backgroundColor: "#006633"}} type="submit">
               Sign Up
             </Button>
           </Form>

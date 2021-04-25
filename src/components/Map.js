@@ -12,8 +12,8 @@ import EventMarker from "./EventMarker";
 import fbArray from "../apis/firebase.js";
 import { useState, useRef, useEffect, useCallback } from "react";
 import Modal from "react-bootstrap/Modal";
-import { Form, Button, Alert } from "react-bootstrap";
-//import Button from "@material-ui/core/Button";
+import { Form, Alert } from "react-bootstrap";
+import Button from "@material-ui/core/Button";
 import Drawer from "@material-ui/core/Drawer";
 import SettingsIcon from "@material-ui/icons/Settings";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
@@ -71,7 +71,7 @@ const options = {
 
 const Map = ({ mapRef, filter, setFilter, savedEvents, setSavedEvents }) => {
   //get the currently logged in user
-  const currUser = auth.currentUser;
+  let currUser = useRef(auth.currentUser);
 
   /////EVENT CREATION STUFF/////
   //event modal toggler
@@ -95,7 +95,6 @@ const Map = ({ mapRef, filter, setFilter, savedEvents, setSavedEvents }) => {
 
   //get the user type
   const fetchAccountType = () => {
-    console.log("fetching usertype")
     if (currUser) {
       //user is signed in.
       db.collection("users").doc(currUser.uid).get().then((doc) => {
@@ -109,6 +108,8 @@ const Map = ({ mapRef, filter, setFilter, savedEvents, setSavedEvents }) => {
       });
     } else {
       //no user is signed in.
+      setAccountType("user");
+      setEventMode(false);
     }
   }
   
@@ -291,10 +292,13 @@ const Map = ({ mapRef, filter, setFilter, savedEvents, setSavedEvents }) => {
 
   // useEffect fetch events when the page renders
   useEffect(() => {
-    console.log("in useEffect")
-    fetchAccountType();
+    const interval = setInterval(() => {
+      currUser = auth.currentUser;
+      fetchAccountType();
+    }, 50);
     fetchEvents();
-  }, [accountType]);
+    return () => clearInterval(interval);
+  }, []);
 
   if (loadError) return "Error";
   if (!isLoaded) return "Loading...";
@@ -424,12 +428,17 @@ const Map = ({ mapRef, filter, setFilter, savedEvents, setSavedEvents }) => {
           />
         </Drawer>
       </div>
-
-      {accountType === "org" && (
-        <div className={classes.eventButton}>
-          <Button style={{margin: "4px", backgroundColor: "#006633"}} onClick={setEventMode}>Create Event</Button>
-        </div>
+      {/*Toggle Create Event Mode Button */}
+      {accountType === "org" && (eventMode === false ? 
+        (<div className={classes.eventButton}>
+          <Button style={{margin: "4px", color: "white", backgroundColor: "#006633"}} onClick={() => {setEventMode(true)}}>Create Mode</Button>
+        </div>)
+        : 
+        (<div className={classes.eventButton}>
+          <Button style={{margin: "4px", color: "white", backgroundColor: "#006633"}} onClick={() => {setEventMode(false)}}>Exit Create Mode</Button>
+        </div>) 
       )}
+
       {/*Event Creation Modal*/}
       <Modal show={createEventShow} onHide={handleCreateEventClose} centered>
         <Modal.Header closeButton>
