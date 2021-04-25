@@ -157,6 +157,7 @@ export default function NavBar() {
   const [signupShow, signupSetShow] = useState(false);
   const [signupOrgShow, signupOrgSetShow] = useState(false);
   const [loginShow, loginSetShow] = useState(false);
+  const [uploadShow, uploadSetShow] = useState(false);
 
   //handle visibility of the login or signup modals
   const handleSignupClose = () => signupSetShow(false);
@@ -165,8 +166,10 @@ export default function NavBar() {
   const handleSignupOrgShow = () => signupOrgSetShow(true);
   const handleLoginClose = () => loginSetShow(false);
   const handleLoginShow = () => loginSetShow(true);
+  const handleUploadClose = () => uploadSetShow(false);
+  const handleUploadShow = () => uploadSetShow(true);
 
-  //stored letiables for authentication
+  //stored variables for authentication
   const loginEmailRef = useRef();
   const loginPasswordRef = useRef();
   const usernameRef = useRef();
@@ -298,6 +301,28 @@ export default function NavBar() {
     }
   }
 
+  // image being uploaded
+  let uploadingImage = {};
+  // uploads an image to storage profile/user.uid
+  async function handleUpload(event) {
+    console.log("pp click");
+    event.preventDefault();
+
+    try {
+      setError("");
+      setLoading(true);
+      await fbArray.storage.ref('profile/' + auth.currentUser.uid + ".jpg").put(uploadingImage);
+      uploadSetShow(false); // close modal if successful
+    } catch {
+      setError("Failed to upload image");
+    }
+    setLoading(false);
+  }
+  // used to get the image and store in uploadingImage
+  function chooseFile(e) {
+    uploadingImage = e.target.files[0];
+  }
+
   return (
     <>
     <div className={classes.root}>
@@ -318,19 +343,20 @@ export default function NavBar() {
           >
             <MenuIcon />
           </IconButton>
-          <Typography letiant="h6" noWrap>
+          <Typography variant="h6" noWrap>
             GMU EventScope📢
           </Typography>
           <section className={classes.rightToolbar}>
             <button type="button" className="btn btn-signIn" onClick={handleLoginShow}> Login/SignUp </button>
             <button type="button" className="btn btn-logout" onClick={handleLogout}> Log Out</button>
+            <button type="button" className="btn btn-upload" onClick={handleUploadShow}> Upload Profile Pic </button>
             <button type="button" className="btn btn-viewSavedEvents" onClick={viewSavedEventsButton}> View Saved Events</button>
           </section>
         </Toolbar>
       </AppBar>
       <Drawer
         className={classes.drawer}
-        letiant="persistent"
+        variant="persistent"
         anchor="left"
         open={open}
         classes={{
@@ -400,7 +426,7 @@ export default function NavBar() {
         <Modal.Title>Sign Up</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        {error && <Alert letiant="danger">{error}</Alert>}
+        {error && <Alert variant="danger">{error}</Alert>}
         <Form onSubmit={handleSignup}>
         <Form.Group id="username">
             <Form.Label>User Name (Seen by other users)</Form.Label>
@@ -440,7 +466,7 @@ export default function NavBar() {
           <Modal.Title>Log In</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          {error && <Alert letiant="danger">{error}</Alert>}
+          {error && <Alert variant="danger">{error}</Alert>}
           <Form onSubmit={handleLogin}>
             <Form.Group id="email">
               <Form.Label>Email</Form.Label>
@@ -469,7 +495,7 @@ export default function NavBar() {
           <Modal.Title>Organization Sign Up</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          {error && <Alert letiant="danger">{error}</Alert>}
+          {error && <Alert variant="danger">{error}</Alert>}
           <Form onSubmit={handleSignupOrg}>
           <Form.Group id="username">
             <Form.Label>Organization Name (Seen by other users)</Form.Label>
@@ -503,6 +529,26 @@ export default function NavBar() {
           </div>
         </Modal.Footer>
       </Modal>
+
+      {/* Profile Picture Upload Modal*/}
+      <Modal show={uploadShow} onHide={handleUploadClose} centered>
+        <Modal.Header closeButton>
+          <Modal.Title>Upload Profile Picture</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          {error && <Alert variant="danger">{error}</Alert>}
+          <Form onSubmit={handleUpload}>
+            <Form.Group id="image">
+              <Form.Label>Upload Image</Form.Label>
+              <Form.Control type="file" onChange={(e) => chooseFile(e)} required />
+            </Form.Group>
+            <Button disabled={loading} className="w-100" style={{backgroundColor: "#006633"}} type="submit" onClick={handleUpload}>
+              Upload
+            </Button>
+          </Form>
+        </Modal.Body>
+      </Modal>
+
       </div>
     </>
   );
