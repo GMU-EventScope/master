@@ -157,8 +157,6 @@
       return hoursString + ":" + minutes + " " + ampm;
     }
 
-    
-    //<Card.Img variant="top" class="mx-auto" src="/gmulogo.png" style={{width: 220, height: 220, borderRadius: 200}}/>
     /*
             {props.date &&
               <div>
