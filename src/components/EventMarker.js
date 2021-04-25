@@ -185,10 +185,10 @@
             pane: "overlayLayer",
             alignBottom: true,
             boxStyle: {
-                boxShadow: `3px 3px 10px rgba(0,0,0,0.6)`
+              boxShadow: 'none'
             }}} 
-          style={{ width: '642px', height: '36.1rem'}} bg={"Light"} >   
-          <Carousel autoPlay={false} controls={false} indicators={true}>
+          style={{ width: '642px', height: '36.1rem'}} bg={"Light"}>   
+          <Carousel autoPlay={false} controls={false} indicators={true} interval={null}>
               <Carousel.Item>
               <Card.Img variant="top" class="rounded" style={{ width: '640px', height: '360px'}} src="/gmucampus.jpg" rounded fluid/>
               </Carousel.Item>
@@ -207,43 +207,35 @@
                   <h3>{props.title}</h3> <p>Hosted by <span class="name">{props.author}</span></p>
                 </Card.Text>
                 {props.context &&
-                  <div>
                     <Card.Text><p className="desc">{props.context}</p></Card.Text>
-                  </div>
                 }
                 </Card.Header> 
               </Col>
               <Col xs={4}>
                <Card.Body>
                   {props.context &&
-                    <div>
-                      <Card.Text style={{fontSize: 16}}><p><span class="name">{props.date}</span></p></Card.Text>
-                    </div>
+                    <Card.Text style={{fontSize: 16}}><p><span class="name">{props.date}</span></p></Card.Text>
                   }
                   {
-                    <div>
-                      <Card.Text><p>Attendee stuff</p></Card.Text>
-                    </div>
+                    <Card.Text><p>X Attendees</p></Card.Text>
                   }
                   {
-                    <div>
-                      <Card.Text><p>Location stuff: {useLocation}</p></Card.Text>
-                    </div>
+                    <Card.Text><p>Location stuff {useLocation}</p></Card.Text>
                   }
               </Card.Body>
               </Col>
             </Row>
             <Row>
                 <Col xs={8} >
-                  <Button href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" size='s' variant="link" className="learnmore-btn" style={{alignSelf:'right'}}>Learn More</Button>
+                  <Button href="https://www.youtube.com/watch?v=dQw4w9WgXcQ"  size='sm' className="learnmore-btn" style={{alignSelf:'right'}}>Learn More</Button>
                 </Col>
                 <Col>
                   <ButtonToolbar>
                     <ButtonGroup className="ml-3">
-                       <Button className='event-btn' size='s' onClick={Button1} ref={Button1Load}></Button>
+                       <Button className='event-btn' size='m' onClick={Button1} ref={Button1Load}></Button>
                      </ButtonGroup>
                     <ButtonGroup className="ml-2">
-                     <Button className='event-btn' size='s' onClick={Button2} ref={Button2Load}></Button>
+                     <Button className='event-btn' size='m' onClick={Button2} ref={Button2Load}></Button>
                    </ButtonGroup>
                  </ButtonToolbar>
                 </Col>
