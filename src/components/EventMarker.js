@@ -188,8 +188,6 @@
       return hoursString + ":" + minutes + " " + ampm;
     }
 
-    
-    //<Card.Img variant="top" class="mx-auto" src="/gmulogo.png" style={{width: 220, height: 220, borderRadius: 200}}/>
     /*
             {props.date &&
               <div>
@@ -217,7 +215,7 @@
             boxStyle: {
               boxShadow: 'none'
             }}} 
-          style={{ width: '642px', height: '36.1rem'}} bg={"Light"}>   
+          style={{ width: '642px', height: '35.5rem'}} bg={"Light"}>   
           <Carousel autoPlay={false} controls={false} indicators={true} interval={null}>
               {props.picUrls.map((url) =>(
                 <Carousel.Item>
@@ -228,14 +226,12 @@
           <Container fluid>
             <Row>
               <Col xs={8}>
-                <Card.Header className="text-left">
                 <Card.Text>
-                  <h3>{props.title}</h3> <p>Hosted by <span class="name">{props.author}</span></p>
+                <span style={{display:'block', height:'12px'}}></span> <h3>{props.title}</h3> <p>Hosted by <span class="name">{props.author}</span></p>
                 </Card.Text>
                 {props.context &&
                     <Card.Text><p className="desc">{props.context}</p></Card.Text>
                 }
-                </Card.Header> 
               </Col>
               <Col xs={4}>
                <Card.Body>
