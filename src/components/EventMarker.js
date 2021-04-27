@@ -239,7 +239,7 @@
                     <Card.Text style={{fontSize: 16}}><p><span class="name">{props.date}</span></p></Card.Text>
                   }
                   {
-                    <Card.Text><p>X Attendees {props.picUrls.length}</p></Card.Text>
+                    <Card.Text><p>X Attendees </p></Card.Text>
                   }
                   {
                     <Card.Text><p>Location stuff {useLocation}</p></Card.Text>

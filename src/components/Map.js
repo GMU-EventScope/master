@@ -249,6 +249,7 @@ const Map = ({ mapRef, filter, setFilter, savedEvents, setSavedEvents }) => {
         });
       });
     }
+    // get default image
     if (marker.picNames.length == 0) {
       let reference = fbArray.storage.ref(`eventpics/default.jpg`);
       reference.getDownloadURL().then((url) => {
@@ -256,6 +257,7 @@ const Map = ({ mapRef, filter, setFilter, savedEvents, setSavedEvents }) => {
         console.log("returned url:" + url);
         marker.picUrls = [...marker.picUrls, url];
       });
+      marker.picNames.length = 1;
     }
 
   }
