@@ -4,15 +4,22 @@
   import useButtonLoader from './Buttons.js';
   import fbArray from '../apis/firebase.js';
   import './EventMarker.css';
+  import { useState} from "react";
 
   // get firebase stuff
   const db = fbArray.db;
   const auth = fbArray.auth;
+  const storage = fbArray.storage;
 
   //adds artificial delay for loading (cuz too fast, user can't see loading msg)
   function loadingDelay(delay) {
     return new Promise((resolve) => setTimeout(resolve, delay));
   }
+  /*
+  // pics from firebase
+  let picNames = [];
+  let queryCount = 0;
+  */
 
   //buttons help: https://react-bootstrap.github.io/components/buttons/
   //Followed this for loading buttons: https://www.youtube.com/watch?v=nCEnqQABC5A via hooks
@@ -31,7 +38,31 @@
         useLocation += " room " + props.room;
       }
     }
-    
+    /*
+    const [eventPicUrls, setEventPicUrls] = useState([]);
+    // picNames is the array of the image filenames for each event
+    if (props.picNames) {
+      picNames = [...props.picNames];
+    }
+    // only query once
+    if (queryCount < picNames.length) {
+      // only query if the file can be found
+      if (props.picNames && props.hostID){
+        // loop through each filename
+        picNames.forEach(name => {
+          //console.log(`eventpics/${props.docID}/${name}`);
+          let reference = storage.ref(`eventpics/${props.docID}/${name}`);
+          reference.getDownloadURL().then((url) => {
+            // URL obtained, add to the reactive array so it can be used for rendering
+            console.log("returned url:" + url);
+            setEventPicUrls(eventPicUrls => [...eventPicUrls, url]);
+          });
+        });
+      }
+      queryCount += 1;
+    }
+    */
+
     //I'm here
     const Button1 = () => {
       //loading
@@ -178,7 +209,6 @@
                 <Button variant="danger mr-2" size='s' onClick={Button3} ref={Button3Load}></Button>
               </ButtonGroup>
   */
-    
     return (
         <div>
           <Card options={{
@@ -189,15 +219,11 @@
             }}} 
           style={{ width: '642px', height: '36.1rem'}} bg={"Light"}>   
           <Carousel autoPlay={false} controls={false} indicators={true} interval={null}>
-              <Carousel.Item>
-              <Card.Img variant="top" class="rounded" style={{ width: '640px', height: '360px'}} src="/gmucampus.jpg" rounded fluid/>
-              </Carousel.Item>
-              <Carousel.Item>
-              <Card.Img variant="top" class="rounded" style={{ width: '640px', height: '360px'}} src="/gmucampus2.jpg" rounded fluid/>
-              </Carousel.Item>
-              <Carousel.Item>
-              <Card.Img variant="top" class="rounded" style={{ width: '640px', height: '360px'}} src="/crew2.jfif" rounded fluid/>
-              </Carousel.Item>
+              {props.picUrls.map((url) =>(
+                <Carousel.Item>
+                <Card.Img variant="top" className="rounded" style={{ width: '640px', height: '360px'}} src={url} rounded fluid/>
+                </Carousel.Item>
+              ))}
           </Carousel>
           <Container fluid>
             <Row>
@@ -217,7 +243,7 @@
                     <Card.Text style={{fontSize: 16}}><p><span class="name">{props.date}</span></p></Card.Text>
                   }
                   {
-                    <Card.Text><p>X Attendees</p></Card.Text>
+                    <Card.Text><p>X Attendees {props.picUrls.length}</p></Card.Text>
                   }
                   {
                     <Card.Text><p>Location stuff {useLocation}</p></Card.Text>
@@ -227,7 +253,7 @@
             </Row>
             <Row>
                 <Col xs={8} >
-                  <Button href="https://www.youtube.com/watch?v=dQw4w9WgXcQ"  size='sm' className="learnmore-btn" style={{alignSelf:'right'}}>Learn More</Button>
+                  <Button href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" target="_blank" size='sm' className="learnmore-btn" style={{alignSelf:'right'}}>Learn More</Button>
                 </Col>
                 <Col>
                   <ButtonToolbar>

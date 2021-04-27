@@ -30,7 +30,6 @@ export default function ProfileCard() {
       // User is signed in.
       db.collection("users").doc(currUser.uid).get().then((doc) => {
         if (doc.exists) {
-            console.log(doc.get("username"));
             setUsername(doc.get("username"));
         } else {
             // doc.data() will be undefined in this case

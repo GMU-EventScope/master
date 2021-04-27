@@ -7,7 +7,6 @@ import {
 } from "@react-google-maps/api";
 import "@reach/combobox/styles.css";
 import mapStyles from "./mapStyles";
-import './Map.css';
 
 import EventMarker from "./EventMarker";
 import fbArray from "../apis/firebase.js";
@@ -51,7 +50,7 @@ const options = {
   restriction: {
     latLngBounds: {
       east: center.lng + 0.011,
-      north: center.lat + 0.00666,
+      north: center.lat + 0.01,
       south: center.lat - 0.006, 
       west: center.lng - 0.0249,
     },
@@ -164,7 +163,7 @@ const Map = ({ mapRef, filter, setFilter, savedEvents, setSavedEvents }) => {
 
     const fetchedData = [];
 
-    // Iterate throw the collections
+    // Iterate through the collections
     data.docs.forEach((item) => {
       // Push the fetched object to fetchedData array
 
@@ -172,10 +171,21 @@ const Map = ({ mapRef, filter, setFilter, savedEvents, setSavedEvents }) => {
       } else {
         fetchedData.push(item.data());
 
-        fbArray.storage
-          .ref(item.data().pictureName)
-          .getDownloadURL()
+        let reference = fbArray.storage
+          .ref(`profile/${item.data().pictureName}`);
+        if (!reference) {
+          return;
+        }
+          console.log(item.data().title);
+          reference.getDownloadURL()
           .then((url) => {
+
+            // ensure clean data
+            let picNames = [];
+            if (item.data().picNames) {
+              picNames = [...item.data().picNames];
+            }
+
             // set a new Marker based on the iterating item
             setMarkers((current) => [
               ...current,
@@ -193,7 +203,10 @@ const Map = ({ mapRef, filter, setFilter, savedEvents, setSavedEvents }) => {
                 rating: item.data().rating,
                 pictureName: item.data().pictureName,
                 pictureURL: url,
-                size: 70
+                size: 70,
+                hostID: item.data().hostID,
+                picNames: picNames,
+                picUrls: []
               },
             ]);
           });
@@ -218,6 +231,33 @@ const Map = ({ mapRef, filter, setFilter, savedEvents, setSavedEvents }) => {
     } else if (type === 1) {
       return `/building.png`;
     } else return `/graduates.png`;
+  }
+
+  // gets the image urls for an event and stores them in the event
+  function getImageUrls(marker) {
+    console.log("called getImageUrls - " + marker.picUrls.length + " : " + marker.picNames.length);
+    // only query if needed (no images loaded, and there are images to load)
+    if ((marker.picUrls.length < 1) && (marker.picNames.length >= 1)) {
+      // loop through each filename
+      marker.picNames.forEach(name => {
+        //console.log(`eventpics/${props.docID}/${name}`);
+        let reference = fbArray.storage.ref(`eventpics/${marker.id}/${name}`);
+        reference.getDownloadURL().then((url) => {
+          // URL obtained, add to the reactive array so it can be used for rendering
+          console.log("returned url:" + url);
+          marker.picUrls = [...marker.picUrls, url];
+        });
+      });
+    }
+    if (marker.picNames.length == 0) {
+      let reference = fbArray.storage.ref(`eventpics/default.jpg`);
+      reference.getDownloadURL().then((url) => {
+        // URL obtained, add to the reactive array so it can be used for rendering
+        console.log("returned url:" + url);
+        marker.picUrls = [...marker.picUrls, url];
+      });
+    }
+
   }
 
   return (
@@ -245,6 +285,7 @@ const Map = ({ mapRef, filter, setFilter, savedEvents, setSavedEvents }) => {
               key={`${marker.lat}-${marker.lng}`}
               position={{ lat: marker.lat, lng: marker.lng }}
               onClick={() => {
+                getImageUrls(marker);
                 setSelected(marker);
               }}
               onMouseOver={() => {
@@ -294,6 +335,9 @@ const Map = ({ mapRef, filter, setFilter, savedEvents, setSavedEvents }) => {
               link={selected.link}
               savedEvents={savedEvents} 
               setSavedEvents={setSavedEvents}
+              hostID={selected.hostID}
+              picNames={selected.picNames}
+              picUrls={selected.picUrls}
             />
             
           </InfoWindow>

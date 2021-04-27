@@ -151,6 +151,9 @@ export default function NavBar() {
   // used in the left side bar, passed to the map which passes to EventMarker
   const [savedEvents, setSavedEvents] = useState([]);
 
+  // current profile pic
+  const [curProfPic, setCurProfPic] = useState([]);
+
   const mapRef = useRef();
 
   //////USER AUTHENTICATION//////... these all communicate with AuthContext.js
@@ -322,6 +325,23 @@ export default function NavBar() {
   function chooseFile(e) {
     uploadingImage = e.target.files[0];
   }
+
+  function getCurrentProfPic() {
+    if(!auth.currentUser) {
+      return;
+    }
+    const reference = fbArray.storage.ref(`profile/${auth.currentUser.uid}.jpg`);
+    if (!reference) {
+      reference = fbArray.storage.ref(`profile/169-logo.jpg`);
+    }
+    reference.getDownloadURL().then((url) => {
+      setCurProfPic(url);
+    }).catch((e) => {
+      console.log(e.message);
+    });
+    return curProfPic;
+  }
+  getCurrentProfPic();
 
   return (
     <>
@@ -537,6 +557,8 @@ export default function NavBar() {
         </Modal.Header>
         <Modal.Body>
           {error && <Alert variant="danger">{error}</Alert>}
+          <p>Current Profile Picture: </p>
+          <img src={curProfPic} style={{height:'200px'}}></img>
           <Form onSubmit={handleUpload}>
             <Form.Group id="image">
               <Form.Label>Upload Image</Form.Label>
