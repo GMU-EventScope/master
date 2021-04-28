@@ -23,7 +23,7 @@ import SettingsIcon from "@material-ui/icons/Settings";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import Filter from "./Filter";
 import './Map.css';
-import { format,formatRelative } from "date-fns";
+import { format } from "date-fns";
 
 const useStyles = makeStyles((theme) => ({
   root: {
