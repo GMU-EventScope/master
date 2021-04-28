@@ -28,16 +28,16 @@ import MenuItem from "@material-ui/core/MenuItem";
 import Badge from "@material-ui/core/Badge";
 import AccountCircle from "@material-ui/icons/AccountCircle";
 import NotificationsIcon from "@material-ui/icons/Notifications";
-import SearchIcon from '@material-ui/icons/Search';
-import InputBase from '@material-ui/core/InputBase';
+import SearchIcon from "@material-ui/icons/Search";
+import InputBase from "@material-ui/core/InputBase";
 
-import Snackbar from '@material-ui/core/Snackbar';
-import MuiAlert from '@material-ui/lab/Alert';
+import Snackbar from "@material-ui/core/Snackbar";
+import MuiAlert from "@material-ui/lab/Alert";
 
-import FaceIcon from '@material-ui/icons/Face';
-import ExitToAppIcon from '@material-ui/icons/ExitToApp';
-import AccountBoxIcon from '@material-ui/icons/AccountBox';
-import EventIcon from '@material-ui/icons/Event';
+import FaceIcon from "@material-ui/icons/Face";
+import ExitToAppIcon from "@material-ui/icons/ExitToApp";
+import AccountBoxIcon from "@material-ui/icons/AccountBox";
+import EventIcon from "@material-ui/icons/Event";
 
 import Map from "./Map";
 import ProfileCard from "./ProfileCard";
@@ -123,40 +123,40 @@ const useStyles = makeStyles((theme) => ({
     paddingLeft: theme.spacing(4),
   },
   search: {
-    position: 'relative',
+    position: "relative",
     borderRadius: theme.shape.borderRadius,
     backgroundColor: fade(theme.palette.common.white, 0.15),
-    '&:hover': {
+    "&:hover": {
       backgroundColor: fade(theme.palette.common.white, 0.25),
     },
     marginRight: theme.spacing(2),
     marginLeft: 0,
-    width: '100%',
-    [theme.breakpoints.up('sm')]: {
+    width: "100%",
+    [theme.breakpoints.up("sm")]: {
       marginLeft: theme.spacing(3),
-      width: 'auto',
+      width: "auto",
     },
   },
   searchIcon: {
     padding: theme.spacing(0, 2),
-    height: '100%',
-    position: 'absolute',
-    pointerEvents: 'none',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
+    height: "100%",
+    position: "absolute",
+    pointerEvents: "none",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
   },
   inputRoot: {
-    color: 'inherit',
+    color: "inherit",
   },
   inputInput: {
     padding: theme.spacing(1, 1, 1, 0),
     // vertical padding + font size from searchIcon
     paddingLeft: `calc(1em + ${theme.spacing(4)}px)`,
-    transition: theme.transitions.create('width'),
-    width: '100%',
-    [theme.breakpoints.up('md')]: {
-      width: '20ch',
+    transition: theme.transitions.create("width"),
+    width: "100%",
+    [theme.breakpoints.up("md")]: {
+      width: "20ch",
     },
   },
 }));
@@ -231,25 +231,37 @@ export default function NavBar() {
       open={isMenuOpen}
       onClose={handleMenuClose}
     >
-      <MenuItem onClick={() => handleMenuCloseWithSnackBar('Profile Clicked', 'error')}>
+      <MenuItem
+        onClick={() => handleMenuCloseWithSnackBar("Profile Clicked", "error")}
+      >
         <ListItemIcon>
           <FaceIcon />
         </ListItemIcon>
         <Typography variant="inherit">Profile</Typography>
       </MenuItem>
-      <MenuItem onClick={() => handleMenuCloseWithSnackBar('My account Clicked', 'warning')}>
+      <MenuItem
+        onClick={() =>
+          handleMenuCloseWithSnackBar("My account Clicked", "warning")
+        }
+      >
         <ListItemIcon>
           <AccountBoxIcon />
         </ListItemIcon>
         <Typography variant="inherit">My account</Typography>
       </MenuItem>
-      <MenuItem onClick={() => handleMenuCloseWithSnackBar('View Saved Events Clicked', 'info')}>
+      <MenuItem
+        onClick={() =>
+          handleMenuCloseWithSnackBar("View Saved Events Clicked", "info")
+        }
+      >
         <ListItemIcon>
           <EventIcon />
         </ListItemIcon>
         <Typography variant="inherit">View Saved Events</Typography>
       </MenuItem>
-      <MenuItem onClick={() => handleMenuCloseWithSnackBar('Logout Clicked', 'success')}>
+      <MenuItem
+        onClick={() => handleMenuCloseWithSnackBar("Logout Clicked", "success")}
+      >
         <ListItemIcon>
           <ExitToAppIcon />
         </ListItemIcon>
@@ -258,10 +270,9 @@ export default function NavBar() {
     </Menu>
   );
 
-
   const [snackbarOpen, setSnackbaropen] = React.useState(false);
-  const [snackbarMessage, setSnackbarMessage] = React.useState('');
-  const [snackbarSeverity, setSnackbarSeverity] = React.useState('success');
+  const [snackbarMessage, setSnackbarMessage] = React.useState("");
+  const [snackbarSeverity, setSnackbarSeverity] = React.useState("success");
   const handleSnackBarClick = (message, severity) => {
     setSnackbarMessage(message);
     setSnackbarSeverity(severity);
@@ -269,7 +280,7 @@ export default function NavBar() {
   };
 
   const handleSnackBarClose = (event, reason) => {
-    if (reason === 'clickaway') {
+    if (reason === "clickaway") {
       return;
     }
     setSnackbaropen(false);
@@ -278,8 +289,6 @@ export default function NavBar() {
   function Alert(props) {
     return <MuiAlert elevation={6} variant="filled" {...props} />;
   }
-
-
 
   //handle visibility of the login or signup modals
   const handleSignupClose = () => signupSetShow(false);
@@ -292,20 +301,20 @@ export default function NavBar() {
   const handleUploadShow = () => uploadSetShow(true);
 
   //stored values for authentication
-    //normal auth
+  //normal auth
   const loginEmailRef = useRef();
   const loginPasswordRef = useRef();
   const usernameRef = useRef();
   const signupEmailRef = useRef();
   const signupPasswordRef = useRef();
   const signupConfPasswordRef = useRef();
-    //org auth
+  //org auth
   const orgnameRef = useRef();
   const signupOrgEmailRef = useRef();
   const signupOrgPasswordRef = useRef();
   const signupOrgConfPasswordRef = useRef();
 
-  const {signup, login, logout} = useAuth();
+  const { signup, login, logout } = useAuth();
   const [loggedIn, setLoggedIn] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -328,7 +337,12 @@ export default function NavBar() {
     try {
       setError("");
       setLoading(true);
-      await signup(signupEmailRef.current.value, signupPasswordRef.current.value, usernameRef.current.value, "user");
+      await signup(
+        signupEmailRef.current.value,
+        signupPasswordRef.current.value,
+        usernameRef.current.value,
+        "user"
+      );
       handleSignupClose();
       setLoggedIn(true);
     } catch {
@@ -357,7 +371,12 @@ export default function NavBar() {
     try {
       setError("");
       setLoading(true);
-      await signup(signupOrgEmailRef.current.value, signupOrgPasswordRef.current.value, orgnameRef.current.value, "org");
+      await signup(
+        signupOrgEmailRef.current.value,
+        signupOrgPasswordRef.current.value,
+        orgnameRef.current.value,
+        "org"
+      );
       handleSignupOrgClose();
       setLoggedIn(true);
     } catch {
@@ -449,7 +468,9 @@ export default function NavBar() {
     try {
       setError("");
       setLoading(true);
-      await fbArray.storage.ref('profile/' + auth.currentUser.uid + ".jpg").put(uploadingImage);
+      await fbArray.storage
+        .ref("profile/" + auth.currentUser.uid + ".jpg")
+        .put(uploadingImage);
       uploadSetShow(false); // close modal if successful
     } catch {
       setError("Failed to upload image");
@@ -462,18 +483,23 @@ export default function NavBar() {
   }
 
   function getCurrentProfPic() {
-    if(!auth.currentUser) {
+    if (!auth.currentUser) {
       return;
     }
-    const reference = fbArray.storage.ref(`profile/${auth.currentUser.uid}.jpg`);
+    const reference = fbArray.storage.ref(
+      `profile/${auth.currentUser.uid}.jpg`
+    );
     if (!reference) {
       reference = fbArray.storage.ref(`profile/169-logo.jpg`);
     }
-    reference.getDownloadURL().then((url) => {
-      setCurProfPic(url);
-    }).catch((e) => {
-      console.log(e.message);
-    });
+    reference
+      .getDownloadURL()
+      .then((url) => {
+        setCurProfPic(url);
+      })
+      .catch((e) => {
+        console.log(e.message);
+      });
     return curProfPic;
   }
   getCurrentProfPic();
@@ -508,65 +534,76 @@ export default function NavBar() {
               </span>
             </Typography>
             <div className={classes.search}>
-            <div className={classes.searchIcon}>
-              <SearchIcon />
+              <div className={classes.searchIcon}>
+                <SearchIcon />
+              </div>
+              <InputBase
+                placeholder="Search…"
+                classes={{
+                  root: classes.inputRoot,
+                  input: classes.inputInput,
+                }}
+                inputProps={{ "aria-label": "search" }}
+              />
             </div>
-            <InputBase
-              placeholder="Search…"
-              classes={{
-                root: classes.inputRoot,
-                input: classes.inputInput,
-              }}
-              inputProps={{ 'aria-label': 'search' }}
-            />
-          </div>
             <section className={classes.rightToolbar}>
-              <IconButton aria-label="show 4 new mails" color="inherit"
-              onClick={()=> handleSnackBarClick('infobox Clicked !', 'success')}>
-                <Badge badgeContent={1} color="secondary">
-                  <MailIcon />
-                </Badge>
-              </IconButton>
-              <IconButton
-                aria-label="show 17 new notifications"
-                color="inherit"
-                onClick={()=> handleSnackBarClick('Bell Clicked', 'error')}
-              >
-                <Badge badgeContent={5} color="secondary">
-                  <NotificationsIcon />
-                </Badge>
-              </IconButton>
-              <IconButton
-                edge="end"
-                aria-label="account of current user"
-                // aria-controls={}
-                aria-haspopup="true"
-                onClick={handleProfileMenuOpen}
-                color="inherit"
-              >
-                <AccountCircle />
-              </IconButton>
-              <MaterialButton
-                variant="outlined"
-                color="inherit"
-                onClick={handleLoginShow}
-              >
-                Login/SignUp
-              </MaterialButton>
-              <MaterialButton
-                variant="outlined"
-                color="inherit"
-                onClick={handleLogout}
-              >
-                Log Out
-              </MaterialButton>
-              <MaterialButton
-                variant="outlined"
-                color="inherit"
-                onClick={viewSavedEventsButton}
-              >
-                View Saved Events
-              </MaterialButton>
+              {loggedIn ? (
+                <>
+                  <IconButton
+                    aria-label="show 4 new mails"
+                    color="inherit"
+                    onClick={() =>
+                      handleSnackBarClick("infobox Clicked !", "success")
+                    }
+                  >
+                    <Badge badgeContent={1} color="secondary">
+                      <MailIcon />
+                    </Badge>
+                  </IconButton>
+                  <IconButton
+                    aria-label="show 17 new notifications"
+                    color="inherit"
+                    onClick={() => handleSnackBarClick("Bell Clicked", "error")}
+                  >
+                    <Badge badgeContent={5} color="secondary">
+                      <NotificationsIcon />
+                    </Badge>
+                  </IconButton>
+                  <IconButton
+                    edge="end"
+                    aria-label="account of current user"
+                    // aria-controls={}
+                    aria-haspopup="true"
+                    onClick={handleProfileMenuOpen}
+                    color="inherit"
+                  >
+                    <AccountCircle />
+                  </IconButton>
+
+                  <MaterialButton
+                    variant="outlined"
+                    color="inherit"
+                    onClick={handleLogout}
+                  >
+                    Log Out
+                  </MaterialButton>
+                  <MaterialButton
+                    variant="outlined"
+                    color="inherit"
+                    onClick={viewSavedEventsButton}
+                  >
+                    View Saved Events
+                  </MaterialButton>
+                </>
+              ) : (
+                <MaterialButton
+                  variant="outlined"
+                  color="inherit"
+                  onClick={handleLoginShow}
+                >
+                  Login/SignUp
+                </MaterialButton>
+              )}
             </section>
           </Toolbar>
         </AppBar>
@@ -646,144 +683,228 @@ export default function NavBar() {
           />
         </main>
 
-{/********AUTHENTICATION MODALS********/}
-    {/*Non-organization Accounts*/}
-    <Modal show={signupShow} onHide={handleSignupClose} centered>
-      <Modal.Header closeButton>
-        <Modal.Title>Sign Up</Modal.Title>
-      </Modal.Header>
-      <Modal.Body>
-        {error && <Alert variant="danger">{error}</Alert>}
-        <Form onSubmit={handleSignup}>
-        <Form.Group id="username">
-            <Form.Label>User Name (Seen by other users)</Form.Label>
-            <Form.Control type="username" ref={usernameRef} required />
-          </Form.Group>
-            <Form.Group id="email">
-              <Form.Label>Email</Form.Label>
-              <Form.Control type="email" ref={signupEmailRef} required />
-            </Form.Group>
-            <Form.Group id="password">
-              <Form.Label>Password</Form.Label>
-              <Form.Control type="password" ref={signupPasswordRef} required />
-            </Form.Group>
-            <Form.Group id="password-confirm">
-              <Form.Label>Password Confirmation</Form.Label>
-              <Form.Control type="password" ref={signupConfPasswordRef} required />
-            </Form.Group>
-            <Button disabled={loading} className="w-100" style={{color: "white", backgroundColor: "#006633"}} type="submit">
-              Sign Up
-            </Button>
-          </Form>
-        </Modal.Body>
-        <Modal.Footer>
-          <div className="w-100 text-center">
-            Already have an Account?
-            <Button style={{margin: "4px"}} onClick={() => {handleSignupClose(); handleLoginShow();}}>Log In</Button>
-          </div>
-          <div className="w-100 text-center">
-            Are you an Organization?
-            <Button style={{margin: "4px"}} onClick={() => {handleSignupClose(); handleSignupOrgShow();}}>Organization Sign Up</Button>
-          </div>
-        </Modal.Footer>
-      </Modal>
+        {/********AUTHENTICATION MODALS********/}
+        {/*Non-organization Accounts*/}
+        <Modal show={signupShow} onHide={handleSignupClose} centered>
+          <Modal.Header closeButton>
+            <Modal.Title>Sign Up</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            {error && <Alert variant="danger">{error}</Alert>}
+            <Form onSubmit={handleSignup}>
+              <Form.Group id="username">
+                <Form.Label>User Name (Seen by other users)</Form.Label>
+                <Form.Control type="username" ref={usernameRef} required />
+              </Form.Group>
+              <Form.Group id="email">
+                <Form.Label>Email</Form.Label>
+                <Form.Control type="email" ref={signupEmailRef} required />
+              </Form.Group>
+              <Form.Group id="password">
+                <Form.Label>Password</Form.Label>
+                <Form.Control
+                  type="password"
+                  ref={signupPasswordRef}
+                  required
+                />
+              </Form.Group>
+              <Form.Group id="password-confirm">
+                <Form.Label>Password Confirmation</Form.Label>
+                <Form.Control
+                  type="password"
+                  ref={signupConfPasswordRef}
+                  required
+                />
+              </Form.Group>
+              <Button
+                disabled={loading}
+                className="w-100"
+                style={{ color: "white", backgroundColor: "#006633" }}
+                type="submit"
+              >
+                Sign Up
+              </Button>
+            </Form>
+          </Modal.Body>
+          <Modal.Footer>
+            <div className="w-100 text-center">
+              Already have an Account?
+              <Button
+                style={{ margin: "4px" }}
+                onClick={() => {
+                  handleSignupClose();
+                  handleLoginShow();
+                }}
+              >
+                Log In
+              </Button>
+            </div>
+            <div className="w-100 text-center">
+              Are you an Organization?
+              <Button
+                style={{ margin: "4px" }}
+                onClick={() => {
+                  handleSignupClose();
+                  handleSignupOrgShow();
+                }}
+              >
+                Organization Sign Up
+              </Button>
+            </div>
+          </Modal.Footer>
+        </Modal>
 
-      <Modal show={loginShow} onHide={handleLoginClose} centered>
-        <Modal.Header closeButton>
-          <Modal.Title>Log In</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          {error && <Alert variant="danger">{error}</Alert>}
-          <Form onSubmit={handleLogin}>
-            <Form.Group id="email">
-              <Form.Label>Email</Form.Label>
-              <Form.Control type="email" ref={loginEmailRef} required />
-            </Form.Group>
-            <Form.Group id="password">
-              <Form.Label>Password</Form.Label>
-              <Form.Control type="password" ref={loginPasswordRef} required />
-            </Form.Group>
-            <Button disabled={loading} className="w-100" style={{backgroundColor: "#006633"}} type="submit">
-              Log In
-            </Button>
-          </Form>
-        </Modal.Body>
-        <Modal.Footer>
-          <div className="w-100 text-center">
-            Need an Account?
-            <Button style={{margin: "4px"}} onClick={() => {handleLoginClose(); handleSignupShow();}}>Sign Up</Button>
-          </div>
-        </Modal.Footer>
-      </Modal>
+        <Modal show={loginShow} onHide={handleLoginClose} centered>
+          <Modal.Header closeButton>
+            <Modal.Title>Log In</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            {error && <Alert variant="danger">{error}</Alert>}
+            <Form onSubmit={handleLogin}>
+              <Form.Group id="email">
+                <Form.Label>Email</Form.Label>
+                <Form.Control type="email" ref={loginEmailRef} required />
+              </Form.Group>
+              <Form.Group id="password">
+                <Form.Label>Password</Form.Label>
+                <Form.Control type="password" ref={loginPasswordRef} required />
+              </Form.Group>
+              <Button
+                disabled={loading}
+                className="w-100"
+                style={{ backgroundColor: "#006633" }}
+                type="submit"
+              >
+                Log In
+              </Button>
+            </Form>
+          </Modal.Body>
+          <Modal.Footer>
+            <div className="w-100 text-center">
+              Need an Account?
+              <Button
+                style={{ margin: "4px" }}
+                onClick={() => {
+                  handleLoginClose();
+                  handleSignupShow();
+                }}
+              >
+                Sign Up
+              </Button>
+            </div>
+          </Modal.Footer>
+        </Modal>
 
-    {/*Organization Accounts*/}
-      <Modal show={signupOrgShow} onHide={handleSignupOrgClose} centered>
-        <Modal.Header closeButton>
-          <Modal.Title>Organization Sign Up</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          {error && <Alert variant="danger">{error}</Alert>}
-          <Form onSubmit={handleSignupOrg}>
-          <Form.Group id="username">
-            <Form.Label>Organization Name (Seen by other users)</Form.Label>
-            <Form.Control type="username" ref={orgnameRef} required />
-          </Form.Group>
-            <Form.Group id="email">
-              <Form.Label>Email</Form.Label>
-              <Form.Control type="email" ref={signupOrgEmailRef} required />
-            </Form.Group>
-            <Form.Group id="password">
-              <Form.Label>Password</Form.Label>
-              <Form.Control type="password" ref={signupOrgPasswordRef} required />
-            </Form.Group>
-            <Form.Group id="password-confirm">
-              <Form.Label>Password Confirmation</Form.Label>
-              <Form.Control type="password" ref={signupOrgConfPasswordRef} required />
-            </Form.Group>
-            <Button disabled={loading} className="w-100" style={{backgroundColor: "#006633"}} type="submit">
-              Sign Up
-            </Button>
-          </Form>
-        </Modal.Body>
-        <Modal.Footer>
-          <div className="w-100 text-center">
-            Already have an Organization Account?
-            <Button style={{margin: "4px"}} onClick={() => {handleSignupOrgClose(); handleLoginShow();}}>Log In</Button>
-          </div>
-          <div className="w-100 text-center">
-            Not an Organization?
-            <Button style={{margin: "4px"}} onClick={() => {handleSignupOrgClose(); handleSignupShow();}}>Sign Up</Button>
-          </div>
-        </Modal.Footer>
-      </Modal>
+        {/*Organization Accounts*/}
+        <Modal show={signupOrgShow} onHide={handleSignupOrgClose} centered>
+          <Modal.Header closeButton>
+            <Modal.Title>Organization Sign Up</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            {error && <Alert variant="danger">{error}</Alert>}
+            <Form onSubmit={handleSignupOrg}>
+              <Form.Group id="username">
+                <Form.Label>Organization Name (Seen by other users)</Form.Label>
+                <Form.Control type="username" ref={orgnameRef} required />
+              </Form.Group>
+              <Form.Group id="email">
+                <Form.Label>Email</Form.Label>
+                <Form.Control type="email" ref={signupOrgEmailRef} required />
+              </Form.Group>
+              <Form.Group id="password">
+                <Form.Label>Password</Form.Label>
+                <Form.Control
+                  type="password"
+                  ref={signupOrgPasswordRef}
+                  required
+                />
+              </Form.Group>
+              <Form.Group id="password-confirm">
+                <Form.Label>Password Confirmation</Form.Label>
+                <Form.Control
+                  type="password"
+                  ref={signupOrgConfPasswordRef}
+                  required
+                />
+              </Form.Group>
+              <Button
+                disabled={loading}
+                className="w-100"
+                style={{ backgroundColor: "#006633" }}
+                type="submit"
+              >
+                Sign Up
+              </Button>
+            </Form>
+          </Modal.Body>
+          <Modal.Footer>
+            <div className="w-100 text-center">
+              Already have an Organization Account?
+              <Button
+                style={{ margin: "4px" }}
+                onClick={() => {
+                  handleSignupOrgClose();
+                  handleLoginShow();
+                }}
+              >
+                Log In
+              </Button>
+            </div>
+            <div className="w-100 text-center">
+              Not an Organization?
+              <Button
+                style={{ margin: "4px" }}
+                onClick={() => {
+                  handleSignupOrgClose();
+                  handleSignupShow();
+                }}
+              >
+                Sign Up
+              </Button>
+            </div>
+          </Modal.Footer>
+        </Modal>
 
-      {/* Profile Picture Upload Modal*/}
-      <Modal show={uploadShow} onHide={handleUploadClose} centered>
-        <Modal.Header closeButton>
-          <Modal.Title>Upload Profile Picture</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          {error && <Alert variant="danger">{error}</Alert>}
-          <p>Current Profile Picture: </p>
-          <img src={curProfPic} style={{height:'200px'}}></img>
-          <Form onSubmit={handleUpload}>
-            <Form.Group id="image">
-              <Form.Label>Upload Image</Form.Label>
-              <Form.Control type="file" onChange={(e) => chooseFile(e)} required />
-            </Form.Group>
-            <Button disabled={loading} className="w-100" style={{backgroundColor: "#006633"}} type="submit" onClick={handleUpload}>
-              Upload
-            </Button>
-          </Form>
-        </Modal.Body>
-      </Modal>
-
+        {/* Profile Picture Upload Modal*/}
+        <Modal show={uploadShow} onHide={handleUploadClose} centered>
+          <Modal.Header closeButton>
+            <Modal.Title>Upload Profile Picture</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            {error && <Alert variant="danger">{error}</Alert>}
+            <p>Current Profile Picture: </p>
+            <img src={curProfPic} style={{ height: "200px" }}></img>
+            <Form onSubmit={handleUpload}>
+              <Form.Group id="image">
+                <Form.Label>Upload Image</Form.Label>
+                <Form.Control
+                  type="file"
+                  onChange={(e) => chooseFile(e)}
+                  required
+                />
+              </Form.Group>
+              <Button
+                disabled={loading}
+                className="w-100"
+                style={{ backgroundColor: "#006633" }}
+                type="submit"
+                onClick={handleUpload}
+              >
+                Upload
+              </Button>
+            </Form>
+          </Modal.Body>
+        </Modal>
       </div>
-      <Snackbar open={snackbarOpen} autoHideDuration={5000} onClose={handleSnackBarClose}>
-      <Alert onClose={handleSnackBarClose} severity={snackbarSeverity}>
-        {snackbarMessage}
-      </Alert>
-    </Snackbar>
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={5000}
+        onClose={handleSnackBarClose}
+      >
+        <Alert onClose={handleSnackBarClose} severity={snackbarSeverity}>
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
 
       {renderMenu}
     </>
