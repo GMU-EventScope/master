@@ -191,41 +191,6 @@
     return (
         <div>
           <Card options={{
-        pane: "overlayLayer",
-        alignBottom: true,
-        boxStyle: {
-            boxShadow: `3px 3px 10px rgba(0,0,0,0.6)`
-        },
-        closeBoxURL : ""
-    }} style={{ width: '25rem' }} bg={"Light"} >   
-        <Card.Img variant="top" class="mx-auto" src="/gmulogo.png" style={{width: 220, height: 220, borderRadius: 200}}/>
-          <Card.Header className="text-center">
-            <Card.Text size="18">
-              <h3>{props.title}</h3> Hosted by <b>{props.author}</b>
-            </Card.Text>
-          </Card.Header> 
-          <Card.Body>
-            {props.date &&
-              <div>
-              <Card.Subtitle><u>Starting: </u></Card.Subtitle>
-              <Card.Text style={{fontSize: 18}}><p>{props.date}</p></Card.Text>
-              </div>
-            }
-            {props.enddate &&
-              <div>
-              <Card.Subtitle><u>Ending: </u></Card.Subtitle>
-              <Card.Text style={{fontSize: 18}}><p>{props.enddate}</p></Card.Text>
-              </div>
-            }
-    */
-      //report button code
-  /*<ButtonGroup className="mr-2">
-                <Button variant="danger mr-2" size='s' onClick={Button3} ref={Button3Load}></Button>
-              </ButtonGroup>
-  */
-    return (
-        <div>
-          <Card options={{
             pane: "overlayLayer",
             alignBottom: true,
             boxStyle: {

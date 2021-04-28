@@ -498,37 +498,7 @@ const Map = ({ mapRef, filter, setFilter, savedEvents, setSavedEvents }) => {
         </Drawer>
       </div>
 
-      {/* <div className={classes.button}>
-        <Button
-          variant="contained"
-          color="primary"
-          size="large"
-          startIcon={<SettingsIcon />}
-          onClick={toggleDrawer(true)}
-        >
-          Filter
-        </Button>
-
-        <Drawer
-          anchor="bottom"
-          open={bottomOption}
-          onClose={toggleDrawer(false)}
-        >
-          <Filter
-            filterOptions={filterOptions}
-            setFilterOptions={setFilterOptions}
-            markers={markers}
-            panTo={panTo}
-            filterByDate={filterByDate}
-            filterByType={filterByType}
-            filterByTag={filterByTag}
-            setSelected={setSelected}
-            setBottomOption={setBottomOption}
-            setMarkers={setMarkers}
-          />
-        </Drawer>
-      </div>
-      {/*Toggle Create Event Mode Button */}
+      {/* Toggle Create Event Mode Button */}
       {accountType === "org" && (eventMode === false ? 
         (<div className={classes.eventButton}>
           <Button style={{margin: "4px", color: "white", backgroundColor: "#006633"}} onClick={() => {setEventMode(true)}}>Create Mode</Button>
@@ -572,9 +542,9 @@ const Map = ({ mapRef, filter, setFilter, savedEvents, setSavedEvents }) => {
             </Button>
           </Form>
         </Modal.Body>
-      </Modal>
+      </Modal> 
       
-    </>
+    </div>
   );
 };
 
