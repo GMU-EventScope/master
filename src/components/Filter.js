@@ -6,7 +6,7 @@ import FormGroup from "@material-ui/core/FormGroup";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import FormHelperText from "@material-ui/core/FormHelperText";
 import Checkbox from "@material-ui/core/Checkbox";
-import { makeStyles, useTheme } from "@material-ui/core/styles";
+import { makeStyles } from "@material-ui/core/styles";
 import TextField from "@material-ui/core/TextField";
 import Switch from "@material-ui/core/Switch";
 import Chip from "@material-ui/core/Chip";
@@ -18,9 +18,9 @@ import SchoolIcon from "@material-ui/icons/School";
 import BusinessIcon from "@material-ui/icons/Business";
 import PeopleIcon from "@material-ui/icons/People";
 import EventIcon from "@material-ui/icons/Event";
+import WhatshotIcon from '@material-ui/icons/Whatshot';
 
-import { useState, useEffect, useCallback, useRef } from "react";
-import { TramRounded } from "@material-ui/icons";
+
 const useStyles = makeStyles((theme) => ({
   root: {
     display: "flex",
@@ -130,6 +130,7 @@ const Filter = ({
             name="half-rating"
             defaultValue={params.value}
             precision={0.1}
+            icon={<WhatshotIcon fontSize="inherit" />}
             readOnly
           />
           {params.value}

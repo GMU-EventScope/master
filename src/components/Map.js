@@ -6,6 +6,9 @@ import {
   InfoWindow,
 } from "@react-google-maps/api";
 import "@reach/combobox/styles.css";
+import Fab from '@material-ui/core/Fab';
+import EditLocationOutlinedIcon from '@material-ui/icons/EditLocationOutlined';
+import { green } from '@material-ui/core/colors';
 import mapStyles from "./mapStyles";
 import './Map.css';
 
@@ -23,12 +26,35 @@ import './Map.css';
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    display: "flex",
+    flex: "1 1 auto",
   },
   button: {
     display: "flex",
     alignContent: "center",
     justifyContent: "center"
+  },
+  filterButton: {
+    position: "fixed",
+    bottom: 30,
+    right: 60,
+  },
+  margin: {
+    margin: theme.spacing(1),
+    color: theme.palette.common.white,
+    backgroundColor: green[500],
+    '&:hover': {
+      backgroundColor: green[600],
+    },
+  },
+  extendedIcon: {
+    marginRight: theme.spacing(1),
+  },
+  fabGreen: {
+    color: theme.palette.common.white,
+    backgroundColor: green[500],
+    '&:hover': {
+      backgroundColor: green[600],
+    },
   },
   eventButton: {
     position: "fixed",
@@ -42,7 +68,7 @@ const auth = fbArray.auth;
 const db = fbArray.db;
 const libraries = ["places"];
 const mapContainerStyle = {
-  height: "85vh",
+  height:"calc(100vh - 64px)",
   width: "100%",
 };
 
@@ -300,6 +326,7 @@ const Map = ({ mapRef, filter, setFilter, savedEvents, setSavedEvents }) => {
               },
             ]);
           });
+        
       }
     });
     // set Events with fetchedDate array
@@ -358,7 +385,7 @@ const Map = ({ mapRef, filter, setFilter, savedEvents, setSavedEvents }) => {
   }
 
   return (
-    <>
+    <div className={classes.root}>
       <GoogleMap
         id="map"
         mapContainerStyle={mapContainerStyle}
@@ -446,24 +473,17 @@ const Map = ({ mapRef, filter, setFilter, savedEvents, setSavedEvents }) => {
           </InfoWindow>
         ) : null}
       </GoogleMap>
-
-      <div className={classes.button}>
-        <Button
-          variant="contained"
-          color="primary"
-          size="large"
-          startIcon={<SettingsIcon />}
-          onClick={toggleDrawer(true)}
-        >
-          Filter
-        </Button>
-
+      <div className={classes.filterButton}>
+        <Fab variant="extended" color="inherit" aria-label="add" className={classes.margin} onClick={toggleDrawer(true)}>
+            <EditLocationOutlinedIcon className={classes.extendedIcon} />
+            Filter
+        </Fab>
         <Drawer
           anchor="bottom"
           open={bottomOption}
           onClose={toggleDrawer(false)}
         >
-          <Filter
+        <Filter
             filterOptions={filterOptions}
             setFilterOptions={setFilterOptions}
             markers={markers}
@@ -477,7 +497,8 @@ const Map = ({ mapRef, filter, setFilter, savedEvents, setSavedEvents }) => {
           />
         </Drawer>
       </div>
-      {/*Toggle Create Event Mode Button */}
+
+      {/* Toggle Create Event Mode Button */}
       {accountType === "org" && (eventMode === false ? 
         (<div className={classes.eventButton}>
           <Button style={{margin: "4px", color: "white", backgroundColor: "#006633"}} onClick={() => {setEventMode(true)}}>Create Mode</Button>
@@ -521,9 +542,9 @@ const Map = ({ mapRef, filter, setFilter, savedEvents, setSavedEvents }) => {
             </Button>
           </Form>
         </Modal.Body>
-      </Modal>
+      </Modal> 
       
-    </>
+    </div>
   );
 };
 

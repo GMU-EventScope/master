@@ -138,7 +138,7 @@
                   savedevents: myEvents
                 });
 
-                props.setSavedEvents(props.savedEvents.filter(item => item.docID != curEvent));
+                props.setSavedEvents(props.savedEvents.filter(item => item.docID !== curEvent));
               }
             } 
         });
@@ -167,46 +167,27 @@
     */
 
     // gets a nice looking x:xx xm output
-    function getTimeString(input) {
-      let date = input.toDate();
-      let hoursString = date.getHours();
-      let ampm = "am"
-      if (parseInt(hoursString) >= 12) {
-        ampm = "pm";
-        if (parseInt(hoursString) > 12) {
-          hoursString = (parseInt(hoursString)-12).toString();
-        }
-      }
-      if (parseInt(hoursString) == 0) {
-        hoursString = "12";
-      }
-      let minutes = date.getMinutes().toString();
-      //console.log(minutes.length)
-      if (minutes.length < 2) {
-        minutes = "0" + minutes;
-      }
-      return hoursString + ":" + minutes + " " + ampm;
-    }
+    // function getTimeString(input) {
+    //   let date = input.toDate();
+    //   let hoursString = date.getHours();
+    //   let ampm = "am"
+    //   if (parseInt(hoursString) >= 12) {
+    //     ampm = "pm";
+    //     if (parseInt(hoursString) > 12) {
+    //       hoursString = (parseInt(hoursString)-12).toString();
+    //     }
+    //   }
+    //   if (parseInt(hoursString) == 0) {
+    //     hoursString = "12";
+    //   }
+    //   let minutes = date.getMinutes().toString();
+    //   //console.log(minutes.length)
+    //   if (minutes.length < 2) {
+    //     minutes = "0" + minutes;
+    //   }
+    //   return hoursString + ":" + minutes + " " + ampm;
+    // }
 
-    /*
-            {props.date &&
-              <div>
-              <Card.Subtitle><u>Starting: </u></Card.Subtitle>
-              <Card.Text style={{fontSize: 18}}><p>{props.date}</p></Card.Text>
-              </div>
-            }
-            {props.enddate &&
-              <div>
-              <Card.Subtitle><u>Ending: </u></Card.Subtitle>
-              <Card.Text style={{fontSize: 18}}><p>{props.enddate}</p></Card.Text>
-              </div>
-            }
-    */
-      //report button code
-  /*<ButtonGroup className="mr-2">
-                <Button variant="danger mr-2" size='s' onClick={Button3} ref={Button3Load}></Button>
-              </ButtonGroup>
-  */
     return (
         <div>
           <Card options={{
