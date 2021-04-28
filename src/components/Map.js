@@ -16,6 +16,7 @@ import Drawer from "@material-ui/core/Drawer";
 import SettingsIcon from "@material-ui/icons/Settings";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import Filter from "./Filter";
+import './Map.css';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -257,7 +258,7 @@ const Map = ({ mapRef, filter, setFilter, savedEvents, setSavedEvents }) => {
         console.log("returned url:" + url);
         marker.picUrls = [...marker.picUrls, url];
       });
-      marker.picNames.length = 1;
+      marker.picNames = ["default"];
     }
 
   }
