@@ -1,0 +1,14 @@
+/*no more x button*/
+button.gm-ui-hover-effect {
+    visibility: hidden;
+}
+  
+/* clear the paddings  */
+  .gm-style .gm-style-iw-c {
+    padding: 0;
+}
+  
+/* remove the white space */
+  .gm-style-iw .gm-style-iw-d {
+    overflow: auto !important;
+}

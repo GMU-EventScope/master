@@ -72,7 +72,9 @@ export default [
         "stylers": [
             {   
                 //default color if not specified, im using this for parking lots
-                "color": "#76ef92"
+                "color": "#212e1d"
+            },{
+                "lightness": 0
             }
         ]
     },

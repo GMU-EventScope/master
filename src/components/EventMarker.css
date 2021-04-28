@@ -1,0 +1,41 @@
+/*defauult text color idk if working*/
+.body{
+    color: #3c3c3c;
+}
+
+/*host, date colors*/
+span.name { 
+    color:#0A6634;
+    font-weight:bold;
+    font-family:Helvetica;
+    font-size:20; 
+}
+
+/*description*/
+.desc{
+    color:#3c3c3c;
+    font-family:Helvetica;
+    font-size:14;
+}
+
+/*event attend and save color and style*/
+.event-btn {
+    background-color: #006633;
+    border: #fff;
+    font-size:20;
+}
+
+/*Learn more button color and style*/
+.learnmore-btn{
+    color: #3c3c3c;
+    display:flex;
+    justify-content:center;
+    background-color: #fff;
+    border: #fff;
+}
+
+/* the multiple images*/
+.carousel .carousel-control{
+    display: none;
+    visibility: hidden;
+}

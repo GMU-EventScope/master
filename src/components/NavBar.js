@@ -149,12 +149,16 @@ export default function NavBar() {
   // used in the left side bar, passed to the map which passes to EventMarker
   const [savedEvents, setSavedEvents] = useState([]);
 
+  // current profile pic
+  const [curProfPic, setCurProfPic] = useState([]);
+
   const mapRef = useRef();
 
   //////USER AUTHENTICATION//////... these all communicate with AuthContext.js
   const [signupShow, signupSetShow] = useState(false);
   const [signupOrgShow, signupOrgSetShow] = useState(false);
   const [loginShow, loginSetShow] = useState(false);
+  const [uploadShow, uploadSetShow] = useState(false);
 
   //handle visibility of the login or signup modals
   const handleSignupClose = () => signupSetShow(false);
@@ -163,6 +167,8 @@ export default function NavBar() {
   const handleSignupOrgShow = () => signupOrgSetShow(true);
   const handleLoginClose = () => loginSetShow(false);
   const handleLoginShow = () => loginSetShow(true);
+  const handleUploadClose = () => uploadSetShow(false);
+  const handleUploadShow = () => uploadSetShow(true);
 
   //stored values for authentication
     //normal auth
@@ -305,6 +311,45 @@ export default function NavBar() {
     }
   }
 
+  // image being uploaded
+  let uploadingImage = {};
+  // uploads an image to storage profile/user.uid
+  async function handleUpload(event) {
+    console.log("pp click");
+    event.preventDefault();
+
+    try {
+      setError("");
+      setLoading(true);
+      await fbArray.storage.ref('profile/' + auth.currentUser.uid + ".jpg").put(uploadingImage);
+      uploadSetShow(false); // close modal if successful
+    } catch {
+      setError("Failed to upload image");
+    }
+    setLoading(false);
+  }
+  // used to get the image and store in uploadingImage
+  function chooseFile(e) {
+    uploadingImage = e.target.files[0];
+  }
+
+  function getCurrentProfPic() {
+    if(!auth.currentUser) {
+      return;
+    }
+    const reference = fbArray.storage.ref(`profile/${auth.currentUser.uid}.jpg`);
+    if (!reference) {
+      reference = fbArray.storage.ref(`profile/169-logo.jpg`);
+    }
+    reference.getDownloadURL().then((url) => {
+      setCurProfPic(url);
+    }).catch((e) => {
+      console.log(e.message);
+    });
+    return curProfPic;
+  }
+  getCurrentProfPic();
+
   return (
     <>
     <div className={classes.root}>
@@ -329,6 +374,7 @@ export default function NavBar() {
             GMU EventScope📢
           </Typography>
           <section className={classes.rightToolbar}>
+
             {loggedIn === false ?
               (<button type="button" className="btn btn-signIn" onClick={handleLoginShow}> Login/SignUp </button>)
               :
@@ -340,7 +386,7 @@ export default function NavBar() {
       </AppBar>
       <Drawer
         className={classes.drawer}
-        letiant="persistent"
+        variant="persistent"
         anchor="left"
         open={open}
         classes={{
@@ -410,7 +456,7 @@ export default function NavBar() {
         <Modal.Title>Sign Up</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        {error && <Alert letiant="danger">{error}</Alert>}
+        {error && <Alert variant="danger">{error}</Alert>}
         <Form onSubmit={handleSignup}>
         <Form.Group id="username">
             <Form.Label>User Name (Seen by other users)</Form.Label>
@@ -450,7 +496,7 @@ export default function NavBar() {
           <Modal.Title>Log In</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          {error && <Alert letiant="danger">{error}</Alert>}
+          {error && <Alert variant="danger">{error}</Alert>}
           <Form onSubmit={handleLogin}>
             <Form.Group id="email">
               <Form.Label>Email</Form.Label>
@@ -479,7 +525,7 @@ export default function NavBar() {
           <Modal.Title>Organization Sign Up</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          {error && <Alert letiant="danger">{error}</Alert>}
+          {error && <Alert variant="danger">{error}</Alert>}
           <Form onSubmit={handleSignupOrg}>
           <Form.Group id="username">
             <Form.Label>Organization Name (Seen by other users)</Form.Label>
@@ -513,6 +559,28 @@ export default function NavBar() {
           </div>
         </Modal.Footer>
       </Modal>
+
+      {/* Profile Picture Upload Modal*/}
+      <Modal show={uploadShow} onHide={handleUploadClose} centered>
+        <Modal.Header closeButton>
+          <Modal.Title>Upload Profile Picture</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          {error && <Alert variant="danger">{error}</Alert>}
+          <p>Current Profile Picture: </p>
+          <img src={curProfPic} style={{height:'200px'}}></img>
+          <Form onSubmit={handleUpload}>
+            <Form.Group id="image">
+              <Form.Label>Upload Image</Form.Label>
+              <Form.Control type="file" onChange={(e) => chooseFile(e)} required />
+            </Form.Group>
+            <Button disabled={loading} className="w-100" style={{backgroundColor: "#006633"}} type="submit" onClick={handleUpload}>
+              Upload
+            </Button>
+          </Form>
+        </Modal.Body>
+      </Modal>
+
       </div>
     </>
   );

@@ -49,7 +49,6 @@ const EventsList = ({ mapRef, savedEvents, setSavedEvents }) => {
     // this first "get" does nothing but delay so that auth.currentUser does not always return null
     db.collection("users").get().then(() => {
       const currUser = auth.currentUser;
-      console.log(currUser);
       // get user doc matching user uid
       if (currUser == null) {
         setEvents([]);
