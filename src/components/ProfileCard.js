@@ -1,7 +1,6 @@
 import fbArray from "../apis/firebase.js";
-import { useAuth } from "../contexts/AuthContext.js";
 import React from 'react';
-import { useState, useEffect } from "react";
+import { useState, useRef, useEffect } from "react";
 import { makeStyles } from '@material-ui/core/styles';
 import Avatar from '@material-ui/core/Avatar';
 import Typography from '@material-ui/core/Typography';
@@ -20,27 +19,28 @@ const auth = fbArray.auth;
 const db = fbArray.db;
 
 export default function ProfileCard() {
-  //get the user data from AuthContext
-  const [username, setUsername] = useState("User");
   const classes = useStyles();
+  /////USERNAME STUFF/////
+  //stored variable for username
+  const [username, setUsername] = useState("User");
 
+  //display current user's username in the left sidebar
   const currUser = auth.currentUser;
   const fetchUsername = () => {
     if (currUser) {
-      // User is signed in.
+      //user is signed in.
       db.collection("users").doc(currUser.uid).get().then((doc) => {
         if (doc.exists) {
-            console.log(doc.get("username"));
             setUsername(doc.get("username"));
         } else {
-            // doc.data() will be undefined in this case
+            //doc.data() will be undefined in this case
             console.log("No such document!");
         }
       }).catch((error) => {
           console.log("Error getting document:", error);
       });
     } else {
-      // No user is signed in.
+      //no user is signed in.
     }
   }
 
@@ -48,6 +48,7 @@ export default function ProfileCard() {
     fetchUsername();
   });
 
+  
   return (
     <div className={classes.root}>
       <Avatar alt="InsertNameHere" src="./patriotlogo.png" />

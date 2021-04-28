@@ -1,17 +1,25 @@
   import React from 'react'
-  import {Button, Card,ButtonToolbar,ButtonGroup } from 'react-bootstrap'
+  import {Button, Card, ListGroup, ListGroupItem,ButtonToolbar,ButtonGroup,Container,Row,Col,Carousel} from 'react-bootstrap'
   import 'bootstrap/dist/css/bootstrap.min.css';
   import useButtonLoader from './Buttons.js';
   import fbArray from '../apis/firebase.js';
+  import './EventMarker.css';
+  import { useState} from "react";
 
   // get firebase stuff
   const db = fbArray.db;
   const auth = fbArray.auth;
+  const storage = fbArray.storage;
 
   //adds artificial delay for loading (cuz too fast, user can't see loading msg)
   function loadingDelay(delay) {
     return new Promise((resolve) => setTimeout(resolve, delay));
   }
+  /*
+  // pics from firebase
+  let picNames = [];
+  let queryCount = 0;
+  */
 
   //buttons help: https://react-bootstrap.github.io/components/buttons/
   //Followed this for loading buttons: https://www.youtube.com/watch?v=nCEnqQABC5A via hooks
@@ -19,8 +27,8 @@
     //button hook thing, name the buttons here (static text, loading text)
     //useButtonLoader is in Button.js (for loading buttons)
     const [Button1Load,setLoadingButton1] = useButtonLoader("Attend","Updating..");
-    const [Button2Load,setLoadingButton2] = useButtonLoader("Save","Saving..");
-    const [Button3Load,setLoadingButton3] = useButtonLoader("Report","Reporting..");
+    const [Button2Load,setLoadingButton2] = useButtonLoader("✩","★");
+    //const [Button3Load,setLoadingButton3] = useButtonLoader("Report","Reporting..");
     
     // used to display the end date, but only if it is entered
     let useLocation = "";
@@ -30,7 +38,31 @@
         useLocation += " room " + props.room;
       }
     }
-    
+    /*
+    const [eventPicUrls, setEventPicUrls] = useState([]);
+    // picNames is the array of the image filenames for each event
+    if (props.picNames) {
+      picNames = [...props.picNames];
+    }
+    // only query once
+    if (queryCount < picNames.length) {
+      // only query if the file can be found
+      if (props.picNames && props.hostID){
+        // loop through each filename
+        picNames.forEach(name => {
+          //console.log(`eventpics/${props.docID}/${name}`);
+          let reference = storage.ref(`eventpics/${props.docID}/${name}`);
+          reference.getDownloadURL().then((url) => {
+            // URL obtained, add to the reactive array so it can be used for rendering
+            console.log("returned url:" + url);
+            setEventPicUrls(eventPicUrls => [...eventPicUrls, url]);
+          });
+        });
+      }
+      queryCount += 1;
+    }
+    */
+
     //I'm here
     const Button1 = () => {
       //loading
@@ -116,6 +148,7 @@
       });
     };
 
+    /*
     //Report
     const Button3 = () => {
       //loading
@@ -131,6 +164,7 @@
         });
       });
     };
+    */
 
     // gets a nice looking x:xx xm output
     // function getTimeString(input) {
@@ -183,37 +217,68 @@
               <Card.Text style={{fontSize: 18}}><p>{props.enddate}</p></Card.Text>
               </div>
             }
-            {props.context &&
-              <div>
-                <Card.Subtitle><u>Description</u></Card.Subtitle>
-                <Card.Text><p>{props.context}</p></Card.Text>
-              </div>
-            }
-            {useLocation &&
-              <div>
-                <Card.Subtitle>Location:</Card.Subtitle>
-                <Card.Text><p>{useLocation}</p></Card.Text>
-              </div>
-            }
-            {props.link &&
-              <div>
-                <Card.Subtitle><u>Link:</u></Card.Subtitle>
-                <Card.Link style={{fontSize: 18}} href={props.link} target="_blank"><p>Event Link</p></Card.Link>
-              </div>
-            }
-            <ButtonToolbar>
-              <ButtonGroup className="mr-2">
-                <Button variant="primary mr-2" size='lg' onClick={Button1} ref={Button1Load}></Button>
+    */
+      //report button code
+  /*<ButtonGroup className="mr-2">
+                <Button variant="danger mr-2" size='s' onClick={Button3} ref={Button3Load}></Button>
               </ButtonGroup>
-              <ButtonGroup className="mr-2">
-                <Button variant="info mr-2" size='lg' onClick={Button2} ref={Button2Load}></Button>
-              </ButtonGroup>
-              <ButtonGroup className="mr-2">
-                <Button variant="danger mr-2" size='lg' onClick={Button3} ref={Button3Load}></Button>
-              </ButtonGroup>
-            </ButtonToolbar>
-            <a href="" className="btn btn-outline-success btn-sm">Read More</a>
-          </Card.Body>
+  */
+    return (
+        <div>
+          <Card options={{
+            pane: "overlayLayer",
+            alignBottom: true,
+            boxStyle: {
+              boxShadow: 'none'
+            }}} 
+          style={{ width: '642px', height: '35.5rem'}} bg={"Light"}>   
+          <Carousel style={{boxShadow: "0px 1px 1px rgba(0, 0, 0, 0.3)"}} autoPlay={false} controls={false} indicators={true} interval={null}>
+              {props.picUrls.map((url) =>(
+                <Carousel.Item>
+                <Card.Img variant="top" style={{ width: '640px', height: '360px'}} src={url} rounded fluid/>
+                </Carousel.Item>
+              ))}
+          </Carousel>
+          <Container fluid>
+            <Row>
+              <Col xs={8}>
+                <Card.Text>
+                <span style={{display:'block', height:'12px'}}></span> <h3>{props.title}</h3> <p>Hosted by <span class="name">{props.author}</span></p>
+                </Card.Text>
+                {props.context &&
+                    <Card.Text><p className="desc">{props.context}</p></Card.Text>
+                }
+              </Col>
+              <Col xs={4}>
+               <Card.Body>
+                  {props.context &&
+                    <Card.Text style={{fontSize: 16}}><p><span class="name">{props.date}</span></p></Card.Text>
+                  }
+                  {
+                    <Card.Text><p className="otherinfo">👤 5 Attendees </p></Card.Text>
+                  }
+                  {
+                    <Card.Text><p className="otherinfo">🏛️ Location stuff {useLocation}</p></Card.Text>
+                  }
+              </Card.Body>
+              </Col>
+            </Row>
+            <Row>
+                <Col xs={8} >
+                  <Button href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" target="_blank" size='sm' className="learnmore-btn" style={{alignSelf:'right'}}>Learn More</Button>
+                </Col>
+                <Col>
+                  <ButtonToolbar>
+                    <ButtonGroup className="ml-3">
+                       <Button className='event-btn' size='m' onClick={Button1} ref={Button1Load}></Button>
+                     </ButtonGroup>
+                    <ButtonGroup className="ml-3">
+                     <Button className='event-btn' size='m' onClick={Button2} ref={Button2Load}></Button>
+                   </ButtonGroup>
+                 </ButtonToolbar>
+                </Col>
+            </Row>
+            </Container>
         </Card>
         </div>
       )

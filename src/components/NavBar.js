@@ -18,6 +18,7 @@ import ListItemText from "@material-ui/core/ListItemText";
 import InboxIcon from "@material-ui/icons/MoveToInbox";
 import MailIcon from "@material-ui/icons/Mail";
 import MaterialButton from "@material-ui/core/Button";
+import Button from "@material-ui/core/Button";
 import Collapse from "@material-ui/core/Collapse";
 import ExpandLess from "@material-ui/icons/ExpandLess";
 import ExpandMore from "@material-ui/icons/ExpandMore";
@@ -49,7 +50,7 @@ import fbArray from "../apis/firebase.js";
 //auth (login/signup) stuff//
 import Modal from "react-bootstrap/Modal";
 import { useAuth } from "../contexts/AuthContext";
-import { Form, Button, Alert } from "react-bootstrap";
+import { Form, Alert } from "react-bootstrap";
 
 //get firebase stuff
 const db = fbArray.db;
@@ -194,12 +195,16 @@ export default function NavBar() {
   // used in the left side bar, passed to the map which passes to EventMarker
   const [savedEvents, setSavedEvents] = useState([]);
 
+  // current profile pic
+  const [curProfPic, setCurProfPic] = useState([]);
+
   const mapRef = useRef();
 
   //////USER AUTHENTICATION//////... these all communicate with AuthContext.js
   const [signupShow, signupSetShow] = useState(false);
   const [signupOrgShow, signupOrgSetShow] = useState(false);
   const [loginShow, loginSetShow] = useState(false);
+  const [uploadShow, uploadSetShow] = useState(false);
 
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
@@ -283,19 +288,25 @@ export default function NavBar() {
   const handleSignupOrgShow = () => signupOrgSetShow(true);
   const handleLoginClose = () => loginSetShow(false);
   const handleLoginShow = () => loginSetShow(true);
+  const handleUploadClose = () => uploadSetShow(false);
+  const handleUploadShow = () => uploadSetShow(true);
 
-  //stored variables for authentication
+  //stored values for authentication
+    //normal auth
   const loginEmailRef = useRef();
   const loginPasswordRef = useRef();
   const usernameRef = useRef();
   const signupEmailRef = useRef();
   const signupPasswordRef = useRef();
   const signupConfPasswordRef = useRef();
+    //org auth
   const orgnameRef = useRef();
   const signupOrgEmailRef = useRef();
   const signupOrgPasswordRef = useRef();
   const signupOrgConfPasswordRef = useRef();
-  const { signup, login, logout } = useAuth();
+
+  const {signup, login, logout} = useAuth();
+  const [loggedIn, setLoggedIn] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -317,12 +328,9 @@ export default function NavBar() {
     try {
       setError("");
       setLoading(true);
-      await signup(
-        signupEmailRef.current.value,
-        signupPasswordRef.current.value,
-        usernameRef.current.value,
-        "user"
-      );
+      await signup(signupEmailRef.current.value, signupPasswordRef.current.value, usernameRef.current.value, "user");
+      handleSignupClose();
+      setLoggedIn(true);
     } catch {
       setError("Failed to create an account");
     }
@@ -349,15 +357,11 @@ export default function NavBar() {
     try {
       setError("");
       setLoading(true);
-      var errorMessage = await signup(
-        signupOrgEmailRef.current.value,
-        signupOrgPasswordRef.current.value,
-        orgnameRef.current.value,
-        "org"
-      );
-      console.log(errorMessage);
+      await signup(signupOrgEmailRef.current.value, signupOrgPasswordRef.current.value, orgnameRef.current.value, "org");
+      handleSignupOrgClose();
+      setLoggedIn(true);
     } catch {
-      setError(errorMessage);
+      setError("Failed to log in");
     }
 
     setLoading(false);
@@ -372,6 +376,8 @@ export default function NavBar() {
       setError("");
       setLoading(true);
       await login(loginEmailRef.current.value, loginPasswordRef.current.value);
+      handleLoginClose();
+      setLoggedIn(true);
     } catch {
       setError("Failed to log in");
     }
@@ -386,7 +392,7 @@ export default function NavBar() {
     try {
       setLoading(true);
       await logout();
-      //history.push("/login");
+      setLoggedIn(false);
     } catch {
       setError("Failed to log out");
     }
@@ -432,6 +438,45 @@ export default function NavBar() {
       console.log("You are not signed in. Sign in to view saved events");
     }
   }
+
+  // image being uploaded
+  let uploadingImage = {};
+  // uploads an image to storage profile/user.uid
+  async function handleUpload(event) {
+    console.log("pp click");
+    event.preventDefault();
+
+    try {
+      setError("");
+      setLoading(true);
+      await fbArray.storage.ref('profile/' + auth.currentUser.uid + ".jpg").put(uploadingImage);
+      uploadSetShow(false); // close modal if successful
+    } catch {
+      setError("Failed to upload image");
+    }
+    setLoading(false);
+  }
+  // used to get the image and store in uploadingImage
+  function chooseFile(e) {
+    uploadingImage = e.target.files[0];
+  }
+
+  function getCurrentProfPic() {
+    if(!auth.currentUser) {
+      return;
+    }
+    const reference = fbArray.storage.ref(`profile/${auth.currentUser.uid}.jpg`);
+    if (!reference) {
+      reference = fbArray.storage.ref(`profile/169-logo.jpg`);
+    }
+    reference.getDownloadURL().then((url) => {
+      setCurProfPic(url);
+    }).catch((e) => {
+      console.log(e.message);
+    });
+    return curProfPic;
+  }
+  getCurrentProfPic();
 
   return (
     <>
@@ -600,187 +645,139 @@ export default function NavBar() {
             setSavedEvents={setSavedEvents}
           />
         </main>
-        {/********AUTHENTICATION MODALS********/}
-        {/*Non-organization Accounts*/}
-        <Modal show={signupShow} onHide={handleSignupClose} centered>
-          <Modal.Header closeButton>
-            <Modal.Title>Sign Up</Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            {error && <Alert variant="danger">{error}</Alert>}
-            <Form onSubmit={handleSignup}>
-              <Form.Group id="username">
-                <Form.Label>User Name (Seen by other users)</Form.Label>
-                <Form.Control type="username" ref={usernameRef} required />
-              </Form.Group>
-              <Form.Group id="email">
-                <Form.Label>Email</Form.Label>
-                <Form.Control type="email" ref={signupEmailRef} required />
-              </Form.Group>
-              <Form.Group id="password">
-                <Form.Label>Password</Form.Label>
-                <Form.Control
-                  type="password"
-                  ref={signupPasswordRef}
-                  required
-                />
-              </Form.Group>
-              <Form.Group id="password-confirm">
-                <Form.Label>Password Confirmation</Form.Label>
-                <Form.Control
-                  type="password"
-                  ref={signupConfPasswordRef}
-                  required
-                />
-              </Form.Group>
-              <Button
-                disabled={loading}
-                className="w-100"
-                style={{ backgroundColor: "#006633" }}
-                type="submit"
-              >
-                Sign Up
-              </Button>
-            </Form>
-          </Modal.Body>
-          <Modal.Footer>
-            <div className="w-100 text-center">
-              Already have an Account?
-              <Button
-                style={{ margin: "4px" }}
-                onClick={() => {
-                  handleSignupClose();
-                  handleLoginShow();
-                }}
-              >
-                Log In
-              </Button>
-            </div>
-            <div className="w-100 text-center">
-              Are you an Organization?
-              <Button
-                style={{ margin: "4px" }}
-                onClick={() => {
-                  handleSignupClose();
-                  handleSignupOrgShow();
-                }}
-              >
-                Organization Sign Up
-              </Button>
-            </div>
-          </Modal.Footer>
-        </Modal>
 
-        <Modal show={loginShow} onHide={handleLoginClose} centered>
-          <Modal.Header closeButton>
-            <Modal.Title>Log In</Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            {error && <Alert variant="danger">{error}</Alert>}
-            <Form onSubmit={handleLogin}>
-              <Form.Group id="email">
-                <Form.Label>Email</Form.Label>
-                <Form.Control type="email" ref={loginEmailRef} required />
-              </Form.Group>
-              <Form.Group id="password">
-                <Form.Label>Password</Form.Label>
-                <Form.Control type="password" ref={loginPasswordRef} required />
-              </Form.Group>
-              <Button
-                disabled={loading}
-                className="w-100"
-                style={{ backgroundColor: "#006633" }}
-                type="submit"
-              >
-                Log In
-              </Button>
-            </Form>
-          </Modal.Body>
-          <Modal.Footer>
-            <div className="w-100 text-center">
-              Need an Account?
-              <Button
-                style={{ margin: "4px" }}
-                onClick={() => {
-                  handleLoginClose();
-                  handleSignupShow();
-                }}
-              >
-                Sign Up
-              </Button>
-            </div>
-          </Modal.Footer>
-        </Modal>
+{/********AUTHENTICATION MODALS********/}
+    {/*Non-organization Accounts*/}
+    <Modal show={signupShow} onHide={handleSignupClose} centered>
+      <Modal.Header closeButton>
+        <Modal.Title>Sign Up</Modal.Title>
+      </Modal.Header>
+      <Modal.Body>
+        {error && <Alert variant="danger">{error}</Alert>}
+        <Form onSubmit={handleSignup}>
+        <Form.Group id="username">
+            <Form.Label>User Name (Seen by other users)</Form.Label>
+            <Form.Control type="username" ref={usernameRef} required />
+          </Form.Group>
+            <Form.Group id="email">
+              <Form.Label>Email</Form.Label>
+              <Form.Control type="email" ref={signupEmailRef} required />
+            </Form.Group>
+            <Form.Group id="password">
+              <Form.Label>Password</Form.Label>
+              <Form.Control type="password" ref={signupPasswordRef} required />
+            </Form.Group>
+            <Form.Group id="password-confirm">
+              <Form.Label>Password Confirmation</Form.Label>
+              <Form.Control type="password" ref={signupConfPasswordRef} required />
+            </Form.Group>
+            <Button disabled={loading} className="w-100" style={{color: "white", backgroundColor: "#006633"}} type="submit">
+              Sign Up
+            </Button>
+          </Form>
+        </Modal.Body>
+        <Modal.Footer>
+          <div className="w-100 text-center">
+            Already have an Account?
+            <Button style={{margin: "4px"}} onClick={() => {handleSignupClose(); handleLoginShow();}}>Log In</Button>
+          </div>
+          <div className="w-100 text-center">
+            Are you an Organization?
+            <Button style={{margin: "4px"}} onClick={() => {handleSignupClose(); handleSignupOrgShow();}}>Organization Sign Up</Button>
+          </div>
+        </Modal.Footer>
+      </Modal>
 
-        {/*Organization Accounts*/}
-        <Modal show={signupOrgShow} onHide={handleSignupOrgClose} centered>
-          <Modal.Header closeButton>
-            <Modal.Title>Organization Sign Up</Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            {error && <Alert variant="danger">{error}</Alert>}
-            <Form onSubmit={handleSignupOrg}>
-              <Form.Group id="username">
-                <Form.Label>Organization Name (Seen by other users)</Form.Label>
-                <Form.Control type="username" ref={orgnameRef} required />
-              </Form.Group>
-              <Form.Group id="email">
-                <Form.Label>Email</Form.Label>
-                <Form.Control type="email" ref={signupOrgEmailRef} required />
-              </Form.Group>
-              <Form.Group id="password">
-                <Form.Label>Password</Form.Label>
-                <Form.Control
-                  type="password"
-                  ref={signupOrgPasswordRef}
-                  required
-                />
-              </Form.Group>
-              <Form.Group id="password-confirm">
-                <Form.Label>Password Confirmation</Form.Label>
-                <Form.Control
-                  type="password"
-                  ref={signupOrgConfPasswordRef}
-                  required
-                />
-              </Form.Group>
-              <Button
-                disabled={loading}
-                className="w-100"
-                style={{ backgroundColor: "#006633" }}
-                type="submit"
-              >
-                Sign Up
-              </Button>
-            </Form>
-          </Modal.Body>
-          <Modal.Footer>
-            <div className="w-100 text-center">
-              Already have an Organization Account?
-              <Button
-                style={{ margin: "4px" }}
-                onClick={() => {
-                  handleSignupOrgClose();
-                  handleLoginShow();
-                }}
-              >
-                Log In
-              </Button>
-            </div>
-            <div className="w-100 text-center">
-              Not an Organization?
-              <Button
-                style={{ margin: "4px" }}
-                onClick={() => {
-                  handleSignupOrgClose();
-                  handleSignupShow();
-                }}
-              >
-                Sign Up
-              </Button>
-            </div>
-          </Modal.Footer>
-        </Modal>
+      <Modal show={loginShow} onHide={handleLoginClose} centered>
+        <Modal.Header closeButton>
+          <Modal.Title>Log In</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          {error && <Alert variant="danger">{error}</Alert>}
+          <Form onSubmit={handleLogin}>
+            <Form.Group id="email">
+              <Form.Label>Email</Form.Label>
+              <Form.Control type="email" ref={loginEmailRef} required />
+            </Form.Group>
+            <Form.Group id="password">
+              <Form.Label>Password</Form.Label>
+              <Form.Control type="password" ref={loginPasswordRef} required />
+            </Form.Group>
+            <Button disabled={loading} className="w-100" style={{backgroundColor: "#006633"}} type="submit">
+              Log In
+            </Button>
+          </Form>
+        </Modal.Body>
+        <Modal.Footer>
+          <div className="w-100 text-center">
+            Need an Account?
+            <Button style={{margin: "4px"}} onClick={() => {handleLoginClose(); handleSignupShow();}}>Sign Up</Button>
+          </div>
+        </Modal.Footer>
+      </Modal>
+
+    {/*Organization Accounts*/}
+      <Modal show={signupOrgShow} onHide={handleSignupOrgClose} centered>
+        <Modal.Header closeButton>
+          <Modal.Title>Organization Sign Up</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          {error && <Alert variant="danger">{error}</Alert>}
+          <Form onSubmit={handleSignupOrg}>
+          <Form.Group id="username">
+            <Form.Label>Organization Name (Seen by other users)</Form.Label>
+            <Form.Control type="username" ref={orgnameRef} required />
+          </Form.Group>
+            <Form.Group id="email">
+              <Form.Label>Email</Form.Label>
+              <Form.Control type="email" ref={signupOrgEmailRef} required />
+            </Form.Group>
+            <Form.Group id="password">
+              <Form.Label>Password</Form.Label>
+              <Form.Control type="password" ref={signupOrgPasswordRef} required />
+            </Form.Group>
+            <Form.Group id="password-confirm">
+              <Form.Label>Password Confirmation</Form.Label>
+              <Form.Control type="password" ref={signupOrgConfPasswordRef} required />
+            </Form.Group>
+            <Button disabled={loading} className="w-100" style={{backgroundColor: "#006633"}} type="submit">
+              Sign Up
+            </Button>
+          </Form>
+        </Modal.Body>
+        <Modal.Footer>
+          <div className="w-100 text-center">
+            Already have an Organization Account?
+            <Button style={{margin: "4px"}} onClick={() => {handleSignupOrgClose(); handleLoginShow();}}>Log In</Button>
+          </div>
+          <div className="w-100 text-center">
+            Not an Organization?
+            <Button style={{margin: "4px"}} onClick={() => {handleSignupOrgClose(); handleSignupShow();}}>Sign Up</Button>
+          </div>
+        </Modal.Footer>
+      </Modal>
+
+      {/* Profile Picture Upload Modal*/}
+      <Modal show={uploadShow} onHide={handleUploadClose} centered>
+        <Modal.Header closeButton>
+          <Modal.Title>Upload Profile Picture</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          {error && <Alert variant="danger">{error}</Alert>}
+          <p>Current Profile Picture: </p>
+          <img src={curProfPic} style={{height:'200px'}}></img>
+          <Form onSubmit={handleUpload}>
+            <Form.Group id="image">
+              <Form.Label>Upload Image</Form.Label>
+              <Form.Control type="file" onChange={(e) => chooseFile(e)} required />
+            </Form.Group>
+            <Button disabled={loading} className="w-100" style={{backgroundColor: "#006633"}} type="submit" onClick={handleUpload}>
+              Upload
+            </Button>
+          </Form>
+        </Modal.Body>
+      </Modal>
+
       </div>
       <Snackbar open={snackbarOpen} autoHideDuration={5000} onClose={handleSnackBarClose}>
       <Alert onClose={handleSnackBarClose} severity={snackbarSeverity}>
