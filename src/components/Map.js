@@ -11,12 +11,15 @@ import './Map.css';
 
 import EventMarker from "./EventMarker";
 import fbArray from "../apis/firebase.js";
-import { useState, useEffect, useCallback } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
+import Modal from "react-bootstrap/Modal";
+import { Form, Alert } from "react-bootstrap";
 import Button from "@material-ui/core/Button";
 import Drawer from "@material-ui/core/Drawer";
 import SettingsIcon from "@material-ui/icons/Settings";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import Filter from "./Filter";
+import './Map.css';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -25,11 +28,17 @@ const useStyles = makeStyles((theme) => ({
   button: {
     display: "flex",
     alignContent: "center",
-    justifyContent: "center",
+    justifyContent: "center"
   },
+  eventButton: {
+    position: "fixed",
+    top: 100,
+    right: 0
+  }
 }));
 
 // get firebase stuff
+const auth = fbArray.auth;
 const db = fbArray.db;
 const libraries = ["places"];
 const mapContainerStyle = {
@@ -59,7 +68,87 @@ const options = {
   },
 };
 
+
+
+
 const Map = ({ mapRef, filter, setFilter, savedEvents, setSavedEvents }) => {
+  //get the currently logged in user
+  let currUser = useRef(auth.currentUser);
+
+  /////EVENT CREATION STUFF/////
+  //event modal toggler
+  const [createEventShow, setCreateEventShow] = useState(false);
+  const handleCreateEventClose = () => setCreateEventShow(false);
+  const handleCreateEventShow = () => setCreateEventShow(true);
+  
+  //stored values for event creation
+  const eventNameRef = useRef("");
+  const locationRef = useRef("");
+  const contextRef = useRef("");
+  const dateRef = useRef("");
+  const imageRef = useRef("");
+  const [latitude, setLatitude] = useState();
+  const [longitude, setLongitude] = useState();
+  //const roomRef = useRef("");
+  const [accountType, setAccountType] = useState("user");
+  const [eventMode, setEventMode] = useState(false);
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  //get the user type
+  const fetchAccountType = () => {
+    if (currUser) {
+      //user is signed in.
+      db.collection("users").doc(currUser.uid).get().then((doc) => {
+        if (doc.exists) {
+          setAccountType(doc.get("accountType"));
+        } else { //doc.data() = undefined
+          console.log("No such document associated with the user!");
+        }
+      }).catch((error) => {
+        console.log("Error getting document:", error);
+      });
+    } else {
+      //no user is signed in.
+      setAccountType("user");
+      setEventMode(false);
+    }
+  }
+  
+  function createEvent(eventNameRef, locationRef, contextRef, dateRef,
+                      latitudeRef, longitudeRef, imageRef) {
+    if (currUser) {
+      //user is signed in
+      db.collection("Events").add({
+        title: eventNameRef,
+        building: locationRef,
+        context: contextRef,
+        date: dateRef,
+        latitude: latitudeRef,
+        longitude: longitudeRef,
+        picture: imageRef,
+      }).then((docRef) => {
+        console.log("Event document created with ID: ", docRef.id);
+      }).catch((error) => {
+        console.log("Error adding document: ", error);
+      });
+    } else {
+      console.log("no user is signed in");
+    }
+  }
+
+  async function handleEventSubmit(event) {
+    console.log("Event Form was submitted!");
+    event.preventDefault();
+
+      setError("");
+      setLoading(true);
+      await createEvent(eventNameRef.current.value, locationRef.current.value, contextRef.current.value, dateRef.current.value, 
+                        latitude, longitude, imageRef.current.value);
+
+    setLoading(false);
+  }
+  
   const classes = useStyles();
   // Load the google map api key from .env file by useLoadScript function
   const { isLoaded, loadError } = useLoadScript({
@@ -219,7 +308,12 @@ const Map = ({ mapRef, filter, setFilter, savedEvents, setSavedEvents }) => {
 
   // useEffect fetch events when the page renders
   useEffect(() => {
+    const interval = setInterval(() => {
+      currUser = auth.currentUser;
+      fetchAccountType();
+    }, 50);
     fetchEvents();
+    return () => clearInterval(interval);
   }, []);
 
   if (loadError) return "Error";
@@ -258,7 +352,7 @@ const Map = ({ mapRef, filter, setFilter, savedEvents, setSavedEvents }) => {
         console.log("returned url:" + url);
         marker.picUrls = [...marker.picUrls, url];
       });
-      marker.picNames.length = 1;
+      marker.picNames = ["default"];
     }
 
   }
@@ -271,8 +365,14 @@ const Map = ({ mapRef, filter, setFilter, savedEvents, setSavedEvents }) => {
         zoom={16}
         center={center}
         options={options}
-        onClick={() => {
+        onClick={(event) => {
           setSelected(null);
+          //handleLatLng(event);
+          setLatitude(event.latLng.lat());
+          setLongitude(event.latLng.lng());
+          if (eventMode) {
+            handleCreateEventShow();
+          }
         }}
         onLoad={onMapLoad}
       >
@@ -377,6 +477,52 @@ const Map = ({ mapRef, filter, setFilter, savedEvents, setSavedEvents }) => {
           />
         </Drawer>
       </div>
+      {/*Toggle Create Event Mode Button */}
+      {accountType === "org" && (eventMode === false ? 
+        (<div className={classes.eventButton}>
+          <Button style={{margin: "4px", color: "white", backgroundColor: "#006633"}} onClick={() => {setEventMode(true)}}>Create Mode</Button>
+        </div>)
+        : 
+        (<div className={classes.eventButton}>
+          <Button style={{margin: "4px", color: "white", backgroundColor: "#006633"}} onClick={() => {setEventMode(false)}}>Exit Create Mode</Button>
+        </div>) 
+      )}
+
+      {/*Event Creation Modal*/}
+      <Modal show={createEventShow} onHide={handleCreateEventClose} centered>
+        <Modal.Header closeButton>
+          <Modal.Title>Create Event</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          {error && <Alert letiant="danger">{error}</Alert>}
+          <Form onSubmit={handleEventSubmit}>
+          <Form.Group id="eventname">
+            <Form.Label>Name Your Event</Form.Label>
+            <Form.Control type="text" ref={eventNameRef} required />
+          </Form.Group>
+            <Form.Group id="location">
+              <Form.Label>Any Details For Reaching Your Event Location?</Form.Label>
+              <Form.Control as="textarea" rows={2} ref={locationRef} />
+            </Form.Group>
+            <Form.Group id="context">
+              <Form.Label>Information About Your Event</Form.Label>
+              <Form.Control as="textarea" rows={3} ref={contextRef} required />
+            </Form.Group>
+            <Form.Group id="date">
+              <Form.Label>Date Of Your Event</Form.Label>
+              <Form.Control type="datetime-local" ref={dateRef} required />
+            </Form.Group>
+            <Form.Group id="image">
+              <Form.Label>Upload An Event Image</Form.Label>
+              <Form.File ref={imageRef} />
+            </Form.Group>
+            <Button disabled={loading} className="w-100" style={{backgroundColor: "#006633"}} type="submit">
+              Create Event
+            </Button>
+          </Form>
+        </Modal.Body>
+      </Modal>
+      
     </>
   );
 };
