@@ -24,7 +24,6 @@
   //buttons help: https://react-bootstrap.github.io/components/buttons/
   //Followed this for loading buttons: https://www.youtube.com/watch?v=nCEnqQABC5A via hooks
   const Marker = (props) => {
-    //button hook thing, name the buttons here (static text, loading text)
     //useButtonLoader is in Button.js (for loading buttons)
     const [Button1Load,setLoadingButton1] = useButtonLoader("Attend","Updating..");
     const [Button2Load,setLoadingButton2] = useButtonLoader("✩","★");
