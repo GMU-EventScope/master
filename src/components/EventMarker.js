@@ -216,10 +216,10 @@
               boxShadow: 'none'
             }}} 
           style={{ width: '642px', height: '35.5rem'}} bg={"Light"}>   
-          <Carousel autoPlay={false} controls={false} indicators={true} interval={null}>
+          <Carousel style={{boxShadow: "0px 1px 1px rgba(0, 0, 0, 0.3)"}} autoPlay={false} controls={false} indicators={true} interval={null}>
               {props.picUrls.map((url) =>(
                 <Carousel.Item>
-                <Card.Img variant="top" className="rounded" style={{ width: '640px', height: '360px'}} src={url} rounded fluid/>
+                <Card.Img variant="top" style={{ width: '640px', height: '360px'}} src={url} rounded fluid/>
                 </Carousel.Item>
               ))}
           </Carousel>
@@ -239,10 +239,10 @@
                     <Card.Text style={{fontSize: 16}}><p><span class="name">{props.date}</span></p></Card.Text>
                   }
                   {
-                    <Card.Text><p>X Attendees </p></Card.Text>
+                    <Card.Text><p className="otherinfo">👤 5 Attendees </p></Card.Text>
                   }
                   {
-                    <Card.Text><p>Location stuff {useLocation}</p></Card.Text>
+                    <Card.Text><p className="otherinfo">🏛️ Location stuff {useLocation}</p></Card.Text>
                   }
               </Card.Body>
               </Col>
@@ -256,7 +256,7 @@
                     <ButtonGroup className="ml-3">
                        <Button className='event-btn' size='m' onClick={Button1} ref={Button1Load}></Button>
                      </ButtonGroup>
-                    <ButtonGroup className="ml-2">
+                    <ButtonGroup className="ml-3">
                      <Button className='event-btn' size='m' onClick={Button2} ref={Button2Load}></Button>
                    </ButtonGroup>
                  </ButtonToolbar>
