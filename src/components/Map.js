@@ -7,6 +7,7 @@ import {
 } from "@react-google-maps/api";
 import "@reach/combobox/styles.css";
 import mapStyles from "./mapStyles";
+import './Map.css';
 
 import EventMarker from "./EventMarker";
 import fbArray from "../apis/firebase.js";

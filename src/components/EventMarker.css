@@ -18,9 +18,17 @@ span.name {
     font-size:14;
 }
 
+/*attendees and location stuff*/
+.otherinfo{
+    color:#3c3c3c;
+    font-family:Helvetica;
+    font-size:13;
+    font-weight:bold;
+}
+
 /*event attend and save color and style*/
 .event-btn {
-    background-color: #006633;
+    background-color: #0A6634;
     border: #fff;
     font-size:20;
 }
