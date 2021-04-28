@@ -230,7 +230,7 @@
             </Row>
             <Row>
                 <Col xs={8} >
-                  <Button href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" target="_blank" size='sm' className="learnmore-btn" style={{alignSelf:'right'}}>Learn More</Button>
+                  <Button href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" target="_blank" variant="link" size='sm' className="learnmore-btn" style={{alignSelf:'right'}}>Learn More 🗗 </Button>
                 </Col>
                 <Col>
                   <ButtonToolbar>
