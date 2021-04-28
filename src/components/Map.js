@@ -23,6 +23,7 @@ import SettingsIcon from "@material-ui/icons/Settings";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import Filter from "./Filter";
 import './Map.css';
+import { format,formatRelative } from "date-fns";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -272,6 +273,20 @@ const Map = ({ mapRef, filter, setFilter, savedEvents, setSavedEvents }) => {
     );
   }
 
+  //Converts from this format 4/28/21 to this format April 28, 2021
+  function convertDate(date){
+    let d = (new Date(date));
+    d = format(d, 'eee, MMM dd, yyyy');
+    return d;
+  }
+
+  //displays the time in am/pm format
+  function convertTime(time){
+    let t = (new Date(time));
+    t = format(t, "h:mm a");
+    return t;
+  }
+
   // Try to get events from 'Events' collection from the Firebase
   const fetchEvents = async () => {
     const response = db.collection("Events");
@@ -308,7 +323,8 @@ const Map = ({ mapRef, filter, setFilter, savedEvents, setSavedEvents }) => {
               {
                 lat: item.data().latitude,
                 lng: item.data().longitude,
-                date: item.data().date.toDate().toLocaleString().split(",")[0], //toDateString()
+                date: convertDate(item.data().date.toDate().toLocaleString().split(",")[0]), //toDateString()
+                time: convertTime(item.data().date.toDate()),
                 author: item.data().author,
                 title: item.data().title,
                 context: item.data().context,
@@ -461,6 +477,7 @@ const Map = ({ mapRef, filter, setFilter, savedEvents, setSavedEvents }) => {
               building={selected.building}
               room={selected.room}
               date={selected.date}
+              time={selected.time}
               enddate={selected.enddate}
               link={selected.link}
               savedEvents={savedEvents} 

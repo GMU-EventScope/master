@@ -217,7 +217,7 @@
               <Col xs={4}>
                <Card.Body>
                   {props.context &&
-                    <Card.Text style={{fontSize: 16}}><p><span class="name">{props.date}</span></p></Card.Text>
+                    <Card.Text style={{fontSize: 14}}><p><span class="name">{props.date+"\n"+(props.time)}</span></p></Card.Text>
                   }
                   {
                     <Card.Text><p className="otherinfo">👤 5 Attendees </p></Card.Text>
@@ -248,5 +248,4 @@
         </div>
       )
   }
-
   export default Marker
