@@ -24,6 +24,7 @@ import { makeStyles, useTheme } from "@material-ui/core/styles";
 import Filter from "./Filter";
 import './Map.css';
 import { format } from "date-fns";
+import { StrikethroughSRounded } from "@material-ui/icons";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -109,8 +110,10 @@ const Map = ({ mapRef, filter, setFilter, savedEvents, setSavedEvents }) => {
   const handleCreateEventShow = () => setCreateEventShow(true);
   
   //stored values for event creation
+  const [rating, setRating] = useState();
   const eventNameRef = useRef("");
-  const locationRef = useRef("");
+  const buildingRef = useRef("");
+  const roomRef = useRef("");
   const contextRef = useRef("");
   const dateRef = useRef("");
   const imageRef = useRef("");
@@ -142,15 +145,19 @@ const Map = ({ mapRef, filter, setFilter, savedEvents, setSavedEvents }) => {
     }
   }
   
-  function createEvent(eventNameRef, locationRef, contextRef, dateRef,
-                      latitudeRef, longitudeRef, imageRef) {
+  const[] = React.useState(false)
+
+  function createEvent(eventNameRef, buildingRef, roomRef, contextRef, dateRef,
+                      ratingRef, latitudeRef, longitudeRef, imageRef) {
     if (currUser) {
       //user is signed in
       db.collection("Events").add({
         title: eventNameRef,
-        building: locationRef,
+        building: buildingRef,
+        room: roomRef,
         context: contextRef,
         date: dateRef,
+        rating: ratingRef,
         latitude: latitudeRef,
         longitude: longitudeRef,
         picture: imageRef,
@@ -170,10 +177,11 @@ const Map = ({ mapRef, filter, setFilter, savedEvents, setSavedEvents }) => {
 
       setError("");
       setLoading(true);
-      await createEvent(eventNameRef.current.value, locationRef.current.value, contextRef.current.value, dateRef.current.value, 
-                        latitude, longitude, imageRef.current.value);
+      await createEvent(eventNameRef.current.value, buildingRef.current.value, roomRef.current.value, contextRef.current.value, dateRef.current.value, 
+                        rating, latitude, longitude, imageRef.current.value);
 
     setLoading(false);
+    handleCreateEventClose();
   }
   
   const classes = useStyles();
@@ -413,6 +421,7 @@ const Map = ({ mapRef, filter, setFilter, savedEvents, setSavedEvents }) => {
           //handleLatLng(event);
           setLatitude(event.latLng.lat());
           setLongitude(event.latLng.lng());
+          setRating(0);
           if (eventMode) {
             handleCreateEventShow();
           }
@@ -539,8 +548,12 @@ const Map = ({ mapRef, filter, setFilter, savedEvents, setSavedEvents }) => {
             <Form.Control type="text" ref={eventNameRef} required />
           </Form.Group>
             <Form.Group id="location">
-              <Form.Label>Any Details For Reaching Your Event Location?</Form.Label>
-              <Form.Control as="textarea" rows={2} ref={locationRef} />
+              <Form.Label>Building Or Location Of Event?</Form.Label>
+              <Form.Control as="textarea" rows={2} ref={buildingRef} />
+            </Form.Group>
+            <Form.Group id="room">
+              <Form.Label>Room Number If Applicable?</Form.Label>
+              <Form.Control as="textarea" rows={1} ref={roomRef} />
             </Form.Group>
             <Form.Group id="context">
               <Form.Label>Information About Your Event</Form.Label>
