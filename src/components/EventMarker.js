@@ -24,7 +24,6 @@
   //buttons help: https://react-bootstrap.github.io/components/buttons/
   //Followed this for loading buttons: https://www.youtube.com/watch?v=nCEnqQABC5A via hooks
   const Marker = (props) => {
-    //button hook thing, name the buttons here (static text, loading text)
     //useButtonLoader is in Button.js (for loading buttons)
     const [Button1Load,setLoadingButton1] = useButtonLoader("Attend","Updating..");
     const [Button2Load,setLoadingButton2] = useButtonLoader("✩","★");
@@ -217,7 +216,7 @@
               <Col xs={4}>
                <Card.Body>
                   {props.context &&
-                    <Card.Text style={{fontSize: 16}}><p><span class="name">{props.date}</span></p></Card.Text>
+                    <Card.Text style={{fontSize: 14}}><p><span class="name">{props.date+"\n"+(props.time)}</span></p></Card.Text>
                   }
                   {
                     <Card.Text><p className="otherinfo">👤 5 Attendees </p></Card.Text>
@@ -230,7 +229,7 @@
             </Row>
             <Row>
                 <Col xs={8} >
-                  <Button href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" target="_blank" size='sm' className="learnmore-btn" style={{alignSelf:'right'}}>Learn More</Button>
+                  <Button href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" target="_blank" variant="link" size='sm' className="learnmore-btn" style={{alignSelf:'right'}}>Learn More 🗗 </Button>
                 </Col>
                 <Col>
                   <ButtonToolbar>
@@ -248,5 +247,4 @@
         </div>
       )
   }
-
   export default Marker
