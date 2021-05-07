@@ -157,7 +157,7 @@ const Map = ({ mapRef, filter, setFilter, savedEvents, setSavedEvents }) => {
   }
   
   function createEvent(authorRef,attendeeRef, eventNameRef, locationRef, contextRef, dateRef,
-                      latitudeRef, longitudeRef, freeRef,sportsRef,artsRef,clubRef,fundRef,ticketRef, imageRef) {
+                      latitudeRef, longitudeRef, freeRef,sportsRef,artsRef,clubRef,fundRef,ticketRef, imageRef, type) {
     if (currUser) {
       console.log(currUser)
       // if imageref is empty, replace with the default.
@@ -171,8 +171,9 @@ const Map = ({ mapRef, filter, setFilter, savedEvents, setSavedEvents }) => {
         picture.push(imageRef)
       }
 
+
+
       const newDate = new Date(dateRef);
-      console.log(newDate)
       const myTimestamp = fbArray.firebase.firestore.Timestamp.fromDate(newDate);
       //user is signed in
       db.collection("Events").add({
@@ -186,6 +187,7 @@ const Map = ({ mapRef, filter, setFilter, savedEvents, setSavedEvents }) => {
         pictureName: picture,
         rating: 4.0,
         hostID: currUser.current.uid,
+        type: type
 
       }).then((docRef) => {
         console.log("Event document created with ID: ", docRef.id);
@@ -203,9 +205,24 @@ const Map = ({ mapRef, filter, setFilter, savedEvents, setSavedEvents }) => {
 
       setError("");
       setLoading(true);
-      await createEvent(authorRef.current.value,attendeeRef.current.value,eventNameRef.current.value, locationRef.current.value, contextRef.current.value, dateRef.current.value, 
-                        latitude, longitude, freeRef.current.value,sportsRef.current.value,artsRef.current.value,clubRef.current.value,fundRef.current.value,ticketRef.current.value, imageRef.current.value);
+ 
+      if(schoolRef === true){
+        await createEvent(authorRef.current.value,attendeeRef.current.value,eventNameRef.current.value, locationRef.current.value, contextRef.current.value, dateRef.current.value, 
+          latitude, longitude, freeRef.current.value,sportsRef.current.value,artsRef.current.value,clubRef.current.value,fundRef.current.value,ticketRef.current.value, imageRef.current.value, 0);
 
+      }
+      else if(orgRef === true){
+        await createEvent(authorRef.current.value,attendeeRef.current.value,eventNameRef.current.value, locationRef.current.value, contextRef.current.value, dateRef.current.value, 
+          latitude, longitude, freeRef.current.value,sportsRef.current.value,artsRef.current.value,clubRef.current.value,fundRef.current.value,ticketRef.current.value, imageRef.current.value, 1);
+      }
+      else
+      {
+        await createEvent(authorRef.current.value,attendeeRef.current.value,eventNameRef.current.value, locationRef.current.value, contextRef.current.value, dateRef.current.value, 
+          latitude, longitude, freeRef.current.value,sportsRef.current.value,artsRef.current.value,clubRef.current.value,fundRef.current.value,ticketRef.current.value, imageRef.current.value, 2);
+
+      }
+
+    
     setLoading(false);
   }
   
