@@ -23,6 +23,6 @@ const db = firebase.firestore();
 const auth = firebase.auth();
 const storage = firebase.storage();
 
-const fbArray = {db, auth, storage};
+const fbArray = {db, auth, storage, firebase};
 
 export default fbArray;
