@@ -33,50 +33,56 @@ const EventsList = ({ mapRef, savedEvents, setSavedEvents }) => {
     mapRef.current.panTo({ lat, lng });
     mapRef.current.setZoom(14);
   }, []);
-  
+
   // Try to get events from 'Events' collection from the Firebase
 
-  const fetchEvents =  () => {
-
+  const fetchEvents = () => {
     // this first "get" does nothing but delay so that auth.currentUser does not always return null
-    db.collection("users").get().then(() => {
-      const currUser = auth.currentUser;
-      // get user doc matching user uid
-      if (currUser == null) {
-        setEvents([]);
-      }
-      else {
-        db.collection("users").doc(currUser.uid).get().then((userDoc) => {
-          if (userDoc.data() === undefined) {
-            
-          }
-          let myEvents = userDoc.data().savedevents;
-          const fetchedData = [];
-          myEvents.forEach((eventID) => {
-            // get the document in Events matching the docID
-            db.collection("Events").doc(eventID).get().then((eventDoc) => {
-              
-              fetchedData.push(eventDoc.data());
-              
-              setSavedEvents((current) => [
-                ...current,
-                {
-                  lat: eventDoc.data().latitude,
-                  lng: eventDoc.data().longitude,
-                  date: eventDoc.data().date.toDate().toDateString(),
-                  author: eventDoc.data().author,
-                  title: eventDoc.data().title,
-                  context: eventDoc.data().context,
-                  type: eventDoc.data().type,
-                  docID: eventDoc.docID
-                },
-              ]);
-            })
-          });
-          setEvents(fetchedData);
-        });
-      }
-    });
+    db.collection("users")
+      .get()
+      .then(() => {
+        const currUser = auth.currentUser;
+        // get user doc matching user uid
+        if (currUser == null) {
+          setEvents([]);
+        } else {
+          db.collection("users")
+            .doc(currUser.uid)
+            .get()
+            .then((userDoc) => {
+              if (userDoc.data() === undefined) {
+              }
+              let myEvents = userDoc.data().savedevents;
+              if (myEvents !== undefined) {
+                const fetchedData = [];
+                myEvents.forEach((eventID) => {
+                  // get the document in Events matching the docID
+                  db.collection("Events")
+                    .doc(eventID)
+                    .get()
+                    .then((eventDoc) => {
+                      fetchedData.push(eventDoc.data());
+
+                      setSavedEvents((current) => [
+                        ...current,
+                        {
+                          lat: eventDoc.data().latitude,
+                          lng: eventDoc.data().longitude,
+                          date: eventDoc.data().date.toDate().toDateString(),
+                          author: eventDoc.data().author,
+                          title: eventDoc.data().title,
+                          context: eventDoc.data().context,
+                          type: eventDoc.data().type,
+                          docID: eventDoc.docID,
+                        },
+                      ]);
+                    });
+                });
+                setEvents(fetchedData);
+              }
+            });
+        }
+      });
   };
 
   // useEffect fetch events when the page renders
@@ -155,7 +161,6 @@ const EventsList = ({ mapRef, savedEvents, setSavedEvents }) => {
           </ListItem>
         </div>
       ))}
-
     </List>
   );
 };

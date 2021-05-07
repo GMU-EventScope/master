@@ -108,11 +108,26 @@ const Map = ({ mapRef, filter, setFilter, savedEvents, setSavedEvents }) => {
   const handleCreateEventShow = () => setCreateEventShow(true);
   
   //stored values for event creation
+  const authorRef = useRef("");
   const eventNameRef = useRef("");
   const locationRef = useRef("");
   const contextRef = useRef("");
+  const attendeeRef = useRef("");
   const dateRef = useRef("");
+
+  const freeRef = useRef(true);
+  const sportsRef = useRef(false);
+  const artsRef = useRef(false);
+  const clubRef = useRef(false);
+  const fundRef = useRef(false);
+  const ticketRef = useRef(false);
+
   const imageRef = useRef("");
+
+  const studentRef = useRef(false);
+  const schoolRef = useRef(true);
+  const orgRef = useRef(false);
+
   const [latitude, setLatitude] = useState();
   const [longitude, setLongitude] = useState();
   //const roomRef = useRef("");
@@ -141,18 +156,33 @@ const Map = ({ mapRef, filter, setFilter, savedEvents, setSavedEvents }) => {
     }
   }
   
-  function createEvent(eventNameRef, locationRef, contextRef, dateRef,
-                      latitudeRef, longitudeRef, imageRef) {
+  function createEvent(authorRef,attendeeRef, eventNameRef, locationRef, contextRef, dateRef,
+                      latitudeRef, longitudeRef, freeRef,sportsRef,artsRef,clubRef,fundRef,ticketRef, imageRef) {
     if (currUser) {
+      console.log(currUser)
+      // if imageref is empty, replace with the default.
+      const picture = []
+      
+      if( imageRef === undefined || imageRef === ""){
+        picture.push("default.jpg")
+      }
+      else
+      {
+        picture.push(imageRef)
+      }
       //user is signed in
       db.collection("Events").add({
+        author: authorRef,
         title: eventNameRef,
         building: locationRef,
         context: contextRef,
         date: dateRef,
         latitude: latitudeRef,
         longitude: longitudeRef,
-        picture: imageRef,
+        pictureName: picture,
+        rating: 4.0,
+        hostID: currUser.current.uid,
+
       }).then((docRef) => {
         console.log("Event document created with ID: ", docRef.id);
       }).catch((error) => {
@@ -169,8 +199,8 @@ const Map = ({ mapRef, filter, setFilter, savedEvents, setSavedEvents }) => {
 
       setError("");
       setLoading(true);
-      await createEvent(eventNameRef.current.value, locationRef.current.value, contextRef.current.value, dateRef.current.value, 
-                        latitude, longitude, imageRef.current.value);
+      await createEvent(authorRef.current.value,attendeeRef.current.value,eventNameRef.current.value, locationRef.current.value, contextRef.current.value, dateRef.current.value, 
+                        latitude, longitude, freeRef.current.value,sportsRef.current.value,artsRef.current.value,clubRef.current.value,fundRef.current.value,ticketRef.current.value, imageRef.current.value);
 
     setLoading(false);
   }
@@ -517,6 +547,13 @@ const Map = ({ mapRef, filter, setFilter, savedEvents, setSavedEvents }) => {
         <Modal.Body>
           {error && <Alert letiant="danger">{error}</Alert>}
           <Form onSubmit={handleEventSubmit}>
+          <Form.Group id="author">
+            <Form.Label>Name of the Host</Form.Label>
+            <Form.Control type="text" ref={authorRef} required />
+            <Form.Check inline label="School" type="radio" name="typeRadio" id={`inline-School`} ref={schoolRef} checked={schoolRef} />
+            <Form.Check inline label="Organization" type="radio" name="typeRadio" id={`inline-Organization`} ref={orgRef} checked={orgRef}/>
+            <Form.Check inline label="Student" type="radio" name="typeRadio" id={`inline-Student`} ref={studentRef} checked={studentRef} />
+          </Form.Group>
           <Form.Group id="eventname">
             <Form.Label>Name Your Event</Form.Label>
             <Form.Control type="text" ref={eventNameRef} required />
@@ -529,10 +566,26 @@ const Map = ({ mapRef, filter, setFilter, savedEvents, setSavedEvents }) => {
               <Form.Label>Information About Your Event</Form.Label>
               <Form.Control as="textarea" rows={3} ref={contextRef} required />
             </Form.Group>
+            <Form.Group id="attendee">
+              <Form.Label>What is the number of expected Attendee</Form.Label>
+              <Form.Control type="text" ref={attendeeRef} required />
+            </Form.Group>
+
             <Form.Group id="date">
               <Form.Label>Date Of Your Event</Form.Label>
               <Form.Control type="datetime-local" ref={dateRef} required />
             </Form.Group>
+
+            <Form.Group id="tag">
+              <Form.Check inline label="Free" type="checkbox" id={`inline-Free`} ref={freeRef} checked={true} />
+              <Form.Check inline label="Sports" type="checkbox" id={`inline-Sports`} ref={sportsRef} />
+              <Form.Check inline label="Arts" type="checkbox" id={`inline-Arts`} ref={artsRef} />
+              <Form.Check inline label="Club" type="checkbox" id={`inline-Club`} ref={clubRef} />
+              <Form.Check inline label="Fundraiser" type="checkbox" id={`inline-Fundraiser`} ref={fundRef} />
+              <Form.Check inline label="NeedTicket" type="checkbox" id={`inline-NeedTicket`} ref={ticketRef} />
+            </Form.Group>
+
+
             <Form.Group id="image">
               <Form.Label>Upload An Event Image</Form.Label>
               <Form.File ref={imageRef} />

@@ -638,7 +638,7 @@ export default function NavBar() {
           />
 
           <Divider />
-          <ListItem button onClick={handleClick}>
+          {/* <ListItem button onClick={handleClick}>
             <ListItemIcon>
               <InboxIcon />
             </ListItemIcon>
@@ -666,7 +666,7 @@ export default function NavBar() {
                 <ListItemText primary="And Another one" />
               </ListItem>
             </List>
-          </Collapse>
+          </Collapse> */}
         </Drawer>
         <main
           className={clsx(classes.content, {

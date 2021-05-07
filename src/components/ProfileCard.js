@@ -22,7 +22,7 @@ export default function ProfileCard() {
   const classes = useStyles();
   /////USERNAME STUFF/////
   //stored variable for username
-  const [username, setUsername] = useState("User");
+  const [username, setUsername] = useState("A Patriot");
 
   //display current user's username in the left sidebar
   const currUser = auth.currentUser;
@@ -52,7 +52,7 @@ export default function ProfileCard() {
   return (
     <div className={classes.root}>
       <Avatar alt="InsertNameHere" src="./patriotlogo.png" />
-      <Typography variant="h4" gutterBottom>
+      <Typography variant="h5" gutterBottom>
         Hello, {username}!
       </Typography>
     </div>
