@@ -6,11 +6,11 @@ import {
   InfoWindow,
 } from "@react-google-maps/api";
 import "@reach/combobox/styles.css";
-import Fab from '@material-ui/core/Fab';
-import EditLocationOutlinedIcon from '@material-ui/icons/EditLocationOutlined';
-import { green } from '@material-ui/core/colors';
+import Fab from "@material-ui/core/Fab";
+import EditLocationOutlinedIcon from "@material-ui/icons/EditLocationOutlined";
+import { green } from "@material-ui/core/colors";
 import mapStyles from "./mapStyles";
-import './Map.css';
+import "./Map.css";
 
 import EventMarker from "./EventMarker";
 import fbArray from "../apis/firebase.js";
@@ -22,7 +22,7 @@ import Drawer from "@material-ui/core/Drawer";
 import SettingsIcon from "@material-ui/icons/Settings";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import Filter from "./Filter";
-import './Map.css';
+import "./Map.css";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -31,7 +31,7 @@ const useStyles = makeStyles((theme) => ({
   button: {
     display: "flex",
     alignContent: "center",
-    justifyContent: "center"
+    justifyContent: "center",
   },
   filterButton: {
     position: "fixed",
@@ -42,7 +42,7 @@ const useStyles = makeStyles((theme) => ({
     margin: theme.spacing(1),
     color: theme.palette.common.white,
     backgroundColor: green[500],
-    '&:hover': {
+    "&:hover": {
       backgroundColor: green[600],
     },
   },
@@ -52,15 +52,15 @@ const useStyles = makeStyles((theme) => ({
   fabGreen: {
     color: theme.palette.common.white,
     backgroundColor: green[500],
-    '&:hover': {
+    "&:hover": {
       backgroundColor: green[600],
     },
   },
   eventButton: {
     position: "fixed",
     top: 100,
-    right: 0
-  }
+    right: 0,
+  },
 }));
 
 // get firebase stuff
@@ -68,7 +68,7 @@ const auth = fbArray.auth;
 const db = fbArray.db;
 const libraries = ["places"];
 const mapContainerStyle = {
-  height:"calc(100vh - 64px)",
+  height: "calc(100vh - 64px)",
   width: "100%",
 };
 
@@ -87,15 +87,12 @@ const options = {
     latLngBounds: {
       east: center.lng + 0.011,
       north: center.lat + 0.01,
-      south: center.lat - 0.006, 
+      south: center.lat - 0.006,
       west: center.lng - 0.0249,
     },
     strictBounds: true,
   },
 };
-
-
-
 
 const Map = ({ mapRef, filter, setFilter, savedEvents, setSavedEvents }) => {
   //get the currently logged in user
@@ -106,7 +103,7 @@ const Map = ({ mapRef, filter, setFilter, savedEvents, setSavedEvents }) => {
   const [createEventShow, setCreateEventShow] = useState(false);
   const handleCreateEventClose = () => setCreateEventShow(false);
   const handleCreateEventShow = () => setCreateEventShow(true);
-  
+
   //stored values for event creation
   const authorRef = useRef("");
   const eventNameRef = useRef("");
@@ -140,60 +137,81 @@ const Map = ({ mapRef, filter, setFilter, savedEvents, setSavedEvents }) => {
   const fetchAccountType = () => {
     if (currUser) {
       //user is signed in.
-      db.collection("users").doc(currUser.uid).get().then((doc) => {
-        if (doc.exists) {
-          setAccountType(doc.get("accountType"));
-        } else { //doc.data() = undefined
-          console.log("No such document associated with the user!");
-        }
-      }).catch((error) => {
-        console.log("Error getting document:", error);
-      });
+      db.collection("users")
+        .doc(currUser.uid)
+        .get()
+        .then((doc) => {
+          if (doc.exists) {
+            setAccountType(doc.get("accountType"));
+          } else {
+            //doc.data() = undefined
+            console.log("No such document associated with the user!");
+          }
+        })
+        .catch((error) => {
+          console.log("Error getting document:", error);
+        });
     } else {
       //no user is signed in.
       setAccountType("user");
       setEventMode(false);
     }
-  }
-  
-  function createEvent(authorRef,attendeeRef, eventNameRef, locationRef, contextRef, dateRef,
-                      latitudeRef, longitudeRef, freeRef,sportsRef,artsRef,clubRef,fundRef,ticketRef, imageRef, type) {
+  };
+
+  function createEvent(
+    authorRef,
+    attendeeRef,
+    eventNameRef,
+    locationRef,
+    contextRef,
+    dateRef,
+    latitudeRef,
+    longitudeRef,
+    freeRef,
+    sportsRef,
+    artsRef,
+    clubRef,
+    fundRef,
+    ticketRef,
+    imageRef,
+    type
+  ) {
     if (currUser) {
-      console.log(currUser)
+      console.log(currUser);
       // if imageref is empty, replace with the default.
-      const picture = []
-      
-      if( imageRef === undefined || imageRef === ""){
-        picture.push("default.jpg")
-      }
-      else
-      {
-        picture.push(imageRef)
-      }
+      const picture = [];
 
-
+      if (imageRef === undefined || imageRef === "") {
+        picture.push("");
+      } else {
+        picture.push(imageRef);
+      }
 
       const newDate = new Date(dateRef);
-      const myTimestamp = fbArray.firebase.firestore.Timestamp.fromDate(newDate);
+      const myTimestamp = fbArray.firebase.firestore.Timestamp.fromDate(
+        newDate
+      );
       //user is signed in
-      db.collection("Events").add({
-        author: authorRef,
-        title: eventNameRef,
-        building: locationRef,
-        context: contextRef,
-        date: myTimestamp,
-        latitude: latitudeRef,
-        longitude: longitudeRef,
-        pictureName: picture,
-        rating: 4.0,
-        hostID: currUser.current.uid,
-        type: type
-
-      }).then((docRef) => {
-        console.log("Event document created with ID: ", docRef.id);
-      }).catch((error) => {
-        console.log("Error adding document: ", error);
-      });
+      db.collection("Events")
+        .add({
+          author: authorRef,
+          title: eventNameRef,
+          building: locationRef,
+          context: contextRef,
+          date: myTimestamp,
+          latitude: latitudeRef,
+          longitude: longitudeRef,
+          picNames: picture,
+          rating: 4.0,
+          hostID: currUser.current.uid,
+          type: 6666,
+        })
+        .then((docRef) => {
+          console.log("Event document created with ID: ", docRef.id);
+        })
+        .catch((error) => {
+          console.log("Error adding document: ", error);
+        });
     } else {
       console.log("no user is signed in");
     }
@@ -203,29 +221,71 @@ const Map = ({ mapRef, filter, setFilter, savedEvents, setSavedEvents }) => {
     console.log("Event Form was submitted!");
     event.preventDefault();
 
-      setError("");
-      setLoading(true);
- 
-      if(schoolRef === true){
-        await createEvent(authorRef.current.value,attendeeRef.current.value,eventNameRef.current.value, locationRef.current.value, contextRef.current.value, dateRef.current.value, 
-          latitude, longitude, freeRef.current.value,sportsRef.current.value,artsRef.current.value,clubRef.current.value,fundRef.current.value,ticketRef.current.value, imageRef.current.value, 0);
+    setError("");
+    setLoading(true);
 
-      }
-      else if(orgRef === true){
-        await createEvent(authorRef.current.value,attendeeRef.current.value,eventNameRef.current.value, locationRef.current.value, contextRef.current.value, dateRef.current.value, 
-          latitude, longitude, freeRef.current.value,sportsRef.current.value,artsRef.current.value,clubRef.current.value,fundRef.current.value,ticketRef.current.value, imageRef.current.value, 1);
-      }
-      else
-      {
-        await createEvent(authorRef.current.value,attendeeRef.current.value,eventNameRef.current.value, locationRef.current.value, contextRef.current.value, dateRef.current.value, 
-          latitude, longitude, freeRef.current.value,sportsRef.current.value,artsRef.current.value,clubRef.current.value,fundRef.current.value,ticketRef.current.value, imageRef.current.value, 2);
+    if (schoolRef === true) {
+      await createEvent(
+        authorRef.current.value,
+        attendeeRef.current.value,
+        eventNameRef.current.value,
+        locationRef.current.value,
+        contextRef.current.value,
+        dateRef.current.value,
+        latitude,
+        longitude,
+        freeRef.current.value,
+        sportsRef.current.value,
+        artsRef.current.value,
+        clubRef.current.value,
+        fundRef.current.value,
+        ticketRef.current.value,
+        imageRef.current.value,
+        0
+      );
+    } else if (orgRef === true) {
+      await createEvent(
+        authorRef.current.value,
+        attendeeRef.current.value,
+        eventNameRef.current.value,
+        locationRef.current.value,
+        contextRef.current.value,
+        dateRef.current.value,
+        latitude,
+        longitude,
+        freeRef.current.value,
+        sportsRef.current.value,
+        artsRef.current.value,
+        clubRef.current.value,
+        fundRef.current.value,
+        ticketRef.current.value,
+        imageRef.current.value,
+        1
+      );
+    } else {
+      await createEvent(
+        authorRef.current.value,
+        attendeeRef.current.value,
+        eventNameRef.current.value,
+        locationRef.current.value,
+        contextRef.current.value,
+        dateRef.current.value,
+        latitude,
+        longitude,
+        freeRef.current.value,
+        sportsRef.current.value,
+        artsRef.current.value,
+        clubRef.current.value,
+        fundRef.current.value,
+        ticketRef.current.value,
+        imageRef.current.value,
+        2
+      );
+    }
 
-      }
-
-    
     setLoading(false);
   }
-  
+
   const classes = useStyles();
   // Load the google map api key from .env file by useLoadScript function
   const { isLoaded, loadError } = useLoadScript({
@@ -325,6 +385,7 @@ const Map = ({ mapRef, filter, setFilter, savedEvents, setSavedEvents }) => {
 
   // Try to get events from 'Events' collection from the Firebase
   const fetchEvents = async () => {
+    setLoading(true);
     const response = db.collection("Events");
     const data = await response.get();
 
@@ -334,25 +395,25 @@ const Map = ({ mapRef, filter, setFilter, savedEvents, setSavedEvents }) => {
     data.docs.forEach((item) => {
       // Push the fetched object to fetchedData array
 
-      if (item.type === 1 && !filter.type1) {
-      } else {
-        fetchedData.push(item.data());
-        if( item.data().picNames !== undefined){
-        let reference = fbArray.storage 
-          .ref(`eventpics/${item.id}/${item.data().picNames[0]}`);
-        if (!reference) {
-          return;
-        }
-          console.log(item.data().picNames);
-          reference.getDownloadURL()
-          .then((url) => {
+      fetchedData.push(item.data());
+      if (item.data().picNames !== undefined) {
+        let reference = item.data().picNames[0]
+          ? fbArray.storage.ref(
+              `eventpics/${item.id}/${item.data().picNames[0]}`
+            )
+          : fbArray.storage.ref(`eventpics/default.jpg`);
 
+        console.log(item.data().picNames);
+        reference
+          .getDownloadURL()
+          .then((url) => {
             // ensure clean data
             let picNames = [];
             if (item.data().picNames) {
               picNames = [...item.data().picNames];
             }
 
+            console.log(`added ${item.data().author}`);
             // set a new Marker based on the iterating item
             setMarkers((current) => [
               ...current,
@@ -372,16 +433,23 @@ const Map = ({ mapRef, filter, setFilter, savedEvents, setSavedEvents }) => {
                 size: 70,
                 hostID: item.data().hostID,
                 picNames: picNames,
-                picUrls: []
+                picUrls: [],
               },
             ]);
+          })
+          .catch((e2) => {
+            console.log(e2.message);
           });
-        }
-        
+      }
+      else
+      {
+        console.log(`not added ${item.data().author}`);
       }
     });
     // set Events with fetchedDate array
     setEvents(fetchedData);
+
+    setLoading(false);
   };
 
   // useEffect fetch events when the page renders
@@ -408,11 +476,16 @@ const Map = ({ mapRef, filter, setFilter, savedEvents, setSavedEvents }) => {
 
   // gets the image urls for an event and stores them in the event
   function getImageUrls(marker) {
-    console.log("called getImageUrls - " + marker.picUrls.length + " : " + marker.picNames.length);
+    console.log(
+      "called getImageUrls - " +
+        marker.picUrls.length +
+        " : " +
+        marker.picNames.length
+    );
     // only query if needed (no images loaded, and there are images to load)
-    if ((marker.picUrls.length < 1) && (marker.picNames.length >= 1)) {
+    if (marker.picUrls.length < 1 && marker.picNames.length >= 1) {
       // loop through each filename
-      marker.picNames.forEach(name => {
+      marker.picNames.forEach((name) => {
         //console.log(`eventpics/${props.docID}/${name}`);
         let reference = fbArray.storage.ref(`eventpics/${marker.id}/${name}`);
         reference.getDownloadURL().then((url) => {
@@ -432,7 +505,6 @@ const Map = ({ mapRef, filter, setFilter, savedEvents, setSavedEvents }) => {
       });
       marker.picNames = ["default"];
     }
-
   }
 
   return (
@@ -454,7 +526,11 @@ const Map = ({ mapRef, filter, setFilter, savedEvents, setSavedEvents }) => {
         }}
         onLoad={onMapLoad}
       >
-        {markers
+        {console.log("Map rendered")}
+        {
+
+          
+        markers
           .filter(
             (marker) =>
               filterByType(marker) &&
@@ -471,29 +547,32 @@ const Map = ({ mapRef, filter, setFilter, savedEvents, setSavedEvents }) => {
               }}
               onMouseOver={() => {
                 setMarkers(
-                  markers.map(item => 
-                      item.id === marker.id 
-                      ? {...item, size : 80} 
-                      : item 
-                ))              
+                  markers.map((item) =>
+                    item.id === marker.id ? { ...item, size: 80 } : item
+                  )
+                );
               }}
               onMouseOut={() => {
                 setMarkers(
-                  markers.map(item => 
-                      item.id === marker.id 
-                      ? {...item, size : 70} 
-                      : item 
-                )) 
-              }}  
-
+                  markers.map((item) =>
+                    item.id === marker.id ? { ...item, size: 70 } : item
+                  )
+                );
+              }}
               icon={{
                 url: getLogoType(marker.type),
                 origin: new window.google.maps.Point(0, 0),
                 anchor: new window.google.maps.Point(15, 15),
-                scaledSize: new window.google.maps.Size(marker.size, marker.size),
+                scaledSize: new window.google.maps.Size(
+                  marker.size,
+                  marker.size
+                ),
               }}
             />
-          ))}
+          ))
+          
+          
+          }
 
         {selected ? (
           <InfoWindow
@@ -514,27 +593,32 @@ const Map = ({ mapRef, filter, setFilter, savedEvents, setSavedEvents }) => {
               date={selected.date}
               enddate={selected.enddate}
               link={selected.link}
-              savedEvents={savedEvents} 
+              savedEvents={savedEvents}
               setSavedEvents={setSavedEvents}
               hostID={selected.hostID}
               picNames={selected.picNames}
               picUrls={selected.picUrls}
             />
-            
           </InfoWindow>
         ) : null}
       </GoogleMap>
       <div className={classes.filterButton}>
-        <Fab variant="extended" color="inherit" aria-label="add" className={classes.margin} onClick={toggleDrawer(true)}>
-            <EditLocationOutlinedIcon className={classes.extendedIcon} />
-            Filter
+        <Fab
+          variant="extended"
+          color="inherit"
+          aria-label="add"
+          className={classes.margin}
+          onClick={toggleDrawer(true)}
+        >
+          <EditLocationOutlinedIcon className={classes.extendedIcon} />
+          Filter
         </Fab>
         <Drawer
           anchor="bottom"
           open={bottomOption}
           onClose={toggleDrawer(false)}
         >
-        <Filter
+          <Filter
             filterOptions={filterOptions}
             setFilterOptions={setFilterOptions}
             markers={markers}
@@ -550,15 +634,38 @@ const Map = ({ mapRef, filter, setFilter, savedEvents, setSavedEvents }) => {
       </div>
 
       {/* Toggle Create Event Mode Button */}
-      {accountType === "org" && (eventMode === false ? 
-        (<div className={classes.eventButton}>
-          <Button style={{margin: "4px", color: "white", backgroundColor: "#006633"}} onClick={() => {setEventMode(true)}}>Create Mode</Button>
-        </div>)
-        : 
-        (<div className={classes.eventButton}>
-          <Button style={{margin: "4px", color: "white", backgroundColor: "#006633"}} onClick={() => {setEventMode(false)}}>Exit Create Mode</Button>
-        </div>) 
-      )}
+      {accountType === "org" &&
+        (eventMode === false ? (
+          <div className={classes.eventButton}>
+            <Button
+              style={{
+                margin: "4px",
+                color: "white",
+                backgroundColor: "#006633",
+              }}
+              onClick={() => {
+                setEventMode(true);
+              }}
+            >
+              Create Mode
+            </Button>
+          </div>
+        ) : (
+          <div className={classes.eventButton}>
+            <Button
+              style={{
+                margin: "4px",
+                color: "white",
+                backgroundColor: "#006633",
+              }}
+              onClick={() => {
+                setEventMode(false);
+              }}
+            >
+              Exit Create Mode
+            </Button>
+          </div>
+        ))}
 
       {/*Event Creation Modal*/}
       <Modal show={createEventShow} onHide={handleCreateEventClose} centered>
@@ -568,19 +675,45 @@ const Map = ({ mapRef, filter, setFilter, savedEvents, setSavedEvents }) => {
         <Modal.Body>
           {error && <Alert letiant="danger">{error}</Alert>}
           <Form onSubmit={handleEventSubmit}>
-          <Form.Group id="author">
-            <Form.Label>Name of the Host</Form.Label>
-            <Form.Control type="text" ref={authorRef} required />
-            <Form.Check inline label="School" type="radio" name="typeRadio" id={`inline-School`} ref={schoolRef} checked={schoolRef} />
-            <Form.Check inline label="Organization" type="radio" name="typeRadio" id={`inline-Organization`} ref={orgRef} checked={orgRef}/>
-            <Form.Check inline label="Student" type="radio" name="typeRadio" id={`inline-Student`} ref={studentRef} checked={studentRef} />
-          </Form.Group>
-          <Form.Group id="eventname">
-            <Form.Label>Name Your Event</Form.Label>
-            <Form.Control type="text" ref={eventNameRef} required />
-          </Form.Group>
+            <Form.Group id="author">
+              <Form.Label>Name of the Host</Form.Label>
+              <Form.Control type="text" ref={authorRef} required />
+              <Form.Check
+                inline
+                label="School"
+                type="radio"
+                name="typeRadio"
+                id={`inline-School`}
+                ref={schoolRef}
+                checked={schoolRef}
+              />
+              <Form.Check
+                inline
+                label="Organization"
+                type="radio"
+                name="typeRadio"
+                id={`inline-Organization`}
+                ref={orgRef}
+                checked={orgRef}
+              />
+              <Form.Check
+                inline
+                label="Student"
+                type="radio"
+                name="typeRadio"
+                id={`inline-Student`}
+                ref={studentRef}
+                checked={studentRef}
+              />
+            </Form.Group>
+            <Form.Group id="eventname">
+              <Form.Label>Name Your Event</Form.Label>
+              <Form.Control type="text" ref={eventNameRef} required />
+            </Form.Group>
             <Form.Group id="location">
-              <Form.Label>Any Details For Reaching Your Event Location?</Form.Label>
+              <Form.Label>
+                Any Details For Reaching Your Event Location?
+              </Form.Label>
               <Form.Control as="textarea" rows={2} ref={locationRef} />
             </Form.Group>
             <Form.Group id="context">
@@ -598,26 +731,66 @@ const Map = ({ mapRef, filter, setFilter, savedEvents, setSavedEvents }) => {
             </Form.Group>
 
             <Form.Group id="tag">
-              <Form.Check inline label="Free" type="checkbox" id={`inline-Free`} ref={freeRef} checked={true} />
-              <Form.Check inline label="Sports" type="checkbox" id={`inline-Sports`} ref={sportsRef} />
-              <Form.Check inline label="Arts" type="checkbox" id={`inline-Arts`} ref={artsRef} />
-              <Form.Check inline label="Club" type="checkbox" id={`inline-Club`} ref={clubRef} />
-              <Form.Check inline label="Fundraiser" type="checkbox" id={`inline-Fundraiser`} ref={fundRef} />
-              <Form.Check inline label="NeedTicket" type="checkbox" id={`inline-NeedTicket`} ref={ticketRef} />
+              <Form.Check
+                inline
+                label="Free"
+                type="checkbox"
+                id={`inline-Free`}
+                ref={freeRef}
+                checked={true}
+              />
+              <Form.Check
+                inline
+                label="Sports"
+                type="checkbox"
+                id={`inline-Sports`}
+                ref={sportsRef}
+              />
+              <Form.Check
+                inline
+                label="Arts"
+                type="checkbox"
+                id={`inline-Arts`}
+                ref={artsRef}
+              />
+              <Form.Check
+                inline
+                label="Club"
+                type="checkbox"
+                id={`inline-Club`}
+                ref={clubRef}
+              />
+              <Form.Check
+                inline
+                label="Fundraiser"
+                type="checkbox"
+                id={`inline-Fundraiser`}
+                ref={fundRef}
+              />
+              <Form.Check
+                inline
+                label="NeedTicket"
+                type="checkbox"
+                id={`inline-NeedTicket`}
+                ref={ticketRef}
+              />
             </Form.Group>
-
 
             <Form.Group id="image">
               <Form.Label>Upload An Event Image</Form.Label>
               <Form.File ref={imageRef} />
             </Form.Group>
-            <Button disabled={loading} className="w-100" style={{backgroundColor: "#006633"}} type="submit">
+            <Button
+              disabled={loading}
+              className="w-100"
+              style={{ backgroundColor: "#006633" }}
+              type="submit"
+            >
               Create Event
             </Button>
           </Form>
         </Modal.Body>
-      </Modal> 
-      
+      </Modal>
     </div>
   );
 };

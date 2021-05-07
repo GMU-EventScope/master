@@ -489,9 +489,6 @@ export default function NavBar() {
     const reference = fbArray.storage.ref(
       `profile/${auth.currentUser.uid}.jpg`
     );
-    if (!reference) {
-      reference = fbArray.storage.ref(`profile/169-logo.jpg`);
-    }
     reference
       .getDownloadURL()
       .then((url) => {
@@ -499,6 +496,17 @@ export default function NavBar() {
       })
       .catch((e) => {
         console.log(e.message);
+        const reference2 = fbArray.storage.ref(
+          `profile/169-logo.png`
+        );
+        reference2
+        .getDownloadURL()
+        .then((url2) => {
+          setCurProfPic(url2);
+        })
+        .catch((e2) => {
+          console.log(e2.message);
+        });
       });
     return curProfPic;
   }
