@@ -170,13 +170,17 @@ const Map = ({ mapRef, filter, setFilter, savedEvents, setSavedEvents }) => {
       {
         picture.push(imageRef)
       }
+
+      const newDate = new Date(dateRef);
+      console.log(newDate)
+      const myTimestamp = fbArray.firebase.firestore.Timestamp.fromDate(newDate);
       //user is signed in
       db.collection("Events").add({
         author: authorRef,
         title: eventNameRef,
         building: locationRef,
         context: contextRef,
-        date: dateRef,
+        date: myTimestamp,
         latitude: latitudeRef,
         longitude: longitudeRef,
         pictureName: picture,
