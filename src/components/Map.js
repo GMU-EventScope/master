@@ -286,13 +286,13 @@ const Map = ({ mapRef, filter, setFilter, savedEvents, setSavedEvents }) => {
       if (item.type === 1 && !filter.type1) {
       } else {
         fetchedData.push(item.data());
-
-        let reference = fbArray.storage
-          .ref(`profile/${item.data().pictureName}`);
+        if( item.data().picNames !== undefined){
+        let reference = fbArray.storage 
+          .ref(`eventpics/${item.id}/${item.data().picNames[0]}`);
         if (!reference) {
           return;
         }
-          console.log(item.data().title);
+          console.log(item.data().picNames);
           reference.getDownloadURL()
           .then((url) => {
 
@@ -317,7 +317,6 @@ const Map = ({ mapRef, filter, setFilter, savedEvents, setSavedEvents }) => {
                 id: item.id,
                 tags: item.data().tags,
                 rating: item.data().rating,
-                pictureName: item.data().pictureName,
                 pictureURL: url,
                 size: 70,
                 hostID: item.data().hostID,
@@ -326,6 +325,7 @@ const Map = ({ mapRef, filter, setFilter, savedEvents, setSavedEvents }) => {
               },
             ]);
           });
+        }
         
       }
     });
