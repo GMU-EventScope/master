@@ -19,13 +19,10 @@ import Modal from "react-bootstrap/Modal";
 import { Form, Alert } from "react-bootstrap";
 import Button from "@material-ui/core/Button";
 import Drawer from "@material-ui/core/Drawer";
-import SettingsIcon from "@material-ui/icons/Settings";
-import { makeStyles, useTheme } from "@material-ui/core/styles";
+import { makeStyles } from "@material-ui/core/styles";
 import Filter from "./Filter";
 import './Map.css';
 import { format } from "date-fns";
-import { StrikethroughSRounded } from "@material-ui/icons";
-
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -108,11 +105,10 @@ const Map = ({ mapRef, filter, setFilter, savedEvents, setSavedEvents, handleMen
   const handleCreateEventShow = () => setCreateEventShow(true);
 
   //stored values for event creation
-  const [rating, setRating] = useState();
   const authorRef = useRef("");
   const eventNameRef = useRef("");
-  const buildingRef = useRef("");
-  const roomRef = useRef("");
+  // const buildingRef = useRef("");
+  // const roomRef = useRef("");
   const contextRef = useRef("");
   const attendeeRef = useRef("");
   const dateRef = useRef("");
@@ -573,7 +569,7 @@ const Map = ({ mapRef, filter, setFilter, savedEvents, setSavedEvents, handleMen
       });
     }
     // get default image
-    if (marker.picNames.length == 0) {
+    if (marker.picNames.length === 0) {
       let reference = fbArray.storage.ref(`eventpics/default.jpg`);
       reference.getDownloadURL().then((url) => {
         // URL obtained, add to the reactive array so it can be used for rendering
@@ -597,7 +593,7 @@ const Map = ({ mapRef, filter, setFilter, savedEvents, setSavedEvents, handleMen
           //handleLatLng(event);
           setLatitude(event.latLng.lat());
           setLongitude(event.latLng.lng());
-          setRating(0);
+          // setRating(0);
           if (eventMode) {
             handleCreateEventShow();
           }
