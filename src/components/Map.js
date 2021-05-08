@@ -116,6 +116,7 @@ const Map = ({ mapRef, filter, setFilter, savedEvents, setSavedEvents }) => {
   const contextRef = useRef("");
   const attendeeRef = useRef("");
   const dateRef = useRef("");
+  const locationRef = useRef("");
 
   const freeRef = useRef(true);
   const sportsRef = useRef(false);
@@ -161,6 +162,7 @@ const Map = ({ mapRef, filter, setFilter, savedEvents, setSavedEvents }) => {
       setAccountType("user");
       setEventMode(false);
     }
+  }
   function createEvent(
     authorRef,
     attendeeRef,
@@ -438,7 +440,7 @@ const Map = ({ mapRef, filter, setFilter, savedEvents, setSavedEvents }) => {
               {
                 lat: item.data().latitude,
                 lng: item.data().longitude,
-                date: convertDate(item.data().date.toDate().toLocaleString().split(",")[0]), //toDateString()
+                date: convertDate(item.data().date.toDate().toLocaleString().split(",")[0]),
                 time: convertTime(item.data().date.toDate()),
                 author: item.data().author,
                 title: item.data().title,
