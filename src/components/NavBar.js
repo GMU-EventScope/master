@@ -231,7 +231,7 @@ export default function NavBar() {
       open={isMenuOpen}
       onClose={handleMenuClose}
     >
-      <MenuItem
+      {/* <MenuItem
         onClick={() => handleMenuCloseWithSnackBar("Profile Clicked", "error")}
       >
         <ListItemIcon>
@@ -258,9 +258,12 @@ export default function NavBar() {
           <EventIcon />
         </ListItemIcon>
         <Typography variant="inherit">View Saved Events</Typography>
-      </MenuItem>
+      </MenuItem> */}
       <MenuItem
-        onClick={() => handleMenuCloseWithSnackBar("Logout Clicked", "success")}
+        onClick={() => {
+          handleLogout();
+          handleMenuCloseWithSnackBar("You have been logged out", "success");
+        }}
       >
         <ListItemIcon>
           <ExitToAppIcon />
@@ -395,9 +398,12 @@ export default function NavBar() {
       setError("");
       setLoading(true);
       await login(loginEmailRef.current.value, loginPasswordRef.current.value);
+
       handleLoginClose();
+      handleMenuCloseWithSnackBar("You have been logged In", "success");
       setLoggedIn(true);
     } catch {
+      handleMenuCloseWithSnackBar("You have been Failed to log in", "error");
       setError("Failed to log in");
     }
 
@@ -496,17 +502,15 @@ export default function NavBar() {
       })
       .catch((e) => {
         console.log(e.message);
-        const reference2 = fbArray.storage.ref(
-          `profile/169-logo.png`
-        );
+        const reference2 = fbArray.storage.ref(`profile/169-logo.png`);
         reference2
-        .getDownloadURL()
-        .then((url2) => {
-          setCurProfPic(url2);
-        })
-        .catch((e2) => {
-          console.log(e2.message);
-        });
+          .getDownloadURL()
+          .then((url2) => {
+            setCurProfPic(url2);
+          })
+          .catch((e2) => {
+            console.log(e2.message);
+          });
       });
     return curProfPic;
   }
@@ -557,7 +561,7 @@ export default function NavBar() {
             <section className={classes.rightToolbar}>
               {loggedIn ? (
                 <>
-                  <IconButton
+                  {/* <IconButton
                     aria-label="show 4 new mails"
                     color="inherit"
                     onClick={() =>
@@ -576,7 +580,7 @@ export default function NavBar() {
                     <Badge badgeContent={5} color="secondary">
                       <NotificationsIcon />
                     </Badge>
-                  </IconButton>
+                  </IconButton> */}
                   <IconButton
                     edge="end"
                     aria-label="account of current user"
@@ -587,7 +591,7 @@ export default function NavBar() {
                   >
                     <AccountCircle />
                   </IconButton>
-
+                  {/* 
                   <MaterialButton
                     variant="outlined"
                     color="inherit"
@@ -601,7 +605,7 @@ export default function NavBar() {
                     onClick={viewSavedEventsButton}
                   >
                     View Saved Events
-                  </MaterialButton>
+                  </MaterialButton> */}
                 </>
               ) : (
                 <MaterialButton
@@ -688,6 +692,7 @@ export default function NavBar() {
             setFilter={setFilter}
             savedEvents={savedEvents}
             setSavedEvents={setSavedEvents}
+            handleMenuCloseWithSnackBar={handleMenuCloseWithSnackBar}
           />
         </main>
 

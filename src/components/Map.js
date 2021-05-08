@@ -97,7 +97,7 @@ const options = {
   },
 };
 
-const Map = ({ mapRef, filter, setFilter, savedEvents, setSavedEvents }) => {
+const Map = ({ mapRef, filter, setFilter, savedEvents, setSavedEvents, handleMenuCloseWithSnackBar }) => {
   //get the currently logged in user
   let currUser = useRef(auth.currentUser);
 
@@ -191,32 +191,32 @@ const Map = ({ mapRef, filter, setFilter, savedEvents, setSavedEvents }) => {
       } 
       const tags = [];
 
-      if(freeRef === true)
+      if(freeRef.current.value === true)
       {
         tags.push("Free")
       }
 
-      if(sportsRef === true)
+      if(sportsRef.current.value === true)
       {
         tags.push("Sports")
       }
 
-      if(artsRef === true)
+      if(artsRef.current.value === true)
       {
         tags.push("Arts")
       }
 
-      if(clubRef === true)
+      if(clubRef.current.value === true)
       {
         tags.push("Club")
       }
 
-      if(fundRef === true)
+      if(fundRef.current.value === true)
       {
         tags.push("Fundraiser")
       }
 
-      if(ticketRef === true)
+      if(ticketRef.current.value === true)
       {
         tags.push("NeedTicket")
       }
@@ -241,10 +241,37 @@ const Map = ({ mapRef, filter, setFilter, savedEvents, setSavedEvents }) => {
           tags: tags
         })
         .then((docRef) => {
+
+          setMarkers((current) => [
+            ...current,
+            {
+              lat: latitudeRef,
+              lng: longitudeRef,
+              date: myTimestamp,
+              author: authorRef,
+              title: eventNameRef,
+              context: contextRef,
+              type: type,
+              tags: tags,
+              rating: 4.0,
+              size: 70,
+              hostID: currUser.current.uid,
+              picNames: picture,
+              id: docRef.id,
+              key: docRef.id,
+            },
+          ]);
+
+
           console.log("Event document created with ID: ", docRef.id);
+          handleMenuCloseWithSnackBar("The Event has been created", "success")
+
+          window.location.reload();
+   
         })
         .catch((error) => {
           console.log("Error adding document: ", error);
+          handleMenuCloseWithSnackBar("Error adding an event", "error")
         });
     } else {
       console.log("no user is signed in");
@@ -268,12 +295,12 @@ const Map = ({ mapRef, filter, setFilter, savedEvents, setSavedEvents }) => {
         dateRef.current.value,
         latitude,
         longitude,
-        freeRef.current.value,
-        sportsRef.current.value,
-        artsRef.current.value,
-        clubRef.current.value,
-        fundRef.current.value,
-        ticketRef.current.value,
+        freeRef,
+        sportsRef,
+        artsRef,
+        clubRef,
+        fundRef,
+        ticketRef,
         imageRef.current.value,
         0
       );
@@ -287,12 +314,12 @@ const Map = ({ mapRef, filter, setFilter, savedEvents, setSavedEvents }) => {
         dateRef.current.value,
         latitude,
         longitude,
-        freeRef.current.value,
-        sportsRef.current.value,
-        artsRef.current.value,
-        clubRef.current.value,
-        fundRef.current.value,
-        ticketRef.current.value,
+        freeRef,
+        sportsRef,
+        artsRef,
+        clubRef,
+        fundRef,
+        ticketRef,
         imageRef.current.value,
         1
       );
@@ -306,12 +333,12 @@ const Map = ({ mapRef, filter, setFilter, savedEvents, setSavedEvents }) => {
         dateRef.current.value,
         latitude,
         longitude,
-        freeRef.current.value,
-        sportsRef.current.value,
-        artsRef.current.value,
-        clubRef.current.value,
-        fundRef.current.value,
-        ticketRef.current.value,
+        freeRef,
+        sportsRef,
+        artsRef,
+        clubRef,
+        fundRef,
+        ticketRef,
         imageRef.current.value,
         2
       );
@@ -375,7 +402,7 @@ const Map = ({ mapRef, filter, setFilter, savedEvents, setSavedEvents }) => {
   const testDate = "2021-02-20";
   const testDate7 = "2021-02-27";
   const testDate30 = "2021-03-20";
-  const testDate90 = "2021-05-20";
+  const testDate90 = "2021-08-20";
   // value : target date
   // compareDate : a date to compare with value (For filtering purpose)
   // allEvents : boolean to display all no mater of dates
