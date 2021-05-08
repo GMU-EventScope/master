@@ -5,39 +5,26 @@ import Drawer from "@material-ui/core/Drawer";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
-import List from "@material-ui/core/List";
 import Typography from "@material-ui/core/Typography";
 import Divider from "@material-ui/core/Divider";
 import IconButton from "@material-ui/core/IconButton";
 import MenuIcon from "@material-ui/icons/Menu";
 import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
 import ChevronRightIcon from "@material-ui/icons/ChevronRight";
-import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
-import ListItemText from "@material-ui/core/ListItemText";
-import InboxIcon from "@material-ui/icons/MoveToInbox";
-import MailIcon from "@material-ui/icons/Mail";
 import MaterialButton from "@material-ui/core/Button";
 import Button from "@material-ui/core/Button";
-import Collapse from "@material-ui/core/Collapse";
-import ExpandLess from "@material-ui/icons/ExpandLess";
-import ExpandMore from "@material-ui/icons/ExpandMore";
-import StarBorder from "@material-ui/icons/StarBorder";
 import Menu from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
-import Badge from "@material-ui/core/Badge";
 import AccountCircle from "@material-ui/icons/AccountCircle";
-import NotificationsIcon from "@material-ui/icons/Notifications";
 import SearchIcon from "@material-ui/icons/Search";
 import InputBase from "@material-ui/core/InputBase";
 
 import Snackbar from "@material-ui/core/Snackbar";
 import MuiAlert from "@material-ui/lab/Alert";
 
-import FaceIcon from "@material-ui/icons/Face";
 import ExitToAppIcon from "@material-ui/icons/ExitToApp";
-import AccountBoxIcon from "@material-ui/icons/AccountBox";
-import EventIcon from "@material-ui/icons/Event";
+
 
 import Map from "./Map";
 import ProfileCard from "./ProfileCard";
@@ -50,7 +37,7 @@ import fbArray from "../apis/firebase.js";
 //auth (login/signup) stuff//
 import Modal from "react-bootstrap/Modal";
 import { useAuth } from "../contexts/AuthContext";
-import { Form, Alert } from "react-bootstrap";
+import { Form } from "react-bootstrap";
 
 //get firebase stuff
 const db = fbArray.db;
@@ -174,11 +161,11 @@ export default function NavBar() {
     setOpen(false);
   };
 
-  const [openFolder, setOpenFolder] = React.useState(false);
+  // const [openFolder, setOpenFolder] = React.useState(false);
 
-  const handleClick = () => {
-    setOpenFolder(!openFolder);
-  };
+  // const handleClick = () => {
+  //   setOpenFolder(!openFolder);
+  // };
 
   const [filter, setFilter] = useState({
     type1: true,
@@ -207,7 +194,6 @@ export default function NavBar() {
   const [uploadShow, uploadSetShow] = useState(false);
 
   const [anchorEl, setAnchorEl] = React.useState(null);
-  const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
   const isMenuOpen = Boolean(anchorEl);
   const handleProfileMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
@@ -231,7 +217,7 @@ export default function NavBar() {
       open={isMenuOpen}
       onClose={handleMenuClose}
     >
-      <MenuItem
+      {/* <MenuItem
         onClick={() => handleMenuCloseWithSnackBar("Profile Clicked", "error")}
       >
         <ListItemIcon>
@@ -258,9 +244,12 @@ export default function NavBar() {
           <EventIcon />
         </ListItemIcon>
         <Typography variant="inherit">View Saved Events</Typography>
-      </MenuItem>
+      </MenuItem> */}
       <MenuItem
-        onClick={() => handleMenuCloseWithSnackBar("Logout Clicked", "success")}
+        onClick={() => {
+          handleLogout();
+          handleMenuCloseWithSnackBar("You have been logged out", "success");
+        }}
       >
         <ListItemIcon>
           <ExitToAppIcon />
@@ -298,7 +287,7 @@ export default function NavBar() {
   const handleLoginClose = () => loginSetShow(false);
   const handleLoginShow = () => loginSetShow(true);
   const handleUploadClose = () => uploadSetShow(false);
-  const handleUploadShow = () => uploadSetShow(true);
+  // const handleUploadShow = () => uploadSetShow(true);
 
   //stored values for authentication
   //normal auth
@@ -395,9 +384,12 @@ export default function NavBar() {
       setError("");
       setLoading(true);
       await login(loginEmailRef.current.value, loginPasswordRef.current.value);
+
       handleLoginClose();
+      handleMenuCloseWithSnackBar("You have been logged In", "success");
       setLoggedIn(true);
     } catch {
+      handleMenuCloseWithSnackBar("You have been Failed to log in", "error");
       setError("Failed to log in");
     }
 
@@ -419,44 +411,44 @@ export default function NavBar() {
   }
   /////////////////////////////////////////////////////////////////////////////
 
-  function viewSavedEventsButton() {
-    // get current user
-    let user = auth.currentUser;
-    // if user exists (you are signed in)
-    if (user) {
-      // access the correct document in "users"
-      db.collection("users")
-        .doc(user.uid)
-        .get()
-        .then((doc) => {
-          let myEvents = doc.data().savedevents;
-          //console.log(myEvents);
-          // loop through event uids saved in the savedevents array
-          if (!(myEvents === undefined)) {
-            console.log(user.email);
-            console.log("Your saved event titles: ");
-            myEvents.forEach((id) => {
-              db.collection("Events")
-                .doc(id)
-                .get()
-                .then((doc2) => {
-                  // doc2 is the event document from Events
-                  //console.log(doc2);
-                  if (doc2.exists) {
-                    console.log(doc2.data().title);
-                  } else {
-                    console.log(`Doc with id ${id} not found`);
-                  }
-                });
-            });
-          } else {
-            console.log("No events found");
-          }
-        });
-    } else {
-      console.log("You are not signed in. Sign in to view saved events");
-    }
-  }
+  // function viewSavedEventsButton() {
+  //   // get current user
+  //   let user = auth.currentUser;
+  //   // if user exists (you are signed in)
+  //   if (user) {
+  //     // access the correct document in "users"
+  //     db.collection("users")
+  //       .doc(user.uid)
+  //       .get()
+  //       .then((doc) => {
+  //         let myEvents = doc.data().savedevents;
+  //         //console.log(myEvents);
+  //         // loop through event uids saved in the savedevents array
+  //         if (!(myEvents === undefined)) {
+  //           console.log(user.email);
+  //           console.log("Your saved event titles: ");
+  //           myEvents.forEach((id) => {
+  //             db.collection("Events")
+  //               .doc(id)
+  //               .get()
+  //               .then((doc2) => {
+  //                 // doc2 is the event document from Events
+  //                 //console.log(doc2);
+  //                 if (doc2.exists) {
+  //                   console.log(doc2.data().title);
+  //                 } else {
+  //                   console.log(`Doc with id ${id} not found`);
+  //                 }
+  //               });
+  //           });
+  //         } else {
+  //           console.log("No events found");
+  //         }
+  //       });
+  //   } else {
+  //     console.log("You are not signed in. Sign in to view saved events");
+  //   }
+  // }
 
   // image being uploaded
   let uploadingImage = {};
@@ -496,17 +488,15 @@ export default function NavBar() {
       })
       .catch((e) => {
         console.log(e.message);
-        const reference2 = fbArray.storage.ref(
-          `profile/169-logo.png`
-        );
+        const reference2 = fbArray.storage.ref(`profile/169-logo.png`);
         reference2
-        .getDownloadURL()
-        .then((url2) => {
-          setCurProfPic(url2);
-        })
-        .catch((e2) => {
-          console.log(e2.message);
-        });
+          .getDownloadURL()
+          .then((url2) => {
+            setCurProfPic(url2);
+          })
+          .catch((e2) => {
+            console.log(e2.message);
+          });
       });
     return curProfPic;
   }
@@ -557,7 +547,7 @@ export default function NavBar() {
             <section className={classes.rightToolbar}>
               {loggedIn ? (
                 <>
-                  <IconButton
+                  {/* <IconButton
                     aria-label="show 4 new mails"
                     color="inherit"
                     onClick={() =>
@@ -576,7 +566,7 @@ export default function NavBar() {
                     <Badge badgeContent={5} color="secondary">
                       <NotificationsIcon />
                     </Badge>
-                  </IconButton>
+                  </IconButton> */}
                   <IconButton
                     edge="end"
                     aria-label="account of current user"
@@ -587,7 +577,7 @@ export default function NavBar() {
                   >
                     <AccountCircle />
                   </IconButton>
-
+                  {/* 
                   <MaterialButton
                     variant="outlined"
                     color="inherit"
@@ -601,7 +591,7 @@ export default function NavBar() {
                     onClick={viewSavedEventsButton}
                   >
                     View Saved Events
-                  </MaterialButton>
+                  </MaterialButton> */}
                 </>
               ) : (
                 <MaterialButton
@@ -688,6 +678,7 @@ export default function NavBar() {
             setFilter={setFilter}
             savedEvents={savedEvents}
             setSavedEvents={setSavedEvents}
+            handleMenuCloseWithSnackBar={handleMenuCloseWithSnackBar}
           />
         </main>
 

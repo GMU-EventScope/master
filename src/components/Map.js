@@ -19,13 +19,10 @@ import Modal from "react-bootstrap/Modal";
 import { Form, Alert } from "react-bootstrap";
 import Button from "@material-ui/core/Button";
 import Drawer from "@material-ui/core/Drawer";
-import SettingsIcon from "@material-ui/icons/Settings";
-import { makeStyles, useTheme } from "@material-ui/core/styles";
+import { makeStyles } from "@material-ui/core/styles";
 import Filter from "./Filter";
 import './Map.css';
 import { format } from "date-fns";
-import { StrikethroughSRounded } from "@material-ui/icons";
-
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -97,7 +94,7 @@ const options = {
   },
 };
 
-const Map = ({ mapRef, filter, setFilter, savedEvents, setSavedEvents }) => {
+const Map = ({ mapRef, filter, setFilter, savedEvents, setSavedEvents, handleMenuCloseWithSnackBar }) => {
   //get the currently logged in user
   let currUser = useRef(auth.currentUser);
 
@@ -108,11 +105,10 @@ const Map = ({ mapRef, filter, setFilter, savedEvents, setSavedEvents }) => {
   const handleCreateEventShow = () => setCreateEventShow(true);
 
   //stored values for event creation
-  const [rating, setRating] = useState();
   const authorRef = useRef("");
   const eventNameRef = useRef("");
-  const buildingRef = useRef("");
-  const roomRef = useRef("");
+  // const buildingRef = useRef("");
+  // const roomRef = useRef("");
   const contextRef = useRef("");
   const attendeeRef = useRef("");
   const dateRef = useRef("");
@@ -186,12 +182,40 @@ const Map = ({ mapRef, filter, setFilter, savedEvents, setSavedEvents }) => {
       // if imageref is empty, replace with the default.
       const picture = [];
 
-      if (imageRef === undefined || imageRef === "") {
-        picture.push("");
-      } else {
+      if (imageRef !== undefined && imageRef !== "") {
         picture.push(imageRef);
+      } 
+      const tags = [];
+
+      if(freeRef.current.value === true)
+      {
+        tags.push("Free")
       }
 
+      if(sportsRef.current.value === true)
+      {
+        tags.push("Sports")
+      }
+
+      if(artsRef.current.value === true)
+      {
+        tags.push("Arts")
+      }
+
+      if(clubRef.current.value === true)
+      {
+        tags.push("Club")
+      }
+
+      if(fundRef.current.value === true)
+      {
+        tags.push("Fundraiser")
+      }
+
+      if(ticketRef.current.value === true)
+      {
+        tags.push("NeedTicket")
+      }
       const newDate = new Date(dateRef);
       const myTimestamp = fbArray.firebase.firestore.Timestamp.fromDate(
         newDate
@@ -209,13 +233,41 @@ const Map = ({ mapRef, filter, setFilter, savedEvents, setSavedEvents }) => {
           picNames: picture,
           rating: 4.0,
           hostID: currUser.current.uid,
-          type: 6666,
+          type: type,
+          tags: tags
         })
         .then((docRef) => {
+
+          setMarkers((current) => [
+            ...current,
+            {
+              lat: latitudeRef,
+              lng: longitudeRef,
+              date: myTimestamp,
+              author: authorRef,
+              title: eventNameRef,
+              context: contextRef,
+              type: type,
+              tags: tags,
+              rating: 4.0,
+              size: 70,
+              hostID: currUser.current.uid,
+              picNames: picture,
+              id: docRef.id,
+              key: docRef.id,
+            },
+          ]);
+
+
           console.log("Event document created with ID: ", docRef.id);
+          handleMenuCloseWithSnackBar("The Event has been created", "success")
+
+          window.location.reload();
+   
         })
         .catch((error) => {
           console.log("Error adding document: ", error);
+          handleMenuCloseWithSnackBar("Error adding an event", "error")
         });
     } else {
       console.log("no user is signed in");
@@ -239,12 +291,12 @@ const Map = ({ mapRef, filter, setFilter, savedEvents, setSavedEvents }) => {
         dateRef.current.value,
         latitude,
         longitude,
-        freeRef.current.value,
-        sportsRef.current.value,
-        artsRef.current.value,
-        clubRef.current.value,
-        fundRef.current.value,
-        ticketRef.current.value,
+        freeRef,
+        sportsRef,
+        artsRef,
+        clubRef,
+        fundRef,
+        ticketRef,
         imageRef.current.value,
         0
       );
@@ -258,12 +310,12 @@ const Map = ({ mapRef, filter, setFilter, savedEvents, setSavedEvents }) => {
         dateRef.current.value,
         latitude,
         longitude,
-        freeRef.current.value,
-        sportsRef.current.value,
-        artsRef.current.value,
-        clubRef.current.value,
-        fundRef.current.value,
-        ticketRef.current.value,
+        freeRef,
+        sportsRef,
+        artsRef,
+        clubRef,
+        fundRef,
+        ticketRef,
         imageRef.current.value,
         1
       );
@@ -277,12 +329,12 @@ const Map = ({ mapRef, filter, setFilter, savedEvents, setSavedEvents }) => {
         dateRef.current.value,
         latitude,
         longitude,
-        freeRef.current.value,
-        sportsRef.current.value,
-        artsRef.current.value,
-        clubRef.current.value,
-        fundRef.current.value,
-        ticketRef.current.value,
+        freeRef,
+        sportsRef,
+        artsRef,
+        clubRef,
+        fundRef,
+        ticketRef,
         imageRef.current.value,
         2
       );
@@ -346,7 +398,7 @@ const Map = ({ mapRef, filter, setFilter, savedEvents, setSavedEvents }) => {
   const testDate = "2021-02-20";
   const testDate7 = "2021-02-27";
   const testDate30 = "2021-03-20";
-  const testDate90 = "2021-05-20";
+  const testDate90 = "2021-08-20";
   // value : target date
   // compareDate : a date to compare with value (For filtering purpose)
   // allEvents : boolean to display all no mater of dates
@@ -517,7 +569,7 @@ const Map = ({ mapRef, filter, setFilter, savedEvents, setSavedEvents }) => {
       });
     }
     // get default image
-    if (marker.picNames.length == 0) {
+    if (marker.picNames.length === 0) {
       let reference = fbArray.storage.ref(`eventpics/default.jpg`);
       reference.getDownloadURL().then((url) => {
         // URL obtained, add to the reactive array so it can be used for rendering
@@ -541,7 +593,7 @@ const Map = ({ mapRef, filter, setFilter, savedEvents, setSavedEvents }) => {
           //handleLatLng(event);
           setLatitude(event.latLng.lat());
           setLongitude(event.latLng.lng());
-          setRating(0);
+          // setRating(0);
           if (eventMode) {
             handleCreateEventShow();
           }
