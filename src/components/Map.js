@@ -186,12 +186,40 @@ const Map = ({ mapRef, filter, setFilter, savedEvents, setSavedEvents }) => {
       // if imageref is empty, replace with the default.
       const picture = [];
 
-      if (imageRef === undefined || imageRef === "") {
-        picture.push("");
-      } else {
+      if (imageRef !== undefined && imageRef !== "") {
         picture.push(imageRef);
+      } 
+      const tags = [];
+
+      if(freeRef === true)
+      {
+        tags.push("Free")
       }
 
+      if(sportsRef === true)
+      {
+        tags.push("Sports")
+      }
+
+      if(artsRef === true)
+      {
+        tags.push("Arts")
+      }
+
+      if(clubRef === true)
+      {
+        tags.push("Club")
+      }
+
+      if(fundRef === true)
+      {
+        tags.push("Fundraiser")
+      }
+
+      if(ticketRef === true)
+      {
+        tags.push("NeedTicket")
+      }
       const newDate = new Date(dateRef);
       const myTimestamp = fbArray.firebase.firestore.Timestamp.fromDate(
         newDate
@@ -209,7 +237,8 @@ const Map = ({ mapRef, filter, setFilter, savedEvents, setSavedEvents }) => {
           picNames: picture,
           rating: 4.0,
           hostID: currUser.current.uid,
-          type: 6666,
+          type: type,
+          tags: tags
         })
         .then((docRef) => {
           console.log("Event document created with ID: ", docRef.id);
