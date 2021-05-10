@@ -39,10 +39,7 @@
 
 ## Overview
 
-- **Todo** todo
-- **Todo** todo
-- **Todo** todo
-- **Todo** todo
+EventScope is designed to be a live map of GMU events.
 
 
 To learn more about configuration, usage and features of EventScope, take a look at [the website](https://).
