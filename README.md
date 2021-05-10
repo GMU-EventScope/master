@@ -58,7 +58,7 @@ To learn more about configuration, usage and features of EventScope, take a look
 
 ## Installation and usage
 
-The Lounge requires latest [Node.js](https://nodejs.org/) LTS version or more recent.
+Eventscope requires latest [Node.js](https://nodejs.org/) LTS version or more recent.
 [Yarn package manager](https://yarnpkg.com/) is also recommended.  
 
 ### Running from source
