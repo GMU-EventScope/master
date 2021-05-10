@@ -58,12 +58,12 @@ To learn more about configuration, usage and features of EventScope, take a look
 
 ## Installation and usage
 
-Eventscope requires latest [Node.js](https://nodejs.org/) LTS version or more recent.
+EventScope requires latest [Node.js](https://nodejs.org/) LTS version or more recent.
 [Yarn package manager](https://yarnpkg.com/) is also recommended.  
 
 ### Running from source
 
-The following commands install and run the development version of The Lounge:
+The following commands install and run the EventScope:
 
 ```sh
 git clone https://github.com/GMU-EventScope/master.git
